@@ -33,12 +33,15 @@ screen.blit(background, (0, 0))
 
 # make button
 button_image = pygame.Surface([200, 40])
-button_image.fill([100,100,70])
+button_image.fill([140,140,120])
 button_image=button_image.convert()
 button_rect = button_image.get_rect()
 button_rect.center=[900,500]
 button_text="Beep boop"
-my_Button= Button(button_text,button_image,button_rect, [lambda :print("beep booop")])
+button_images=[button_image,button_image.copy(),button_image.copy()]
+button_images[1].fill([120,120,105])
+button_images[2].fill([100,100,90])
+my_Button= Button(button_text,button_images,button_rect, [lambda :print("beep booop")])
 my_Button.add(allsprites)
 
 
