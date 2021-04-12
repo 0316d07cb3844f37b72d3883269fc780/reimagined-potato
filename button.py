@@ -1,17 +1,31 @@
+"""
+Implements a Button functionality.
+"""
+
 import pygame
 import pygame.font
 from pygame import mouse
 from enum import Enum
 
 class State(Enum):
+    """Encodes the state of the Button"""
     NEUTRAL=0
     HOVERED=1
     PRESSED=2
 
 class Button (pygame.sprite.Sprite):
-
+    """
+    A button that calls all functions on a list when pressed.
+    """
 
     def __init__(self, text, background_images, rect, on_click=[]):
+        """
+        Creates a button ready to be rendered and used.
+        :param text: Text on the button.
+        :param background_images: A list of three images for the unpressed, hovered and pressed button.
+        :param rect: Rect for rendering.
+        :param on_click: List of functions to be called when the button is clicked.
+        """
         pygame.sprite.Sprite.__init__(self)
         # set up text
         font = pygame.font.Font(None , 36)
@@ -30,6 +44,13 @@ class Button (pygame.sprite.Sprite):
         self.state=State.NEUTRAL
 
     def update(self, *args, **kwargs) -> None:
+        """
+        Updates the state of the button and calls the list of functions when clicked.
+
+        :param args: No functionality.
+        :param kwargs: No functionality.
+        :return:
+        """
         Button.updater.get(self.state)(self)
 
     def update_neutral(self):
