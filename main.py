@@ -1,8 +1,6 @@
 import pygame
-import os, sys
-from pygame.constants import RLEACCEL
 from pygame.locals import *
-from button import Button
+from game_io.button import Button
 
 # start pygame
 pygame.init()
