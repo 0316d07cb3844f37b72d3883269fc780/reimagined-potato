@@ -5,7 +5,7 @@ import game_io
 from pygame.locals import *
 from game_io.button import Button
 from game_io.image_util import stack_vertical
-
+from testing.person_test import test as testp
 
 def main():
     # start pygame
@@ -23,18 +23,13 @@ def main():
     background = background.convert()
     background.fill((240, 240, 240))
     screen.blit(background, (0, 0))
+
     # make button
-    button_image = pygame.Surface([200, 40])
-    button_image.fill([140, 140, 120])
-    button_image = button_image.convert()
-    button_rect = button_image.get_rect()
-    button_rect.center = [900, 500]
-    button_text = "Beep boop"
-    button_images = [button_image, button_image.copy(), button_image.copy()]
-    button_images[1].fill([120, 120, 105])
-    button_images[2].fill([100, 100, 90])
-    my_Button = Button(button_text, button_images, button_rect, [lambda: print("beep booop")])
-    my_Button.add(allsprites)
+    #button_test(allsprites)
+
+    # test person
+    testp(allsprites)
+
     running = True
     while running:
         clock.tick(60)
@@ -50,6 +45,20 @@ def main():
 
         pygame.display.flip()
     pygame.quit()
+
+
+def button_test(allsprites):
+    button_image = pygame.Surface([200, 40])
+    button_image.fill([140, 140, 120])
+    button_image = button_image.convert()
+    button_rect = button_image.get_rect()
+    button_rect.center = [900, 500]
+    button_text = "Beep boop"
+    button_images = [button_image, button_image.copy(), button_image.copy()]
+    button_images[1].fill([120, 120, 105])
+    button_images[2].fill([100, 100, 90])
+    my_Button = Button(button_text, button_images, button_rect, [lambda: print("beep booop")])
+    my_Button.add(allsprites)
 
 
 def guy_test(allsprites):
