@@ -13,3 +13,12 @@ class Person_Data:
            self.type=type
        else:
            raise Exception("Illegal type")
+
+    def damage(self, damage):
+        self.health-=damage
+        if(self.health <= 0):
+            self.die()
+
+    def die(self):
+        pass
+
