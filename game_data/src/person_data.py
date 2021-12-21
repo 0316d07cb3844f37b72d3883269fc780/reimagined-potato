@@ -9,6 +9,7 @@ class Person_Data:
        self.id=Person_Data.id_count
        Person_Data.id_count +=1
        self.max_health=self.health=max_health
+       self.actions=[]
        if(type in Person_Data.legal_types):
            self.type=type
        else:
@@ -18,6 +19,8 @@ class Person_Data:
         self.health-=damage
         if(self.health <= 0):
             self.die()
+
+
 
     def die(self):
         pass

@@ -2,7 +2,7 @@ import unittest
 from game_data.src.person_data import Person_Data as Person
 
 
-class MyTestCase(unittest.TestCase):
+class Test_Testtype_Person(unittest.TestCase):
     def test_damage(self):
         my_person = make_person()
         my_person.damage(3)
