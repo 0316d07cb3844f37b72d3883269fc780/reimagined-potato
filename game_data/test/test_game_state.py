@@ -12,7 +12,8 @@ def make_game_state():
     return State(allies,foes)
 
 class MyTestCase(unittest.TestCase):
-    my_state = make_game_state()
+    def test_make_game_state(self):
+        my_state = make_game_state()
 
 
 if __name__ == '__main__':

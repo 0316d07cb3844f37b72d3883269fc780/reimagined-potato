@@ -3,8 +3,8 @@ from game_data.src.person_data import Person_Data as Person
 
 
 class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        my_person = self.make_person()
+    def test_damage(self):
+        my_person = make_person()
         my_person.damage(3)
         self.assertEqual(my_person.health,7,"Damage calculation error.")
 
