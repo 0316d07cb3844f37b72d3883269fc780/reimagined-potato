@@ -1,8 +1,8 @@
 """
-Carries all state of the game.
+Carries all state of a combat encounter.
 """
 
-class Game_State():
+class Fight_Scene():
     def __init__(self, allies, foes):
         """
 

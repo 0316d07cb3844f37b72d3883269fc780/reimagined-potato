@@ -1,5 +1,5 @@
 """
-Contains the Person class representing characters as game units.
+Contains the Person class representing characters as game units. Contains attributes that persist between fights.
 """
 
 class Person_Data:
@@ -20,8 +20,4 @@ class Person_Data:
         if(self.health <= 0):
             self.die()
 
-
-
-    def die(self):
-        pass
 

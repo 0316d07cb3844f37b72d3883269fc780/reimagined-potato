@@ -10,6 +10,7 @@ class Action():
         self.performer=performer
         self.perform=method
         self.id=id
+        performer.append_action(self)
 
 def create_tackle(tackler, tackled):
     tackle_method=lambda:tackled.damage(4)
