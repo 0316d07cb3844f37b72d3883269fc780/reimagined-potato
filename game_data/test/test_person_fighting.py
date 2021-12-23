@@ -9,6 +9,7 @@ class Test_Person_Fighting(unittest.TestCase):
         my_Person.damage(4)
         health_after = my_Person.get_health()
         self.assertEqual(health_before-4,health_after)
+        self.assertTrue(len(my_Person.drawpile)==5)
 
 
 if __name__ == '__main__':
