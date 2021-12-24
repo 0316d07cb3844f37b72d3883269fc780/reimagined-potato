@@ -1,11 +1,11 @@
 """Contains the cards to replenish a persons hand within a fight."""
 
-import game_data.src.card as card_module
+from game_data.src.card import create_card
+from game_data.src.card_collection import card_collection
 
-class Drawpile():
+class Drawpile(card_collection):
     def __init__(self, deck):
 
-        self.cards=[card_module.__getattribute__(card) for card in deck]
+        cardlist=[create_card(card) for card in deck]
+        super().__init__(cardlist)
 
-    def __len__(self):
-        return len(self.cards)
