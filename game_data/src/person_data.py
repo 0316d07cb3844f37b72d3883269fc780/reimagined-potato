@@ -9,7 +9,9 @@ class Person_Data:
        self.id=Person_Data.id_count
        Person_Data.id_count +=1
        self.max_health=self.health=max_health
+
        self.deck=deck
+
        if(type in Person_Data.legal_types):
            self.type=type
        else:
