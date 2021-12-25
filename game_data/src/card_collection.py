@@ -18,6 +18,9 @@ class Card_Collection():
     def __iter__(self):
         return iter(self.cards.values())
 
+    def __contains__(self, card):
+        return card in self.cards.values()
+
     def get_a_card(self):
         if len(self)==0:
             raise IndexError("Card_Container empty")
@@ -51,9 +54,8 @@ class Card_Collection():
 
 def create_drawpile(deck, person):
     drawpile = Card_Collection([], person)
-    cardlist=[create_card(card,drawpile) for card in deck]
-    for card in cardlist:
-        drawpile.add_card(card)
+    for card in deck:
+        create_card(card, drawpile)
     return drawpile
 
 

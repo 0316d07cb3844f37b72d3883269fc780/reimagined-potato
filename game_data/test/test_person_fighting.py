@@ -26,6 +26,14 @@ class Test_Person_Fighting(unittest.TestCase):
         self.assertEqual(len(my_person.discardpile),0)
         self.assertEqual(len(my_person.hand),5)
 
+    def test_playing_card(self):
+        tackler, tackled =make_person(),make_person()
+        tackler.draw_Card()
+        my_tackle=tackler.hand.get_a_card()
+        tackler.play_Card(my_tackle,[tackled])
+        self.assertEqual(len(tackler.actions),1)
+
+
 
 
 if __name__ == '__main__':
