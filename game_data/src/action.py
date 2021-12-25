@@ -13,6 +13,11 @@ class Action():
         performer.append_action(self)
 
 def create_tackle(tackler, tackled):
-    tackle_method=lambda:tackled.damage(4)
+    tackle_method=lambda:tackled.damage(6)
     tackle=Action(tackler,"Tackle",tackle_method,1)
     return tackle
+
+def create_brace(bracer):
+    def brace(bracer):
+        bracer.resist+=4
+    return Action(bracer, "Brace", lambda:brace(bracer),2)
