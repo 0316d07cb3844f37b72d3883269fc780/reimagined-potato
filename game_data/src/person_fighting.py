@@ -15,7 +15,12 @@ class Person_Fighting():
         self.discardpile=Card_Collection([],self)
 
     def damage(self, damage):
-        self.person.damage(damage)
+        if damage > self.resist:
+            self.person.damage(damage-self.resist)
+            self.resist=0
+        else:
+            self.resist-=damage
+
 
     def play_Card(self, card, target_list):
         """

@@ -1,6 +1,7 @@
 import unittest
 from test_person_data import make_person as make_person_data
 from game_data.src.person_fighting import Person_Fighting as Person
+from game_data.src.card import create_tackle
 
 class Test_Person_Fighting(unittest.TestCase):
     def test_damage(self):
@@ -28,7 +29,7 @@ class Test_Person_Fighting(unittest.TestCase):
 
     def test_playing_card(self):
         tackler, tackled =make_person(),make_person()
-        tackler.draw_Card()
+        create_tackle(tackler.hand)
         my_tackle=tackler.hand.get_a_card()
         tackler.play_Card(my_tackle,[tackled])
         self.assertEqual(len(tackler.actions),1)
