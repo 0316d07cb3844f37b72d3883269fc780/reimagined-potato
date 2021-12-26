@@ -15,5 +15,5 @@ if __name__ == '__main__':
     unittest.main()
 
 def make_person():
-    my_person = Person(10, "Testtype", deck=["Tackle"]*5)
+    my_person = Person(10, "Testtype", deck=["Tackle"]*5+["Brace"]*5)
     return my_person

@@ -41,9 +41,20 @@ class Target_Checker(Enum):
 
 
 def create_card(cardname,location):
-    return create_tackle(location)
+
+    return cards_by_string[cardname](location)
 
 from game_data.src.action import create_tackle as create_tackle_action
 def create_tackle(location):
     Tackle=Card("Tackle",lambda tackler, tackled :create_tackle_action(tackler,tackled[0]), Speed.Fast,Target_Checker.singletarget,location)
     return Tackle
+
+from game_data.src.action import create_brace as create_brace_action
+def create_brace(location):
+    Brace=Card("Brace",lambda bracer, _: create_brace_action(bracer), Speed.Instant, Target_Checker.no_target,location)
+    return Brace
+
+cards_by_string={
+    "Tackle":create_tackle,
+    "Brace":create_brace
+}

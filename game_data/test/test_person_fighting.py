@@ -10,22 +10,22 @@ class Test_Person_Fighting(unittest.TestCase):
         my_Person.damage(4)
         health_after = my_Person.get_health()
         self.assertEqual(health_before-4,health_after)
-        self.assertTrue(len(my_Person.drawpile)==5)
+        self.assertTrue(len(my_Person.drawpile)==10)
 
     def test_drawing_cards(self):
         my_person = make_person()
-        self.assertEqual(len(my_person.drawpile),5)
+        self.assertEqual(len(my_person.drawpile),10)
         my_card=my_person.drawpile.get_a_card()
         my_card.move(my_person.discardpile)
-        for _ in range(4):
+        for _ in range(9):
             my_person.draw_Card()
         self.assertEqual(len(my_person.drawpile),0)
         self.assertEqual(len(my_person.discardpile),1)
-        self.assertEqual(len(my_person.hand),4)
+        self.assertEqual(len(my_person.hand),9)
         my_person.draw_Card()
         self.assertEqual(len(my_person.drawpile),0)
         self.assertEqual(len(my_person.discardpile),0)
-        self.assertEqual(len(my_person.hand),5)
+        self.assertEqual(len(my_person.hand),10)
 
     def test_playing_card(self):
         tackler, tackled =make_person(),make_person()
