@@ -31,7 +31,7 @@ class Person_Fighting():
         """
         if card not in self.hand:
             raise IndexError("Card not in Hand can't be played.")
-        card.action_factory(self,target_list)
+        card.resolve(self,target_list)
         card.move(self.discardpile)
 
 
