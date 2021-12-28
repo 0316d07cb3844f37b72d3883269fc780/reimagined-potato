@@ -3,7 +3,7 @@ Contains utility functions for turning objects into strings and back.
 """
 
 def create_tag(tag, string_to_add):
-    return "<"+tag+">"+string_to_add+"<\\"+tag+">"
+    return "<"+tag+">"+str(string_to_add)+"<\\"+tag+">"
 
 def find_next_tag_and_tag_end(string):
     end=string.find(">")

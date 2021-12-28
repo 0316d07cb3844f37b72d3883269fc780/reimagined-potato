@@ -16,8 +16,8 @@ class Person_Fighting():
         self.hand=Card_Collection([],self)
         self.discardpile=Card_Collection([],self)
         "Set id and look up entry"
-        self.id=Person_Fighting.last_id
-        Person_Fighting.all_people[self.id]=self
+        self.person_id=Person_Fighting.last_id
+        Person_Fighting.all_people[self.person_id]=self
         Person_Fighting.last_id+=1
 
     def damage(self, damage):
@@ -65,3 +65,6 @@ class Person_Fighting():
 
     def die(self):
         pass
+
+def get_Person(id):
+    return Person_Fighting.all_people[id]

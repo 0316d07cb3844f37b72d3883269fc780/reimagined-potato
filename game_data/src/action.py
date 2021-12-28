@@ -16,9 +16,9 @@ class Action():
 
     def __str__(self):
         my_string=create_tag("name",self.name)
-        my_string+=create_tag("performer_id", self.performer.action_id)
-        my_string+=create_tag("target_id_list",self.target_list)
-        my_string+=create_tag("id", self.action_id)
+        my_string+=create_tag("performer_id", self.performer.person_id)
+        my_string+=create_tag("target_id_list",[target.person_id for target in self.target_list])
+        my_string+=create_tag("action_id", self.action_id)
         return my_string
 
 
@@ -40,5 +40,14 @@ creator_by_id={
     2:create_brace
 }
 
+import_flag= False
+
 def create_from_string(string):
+    if(not import_flag):
+        from game_data.src.person_fighting import get_Person
     name, performer_id, target_id_list, id = detag(string)
+    target_id_list=get_id_list(target_id_list)
+    performer_id=int(performer_id)
+    id=int(id)
+    target_list=[get_Person(target_id) for target_id in target_id_list]
+    return creator_by_id[id](get_Person(performer_id),target_list)
