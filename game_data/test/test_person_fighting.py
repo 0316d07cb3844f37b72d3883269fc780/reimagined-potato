@@ -34,6 +34,11 @@ class Test_Person_Fighting(unittest.TestCase):
         tackler.play_Card(my_tackle,[tackled])
         self.assertEqual(len(tackler.actions),1)
 
+    def test_getting_person_by_id(self):
+        my_person, another_person=make_person(),make_person()
+        self.assertEqual((my_person,another_person),(Person.all_people[my_person.id],Person.all_people[another_person.id]))
+        self.assertTrue(not Person.all_people[my_person.id]==Person.all_people[another_person.id])
+
 
 
 

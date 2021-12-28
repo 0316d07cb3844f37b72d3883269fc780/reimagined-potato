@@ -5,6 +5,8 @@ A person as it is in the Fight_Scene.
 from game_data.src.card_collection import Card_Collection, create_drawpile
 
 class Person_Fighting():
+    last_id=0
+    all_people={}
     def __init__(self, base_person):
         self.person=base_person
         self.actions=[]
@@ -13,6 +15,10 @@ class Person_Fighting():
         self.drawpile=create_drawpile(base_person.deck, self)
         self.hand=Card_Collection([],self)
         self.discardpile=Card_Collection([],self)
+        "Set id and look up entry"
+        self.id=Person_Fighting.last_id
+        Person_Fighting.all_people[self.id]=self
+        Person_Fighting.last_id+=1
 
     def damage(self, damage):
         if damage > self.resist:
