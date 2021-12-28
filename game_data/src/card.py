@@ -46,7 +46,7 @@ def create_card(cardname,location):
 
 from game_data.src.action import create_tackle as create_tackle_action
 def create_tackle(location):
-    Tackle=Card("Tackle",lambda tackler, tackled :create_tackle_action(tackler,tackled[0]), Speed.Fast,Target_Checker.singletarget,location)
+    Tackle=Card("Tackle",lambda tackler, tackled :create_tackle_action(tackler,tackled), Speed.Fast,Target_Checker.singletarget,location)
     return Tackle
 
 from game_data.src.action import create_brace as create_brace_action

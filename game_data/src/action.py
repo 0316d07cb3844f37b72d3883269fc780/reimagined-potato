@@ -24,15 +24,16 @@ class Action():
 
 
 
-def create_tackle(tackler, tackled):
-    tackle_method=lambda:tackled.damage(6)
-    tackle=Action(tackler, [tackled], "Tackle",tackle_method,1)
+def create_tackle(tackler, tackled_list):
+    tackle_method=lambda:tackled_list[0].damage(6)
+    tackle=Action("Tackle", tackler, tackled_list, tackle_method,1)
     return tackle
 
-def create_brace(bracer):
+def create_brace(bracer, braced=None):
     def brace(bracer):
         bracer.resist+=4
-    return Action(bracer, [], "Brace", lambda:brace(bracer),2)
+    return Action("Brace", bracer, [],  lambda:brace(bracer),2)
+
 
 creator_by_id={
     1:create_tackle,
@@ -40,4 +41,4 @@ creator_by_id={
 }
 
 def create_from_string(string):
-    return
+    name, performer_id, target_id_list, id = detag(string)
