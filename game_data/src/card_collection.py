@@ -3,12 +3,13 @@ Contains a collection of cards. Meant to be derived from.
 """
 
 from game_data.src.card import create_card
+from game_data.src.getter_scene import getter
 
 class Card_Collection():
     def __init__(self,cardlist, person):
         self.cards={}
         for card in cardlist:
-            self.cards[card.ID] = card
+            self.cards[card.scene_id] = card
         self.person=person
 
 
@@ -37,7 +38,7 @@ class Card_Collection():
         :param card: the card to remove.
         :return:
         """
-        self.cards.pop(card.ID)
+        self.cards.pop(card.scene_id)
         card.location = None
 
     def add_card(self, card):
@@ -46,7 +47,7 @@ class Card_Collection():
         :param card: card to add.
         :return:
         """
-        self.cards[card.ID]=card
+        self.cards[card.scene_id]=card
         card.location=self
 
     def shuffle(self):

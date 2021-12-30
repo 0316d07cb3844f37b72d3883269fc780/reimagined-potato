@@ -2,17 +2,15 @@
 Contains the underlying data of a Card inside a scene.
 """
 
+from game_data.src.getter_scene import getter
+
 class Card():
-    last_id=0
-    all_cards={}
     def __init__(self, name, action_factory, speed, target_checker, location):
         self.name=name
         self.action_factory=action_factory
         self.speed= speed
         self.target_checker=target_checker
-        self.ID = Card.last_id
-        Card.last_id +=1
-        Card.all_cards[self.ID]=self
+        getter.register(self)
         self.location = location
         location.add_card(self)
 

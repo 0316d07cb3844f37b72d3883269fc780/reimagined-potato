@@ -18,4 +18,4 @@ class Getter_Scene():
     def __getitem__(self, scene_id):
         return self.all_objects[scene_id]
 
-Getter=Getter_Scene()
+getter=Getter_Scene()

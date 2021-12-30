@@ -3,6 +3,7 @@ An action that a person will perform at the end of the turn.
 """
 
 from utility.src.string_utils import create_tag,detag,get_id_list
+from game_data.src.getter_scene import getter
 
 
 class Action():
