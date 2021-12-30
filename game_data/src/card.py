@@ -3,6 +3,7 @@ Contains the underlying data of a Card inside a scene.
 """
 
 from game_data.src.getter_scene import getter
+from game_data.src.action_factory import Action_Factories
 
 class Card():
     def __init__(self, name, action_factory, speed, target_checker, location):
@@ -42,14 +43,12 @@ def create_card(cardname,location):
 
     return cards_by_string[cardname](location)
 
-from game_data.src.action import create_tackle as create_tackle_action
 def create_tackle(location):
-    Tackle=Card("Tackle",lambda tackler, tackled :create_tackle_action(tackler,tackled), Speed.Fast,Target_Checker.singletarget,location)
+    Tackle=Card("Tackle",Action_Factories.tackle_factory, Speed.Fast,Target_Checker.singletarget,location)
     return Tackle
 
-from game_data.src.action import create_brace as create_brace_action
 def create_brace(location):
-    Brace=Card("Brace",lambda bracer, _: create_brace_action(bracer), Speed.Instant, Target_Checker.no_target,location)
+    Brace=Card("Brace",Action_Factories.brace_factory, Speed.Instant, Target_Checker.no_target,location)
     return Brace
 
 cards_by_string={

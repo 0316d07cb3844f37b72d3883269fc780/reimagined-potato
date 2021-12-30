@@ -29,9 +29,13 @@ class Action_Factory():
 Factories={}
 
 
-class Action_Factories(Enum):
-    tackle_factory=Action_Factory(create_tackle,"Tackle_Factory")
-    brace_factory=Action_Factory(create_brace, "Brace_Factory")
+class Action_Factories(Action_Factory, Enum):
+    def __new__(cls, method, name):
+        obj=Action_Factory(method,name)
+        obj._value_=obj
+        return obj
+    tackle_factory=(create_tackle,"Tackle_Factory")
+    brace_factory=(create_brace, "Brace_Factory")
 
 
 
