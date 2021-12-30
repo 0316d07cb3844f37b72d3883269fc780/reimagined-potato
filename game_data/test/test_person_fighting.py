@@ -2,6 +2,7 @@ import unittest
 from test_person_data import make_person as make_person_data
 from game_data.src.person_fighting import Person_Fighting as Person
 from game_data.src.card import create_tackle
+from game_data.src.getter_scene import getter
 
 class Test_Person_Fighting(unittest.TestCase):
     def test_damage(self):
@@ -36,8 +37,8 @@ class Test_Person_Fighting(unittest.TestCase):
 
     def test_getting_person_by_id(self):
         my_person, another_person=make_person(),make_person()
-        self.assertEqual((my_person,another_person), (Person.all_people[my_person.person_id], Person.all_people[another_person.person_id]))
-        self.assertTrue(not Person.all_people[my_person.person_id] == Person.all_people[another_person.person_id])
+        self.assertEqual((my_person,another_person), (getter[my_person.scene_id], getter[another_person.scene_id]))
+        self.assertTrue(not getter[my_person.scene_id] == getter[another_person.scene_id])
 
 
 
