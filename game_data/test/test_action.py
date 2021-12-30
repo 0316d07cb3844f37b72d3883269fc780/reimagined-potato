@@ -8,7 +8,7 @@ class Test_tackle(unittest.TestCase):
     def test_tackle(self):
         tackler, tackled = make_person(), make_person()
         health_before_tackle = tackled.get_health()
-        create_tackle(tackler,[tackled]).perform()
+        create_tackle(tackler,[tackled]).resolve()
         health_after_tackle=tackled.get_health()
         self.assertEqual(health_before_tackle-6, health_after_tackle)
 
@@ -21,7 +21,7 @@ class Test_tackle(unittest.TestCase):
 class Test_brace(unittest.TestCase):
     def test_brace(self):
         bracer=make_person()
-        create_brace(bracer).perform()
+        create_brace(bracer).resolve()
         self.assertEqual(bracer.resist,4)
 
 class Test_String_Utils(unittest.TestCase):

@@ -11,7 +11,7 @@ class Action():
         self.name = name
         self.performer=performer
         self.target_list=target_list
-        self.perform=method
+        self.method=method
         self.action_id=id
         performer.append_action(self)
 
@@ -22,18 +22,21 @@ class Action():
         my_string+=create_tag("action_id", self.action_id)
         return my_string
 
+    def resolve(self):
+        self.method(self.performer,self.target_list)
 
 
 
+
+tackle_method=lambda tackler,tackled_list:tackled_list[0].damage(6)
 def create_tackle(tackler, tackled_list):
-    tackle_method=lambda:tackled_list[0].damage(6)
     tackle=Action("Tackle", tackler, tackled_list, tackle_method,1)
     return tackle
 
+def brace_method(bracer, brace_targets):
+    bracer.resist+=4
 def create_brace(bracer, braced=None):
-    def brace(bracer):
-        bracer.resist+=4
-    return Action("Brace", bracer, [],  lambda:brace(bracer),2)
+    return Action("Brace", bracer, [],brace_method,2)
 
 
 creator_by_id={
