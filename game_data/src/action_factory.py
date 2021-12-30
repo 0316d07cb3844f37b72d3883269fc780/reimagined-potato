@@ -2,20 +2,42 @@
 Attribute of a card responsible for generating actions when the card resolves.
 """
 
-from game_data.src.action import *
-from game_data.src.getter_scene import getter
-from utility.src.string_utils import create_tag, detag, get_id_list
+from game_data.src.action import create_tackle, create_brace
+from enum import Enum
+
+
 
 class Action_Factory():
-    def __init__(self):
-        pass
+    def __init__(self, factory_method, name):
+        self.factory_method=factory_method
+        self.factory_name=name
+        Factories[name]=self
+
 
     def __call__(self, performer, target_list):
-        pass
+        return self.factory_method(performer,target_list)
 
     def __str__(self):
-        pass
+        return self.factory_name
 
     def __eq__(self, other):
-        pass
+        if(not hasattr(other,"factory_name")):
+           return False
+        return (self.factory_name==other.factory_name)&(self.factory_method==self.factory_method)
+
+
+Factories={}
+
+
+class Action_Factories(Enum):
+    tackle_factory=Action_Factory(create_tackle,"Tackle_Factory")
+    brace_factory=Action_Factory(create_brace, "Brace_Factory")
+
+
+
+def create_from_string(string):
+    return Factories[string]
+
+
+
 
