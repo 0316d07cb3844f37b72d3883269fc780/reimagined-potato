@@ -19,6 +19,12 @@ class Test_Utils(unittest.TestCase):
         my_id_list=[1,10,23,100,4]
         self.assertEqual(my_id_list,get_id_list(str(my_id_list)))
 
+    def test_detag_given_tags(self):
+        string=create_tag("my_tag1","value1")+create_tag("my_tag2","value2")+create_tag("my_tag1","value3")
+        result=detag_given_tags(string,"my_tag2","my_tag1", "my_tag1")
+        expected_result=("value2", "value1" ,"value3")
+        self.assertEqual(result, expected_result)
+
 
 
 

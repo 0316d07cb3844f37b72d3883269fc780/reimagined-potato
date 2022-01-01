@@ -36,8 +36,14 @@ def _detag_given_tag(string, tag):
     remainder=string[:tag_start]+string[tag_end+1:]
     return result, remainder
 
-def detag_given_tags(string,tags):
-    pass
+def detag_given_tags(string,*tags):
+    result=()
+    for tag in tags:
+        value, string=_detag_given_tag(string, tag)
+        result+=(value,)
+    return result
+
+
 
 
 
