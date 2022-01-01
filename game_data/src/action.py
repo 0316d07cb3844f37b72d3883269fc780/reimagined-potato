@@ -22,6 +22,15 @@ class Action():
         my_string+=create_tag("action_id", self.action_id)
         return my_string
 
+    @classmethod
+    def create_from_string(cls, string):
+        name, performer_id, target_id_list, id = detag(string)
+        target_id_list = get_id_list(target_id_list)
+        performer_id = int(performer_id)
+        id = int(id)
+        target_list = [getter[target_id] for target_id in target_id_list]
+        return creator_by_id[id](getter[performer_id], target_list)
+
     def resolve(self):
         self.method(self.performer,self.target_list)
 

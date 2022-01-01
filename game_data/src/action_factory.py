@@ -25,6 +25,11 @@ class Action_Factory():
            return False
         return (self.factory_name==other.factory_name)&(self.factory_method==self.factory_method)
 
+    @classmethod
+    def create_from_string(cls, string):
+        return Factories[string]
+
+
 
 Factories={}
 
