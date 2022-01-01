@@ -14,6 +14,7 @@ class Getter_Scene():
         scene_id=randint(0,maxsize)
         self.all_objects[scene_id]=object
         object.scene_id=scene_id
+        return scene_id
 
     def __getitem__(self, scene_id):
         return self.all_objects[scene_id]

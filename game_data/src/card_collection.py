@@ -11,7 +11,7 @@ class Card_Collection():
         for card in cardlist:
             self.cards[card.scene_id] = card
         self.person=person
-        getter.register(self)
+        self.scene_id=getter.register(self)
 
 
     def __len__(self):

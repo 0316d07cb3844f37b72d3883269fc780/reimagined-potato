@@ -11,7 +11,7 @@ class Person_Data:
 
        self.deck=deck
 
-       getter.register(self)
+       self.scene_id=getter.register(self)
 
        if(type in Person_Data.legal_types):
            self.type=type

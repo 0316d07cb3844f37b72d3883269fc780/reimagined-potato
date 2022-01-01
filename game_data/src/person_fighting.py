@@ -15,7 +15,7 @@ class Person_Fighting():
         self.hand=Card_Collection([],self)
         self.discardpile=Card_Collection([],self)
         "Register in universal getter."
-        getter.register(self)
+        self.scene_id=getter.register(self)
 
     def damage(self, damage):
         if damage > self.resist:
