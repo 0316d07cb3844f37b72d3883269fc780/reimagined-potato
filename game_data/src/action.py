@@ -2,7 +2,7 @@
 An action that a person will perform at the end of the turn.
 """
 
-from utility.src.string_utils import create_tag,detag,get_id_list
+from utility.src.string_utils import create_tag, get_id_list, detag_given_tags
 from game_data.src.getter_scene import getter
 
 
@@ -24,7 +24,8 @@ class Action():
 
     @classmethod
     def create_from_string(cls, string):
-        name, performer_id, target_id_list, id = detag(string)
+        tags="name","performer_id","target_id_list","action_id"
+        name, performer_id, target_id_list, id = detag_given_tags(string,*tags)
         target_id_list = get_id_list(target_id_list)
         performer_id = int(performer_id)
         id = int(id)
@@ -53,10 +54,3 @@ creator_by_id={
     2:create_brace
 }
 
-def create_from_string(string):
-    name, performer_id, target_id_list, id = detag(string)
-    target_id_list=get_id_list(target_id_list)
-    performer_id=int(performer_id)
-    id=int(id)
-    target_list=[getter[target_id] for target_id in target_id_list]
-    return creator_by_id[id](getter[performer_id],target_list)

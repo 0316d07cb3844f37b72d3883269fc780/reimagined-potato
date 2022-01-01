@@ -1,6 +1,6 @@
 import unittest
 from test_person_fighting import make_person
-from game_data.src.action import create_tackle, create_brace, create_from_string
+from game_data.src.action import create_tackle, create_brace, Action
 
 
 
@@ -29,7 +29,7 @@ class Test_String_Utils(unittest.TestCase):
         tackler, tackled = make_person(), make_person()
         my_tackle=create_tackle(tackler, [tackled])
         my_string=str(my_tackle)
-        my_other_tackle=create_from_string(my_string)
+        my_other_tackle=Action.create_from_string(my_string)
         self.assertEqual(my_tackle.name,my_other_tackle.name)
         self.assertEqual(my_tackle.target_list,my_other_tackle.target_list)
         self.assertEqual(my_tackle.action_id,my_other_tackle.action_id)
