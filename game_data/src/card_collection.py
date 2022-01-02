@@ -2,8 +2,10 @@
 Contains a collection of cards. Meant to be derived from.
 """
 
-from game_data.src.card import create_card
+from game_data.src.card import create_card, Card
 from game_data.src.getter_scene import getter
+from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated
+
 
 
 class Card_Collection():
@@ -21,6 +23,34 @@ class Card_Collection():
 
     def __contains__(self, card):
         return card in self.cards.values()
+
+
+    def __str__(self):
+        def string_card_pair(id, card):
+            result=create_tag("id",str(id))+create_tag("card",str(card))
+            return create_tag("card_pair", result)
+        cards_string=str(",".join(["\n"+string_card_pair(id, card) for id, card in self.cards.items()]))
+        result=create_tag("cards",cards_string+"\n")+"\n"
+        result+=create_tag("scene_id",self.scene_id)
+        return result
+    @classmethod
+    def create_from_string(cls, string):
+        cards_tagged_string,scene_id_string=detag_given_tags(string, "cards","scene_id")
+        cards_tagged_list=detag_repeated(cards_tagged_string,"card_pair")
+        card_pairs_string=[detag_given_tags(card_pair,"id","card")for card_pair in cards_tagged_list]
+        card_pairs=[(int(id),Card.create_from_string(card)) for id, card in card_pairs_string]
+        my_collection=Card_Collection([])
+        for id, card in card_pairs:
+            my_collection.cards[id]=card
+        getter[int(scene_id_string)]=my_collection
+        return my_collection
+
+
+
+
+
+
+
 
     def get_a_card(self):
         if len(self) == 0:
