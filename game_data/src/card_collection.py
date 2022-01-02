@@ -7,11 +7,10 @@ from game_data.src.getter_scene import getter
 
 
 class Card_Collection():
-    def __init__(self, cardlist, person):
+    def __init__(self, cardlist):
         self.cards = {}
         for card in cardlist:
             self.cards[card.scene_id] = card
-        self.person = person
         self.scene_id = getter.register(self)
 
     def __len__(self):
@@ -54,8 +53,8 @@ class Card_Collection():
         pass
 
 
-def create_drawpile(deck, person):
-    drawpile = Card_Collection([], person)
+def create_drawpile(deck):
+    drawpile = Card_Collection([])
     for card in deck:
         create_card(card, drawpile)
     return drawpile

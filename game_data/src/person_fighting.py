@@ -12,9 +12,9 @@ class Person_Fighting():
         self.actions = []
         self.resist = 0
         "Create Cardcontainers."
-        self.drawpile = create_drawpile(base_person.deck, self)
-        self.hand = Card_Collection([], self)
-        self.discardpile = Card_Collection([], self)
+        self.drawpile = create_drawpile(base_person.deck)
+        self.hand = Card_Collection([])
+        self.discardpile = Card_Collection([])
         "Register in universal getter."
         self.scene_id = getter.register(self)
 
