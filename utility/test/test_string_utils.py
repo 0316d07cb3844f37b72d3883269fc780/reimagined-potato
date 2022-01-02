@@ -26,6 +26,13 @@ class Test_Utils(unittest.TestCase):
         expected_result = ("value2", "value1", "value3")
         self.assertEqual(result, expected_result)
 
+    def test_detag_repeated(self):
+        string = create_tag("my_tag1", "value1") + create_tag("my_tag2", "value2") + create_tag("my_tag1", "value3")
+        result=detag_repeated(string,"my_tag1")
+        expected_result=["value1","value3"]
+        self.assertEqual(result, expected_result)
+
+
 
 if __name__ == '__main__':
     unittest.main()

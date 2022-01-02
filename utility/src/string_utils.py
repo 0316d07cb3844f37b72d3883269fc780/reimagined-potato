@@ -2,9 +2,13 @@
 Contains utility functions for turning objects into strings and back.
 """
 
+def _t(tag):return "<" + tag + ">"
+def _et(tag):return "<\\" + tag + ">"
+
+
 
 def create_tag(tag, string_to_add):
-    return "<" + tag + ">" + str(string_to_add) + "<\\" + tag + ">"
+    return _t(tag) + str(string_to_add) + _et(tag)
 
 
 def _find_next_tag_and_tag_end(string):
@@ -13,13 +17,13 @@ def _find_next_tag_and_tag_end(string):
 
 
 def _find_content_and_tag_end(string, tag):
-    content_end = string.find("<\\" + tag + ">")
+    content_end = string.find(_et(tag))
     tag_end = string[content_end:].find(">") + content_end
     return content_end, tag_end
 
 
 def _find_tag_and_tag_end(string, tag):
-    tag_start = string.find("<" + tag + ">")
+    tag_start = string.find(_t(tag))
     tag_end = string[tag_start:].find(">") + tag_start
     return tag_start, tag_end
 
@@ -49,6 +53,14 @@ def detag_given_tags(string, *tags):
         value, string = _detag_given_tag(string, tag)
         result += (value,)
     return result
+
+def detag_repeated(string, tag):
+    results=[]
+    while(_t(tag) in string):
+        result, string=_detag_given_tag(string,tag)
+        results+=[result]
+    return results
+
 
 
 def get_id_list(string):
