@@ -4,7 +4,7 @@ Contains the underlying data of a Card inside a scene.
 
 from game_data.src.getter_scene import getter
 from game_data.src.action_factory import Action_Factories, create_from_string
-from utility.src.string_utils import create_tag, detag
+from utility.src.string_utils import create_tag, detag_given_tags
 
 
 class Card:
@@ -36,12 +36,11 @@ class Card:
 
     @classmethod
     def create_from_string(cls, string):
-        detagging_results = detag(string)
-        name = detagging_results[0]
-        action_factory = create_from_string(detagging_results[1])
-        speed = getattr(Speed, detagging_results[2])
-        target_checker = getattr(Target_Checker, detagging_results[3])
-        location = getter[int(detagging_results[4])]
+        name, action_factory, speed, target_checker, location = detag_given_tags(string, "name", "action_factory", "speed", "target_checker", "location")
+        action_factory = create_from_string(action_factory)
+        speed = getattr(Speed, speed)
+        target_checker = getattr(Target_Checker, target_checker)
+        location = getter[int(location)]
         return Card(name, action_factory, speed, target_checker, location)
 
     def __eq__(self, other):

@@ -8,6 +8,14 @@ class Test_Testtype_Person(unittest.TestCase):
         my_person.damage(3)
         self.assertEqual(my_person.health,7,"Damage calculation error.")
 
+    def test_to_and_from_string(self):
+        my_person=make_person()
+        my_person.damage(2)
+        person_string=str(my_person)
+        remade= Person.create_from_string(person_string)
+        self.assertEqual(remade.health,my_person.health)
+        self.assertEqual(remade.deck, my_person.deck)
+
 
 
 

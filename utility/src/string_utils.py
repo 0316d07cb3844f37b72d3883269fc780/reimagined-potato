@@ -28,7 +28,7 @@ def _find_tag_and_tag_end(string, tag):
     return tag_start, tag_end
 
 
-def detag(string):
+def _detag(string):
     to_detag = string
     result = ()
     while (len(to_detag) != 0):

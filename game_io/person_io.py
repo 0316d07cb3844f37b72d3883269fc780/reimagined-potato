@@ -17,7 +17,7 @@ class Person_IO(Sprite):
         :param person_data: Underlying Data Object
         :param position: Where to render the center of the person
         """
-        name, imagelocation=type_to_looks[person_data.type]
+        name, imagelocation=type_to_looks[person_data.person_type]
         try:
             image = pygame.image.load(imagelocation)
         except pygame.error as message:
