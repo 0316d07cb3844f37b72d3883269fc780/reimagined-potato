@@ -8,7 +8,7 @@ def _et(tag):return "<\\" + tag + ">"
 
 
 def create_tag(tag, string_to_add):
-    return _t(tag) + str(string_to_add) + _et(tag)
+    return _t(tag) + str(string_to_add).replace("<", "<!") + _et(tag)
 
 
 def _find_next_tag_and_tag_end(string):
@@ -43,6 +43,7 @@ def _detag_given_tag(string, tag):
     tag_start, content_start = _find_tag_and_tag_end(string, tag)
     content_end, tag_end = _find_content_and_tag_end(string, tag)
     result = string[content_start + 1:content_end]
+    result=result.replace("<!","<")
     remainder = string[:tag_start] + string[tag_end + 1:]
     return result, remainder
 

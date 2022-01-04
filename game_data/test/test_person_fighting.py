@@ -42,6 +42,12 @@ class Test_Person_Fighting(unittest.TestCase):
         self.assertEqual((my_person, another_person), (getter[my_person.scene_id], getter[another_person.scene_id]))
         self.assertTrue(not getter[my_person.scene_id] == getter[another_person.scene_id])
 
+    def test_stringing_and_destringing(self):
+        my_person=make_person()
+        remake=Person.create_from_string(str(my_person))
+        self.assertEqual(my_person.scene_id,remake.scene_id)
+
+
 
 if __name__ == '__main__':
     unittest.main()
