@@ -28,6 +28,7 @@ class Game_Host():
             self.process_event(event)
         self.events.clear()
 
+
 class Event():
 
     def __init__(self, string):

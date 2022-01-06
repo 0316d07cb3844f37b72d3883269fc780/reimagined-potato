@@ -24,6 +24,13 @@ class MyTestCase(unittest.TestCase):
         my_string=my_state.side_to_string(Side.allies)
         Scene.create_team_from_string(my_string)
 
+    def test_sides(self):
+        my_state = make_game_state()
+        self.assertTrue(my_state.current_side==my_state.allies)
+        my_state.change_turn()
+        self.assertTrue(my_state.current_side == my_state.foes)
+        my_state.change_turn()
+        self.assertTrue(my_state.current_side == my_state.allies)
 
 
 if __name__ == '__main__':

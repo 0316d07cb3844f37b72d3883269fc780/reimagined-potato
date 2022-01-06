@@ -23,6 +23,13 @@ class Fight_Scene():
     def current_side(self):
         return getattr(self, self._turn_side.name)
 
+
+    def change_turn(self):
+        if self._turn_side == Side.allies:
+            self._turn_side= Side.foes
+        else:
+            self._turn_side=Side.allies
+
     def side_to_string(self, side):
         side=getattr(self, side.name)
         return ", ".join([create_tag("fighter" ,lad) for lad in side])
