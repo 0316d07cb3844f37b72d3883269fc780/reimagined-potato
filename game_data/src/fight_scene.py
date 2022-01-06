@@ -29,6 +29,8 @@ class Fight_Scene():
             self._turn_side= Side.foes
         else:
             self._turn_side=Side.allies
+        for person in self.current_side:
+            person.turn_ended=False
 
     def side_to_string(self, side):
         side=getattr(self, side.name)

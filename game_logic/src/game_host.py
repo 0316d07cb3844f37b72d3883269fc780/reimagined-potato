@@ -15,12 +15,18 @@ class Game_Host():
     def check_event(self,event):
         pass
 
+
     def process_event(self,event):
         if event.player.turn_ended:
             return
         if event.event_type=="PLAY_CARD":
             event.card.resolve(event.player,event.target_list)
         event.player.turn_ended=True
+        self.check_if_turn_over()
+
+    def check_if_turn_over(self):
+        if all([person.turn_ended for person in self.fight_scene.current_side]):
+            self.fight_scene.change_turn()
 
 
     def update(self):
