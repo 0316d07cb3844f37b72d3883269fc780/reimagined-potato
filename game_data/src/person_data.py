@@ -20,23 +20,24 @@ class Person_Data:
             raise Exception("Illegal type")
 
     def __str__(self):
-        my_string=create_tag("max_health",self.max_health)+ create_tag("health", self.health)
-        deck_string=""
+        my_string = create_tag("max_health", self.max_health) + create_tag("health", self.health)
+        deck_string = ""
         for card in self.deck:
-            deck_string+="\n"+create_tag("card",card)
-        my_string+=create_tag("deck",deck_string)
-        my_string+=create_tag("scene_id", self.scene_id)
-        my_string+=create_tag("person_type", self.person_type)
+            deck_string += "\n" + create_tag("card", card)
+        my_string += create_tag("deck", deck_string)
+        my_string += create_tag("scene_id", self.scene_id)
+        my_string += create_tag("person_type", self.person_type)
         return my_string
 
     @classmethod
     def create_from_string(cls, string):
-        max_health, health, scene_id, person_type = detag_given_tags(string, "max_health", "health", "scene_id", "person_type")
-        deck_string,=detag_given_tags(string, "deck")
-        deck=detag_repeated(deck_string, "card")
-        my_person=Person_Data(int(max_health),person_type, deck)
-        my_person.health=int(health)
-        getter[scene_id]=my_person
+        max_health, health, scene_id, person_type = detag_given_tags(string, "max_health", "health", "scene_id",
+                                                                     "person_type")
+        deck_string, = detag_given_tags(string, "deck")
+        deck = detag_repeated(deck_string, "card")
+        my_person = Person_Data(int(max_health), person_type, deck)
+        my_person.health = int(health)
+        getter[scene_id] = my_person
         return my_person
 
     def damage(self, damage):
