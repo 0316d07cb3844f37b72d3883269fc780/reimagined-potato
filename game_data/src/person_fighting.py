@@ -14,6 +14,7 @@ class Person_Fighting():
         self.base_person = base_person
         self.actions = []
         self.resist = 0
+        self.turn_ended=False
         "Create Cardcontainers."
         self.drawpile = create_drawpile(base_person.deck)
         self.hand = Card_Collection([])
@@ -27,6 +28,7 @@ class Person_Fighting():
         tagged_list = [create_tag("action", string) for string in actions_string]
         my_string += create_tag("actions", ",".join(tagged_list))
         my_string += create_tag("resist", self.resist)
+        my_string+=create_tag("turn_ended", self.turn_ended)
         my_string += create_tag("drawpile", str(self.drawpile))
         my_string += create_tag("hand", str(self.hand))
         my_string += create_tag("discardpile", self.discardpile)
@@ -42,6 +44,8 @@ class Person_Fighting():
         action_strings = detag_repeated(actions_string, "action")
         my_person_fighting.actions.append(
             [Action.create_from_string(action_string) for action_string in action_strings])
+        resist, turn_ended=detag_given_tags(string, "resist", "turn_ended")
+        my_person_fighting.resist, my_person_fighting.turn_ended=int(resist), bool(turn_ended)
         drawpile_string, hand_string, discardpile_string = detag_given_tags(string, "drawpile", "hand", "discardpile")
         my_person_fighting.drawpile = Card_Collection.create_from_string(drawpile_string)
         my_person_fighting.hand = Card_Collection.create_from_string(hand_string)
