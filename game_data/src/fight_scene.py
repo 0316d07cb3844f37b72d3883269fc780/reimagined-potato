@@ -16,8 +16,12 @@ class Fight_Scene():
 
         self.allies = allies
         self.foes = foes
-        self.turn_side = Side.allies
+        self._turn_side = Side.allies
         self.turn_index = 1
+
+    @property
+    def current_side(self):
+        return getattr(self, self._turn_side.name)
 
     def side_to_string(self, side):
         side=getattr(self, side.name)
