@@ -3,17 +3,9 @@ Runs all the computations.
 """
 from utility.src.string_utils import detag_given_tags
 from game_data.src.getter_scene import getter
-class Game_Host():
+class Combat_Engine():
     def __init__(self, fight_scene):
         self.fight_scene=fight_scene
-        self.events=[]
-
-    def add_event(self, event):
-        self.check_event(event)
-        self.events.append(event)
-
-    def check_event(self,event):
-        pass
 
 
     def process_event(self,event):
@@ -29,10 +21,6 @@ class Game_Host():
             self.fight_scene.change_turn()
 
 
-    def update(self):
-        for event in self.events:
-            self.process_event(event)
-        self.events.clear()
 
 
 class Event():
