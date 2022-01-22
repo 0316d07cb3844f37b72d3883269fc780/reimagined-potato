@@ -1,18 +1,17 @@
 import socket
-from socket import socket
 
 from select import select
 
-from networking_constants import *
+from game_logic.src.networking_constants import *
 
 
 class Client_Networker():
     _socket: socket
 
-    def __init__(self, Host, Socket=None):
+    def __init__(self, HOST : str = '127.0.0.1', Socket=None):
         if Socket == None:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self._socket.connect((Host, PORT))
+            self._socket.connect((HOST, PORT))
 
     def send(self, message: str):
         message = message.encode(FORMAT)
@@ -31,9 +30,12 @@ class Client_Networker():
                 while data_size > 0:
                     data_recieved = self._socket.recv(data_size)
                     data += data_recieved
-                    data_size -= data_recieved
+                    data_size -= len(data_recieved)
                 return data.decode(FORMAT)
         return ""
+
+    def close(self):
+        self._socket.close()
 
 
 if __name__ == "__main__":

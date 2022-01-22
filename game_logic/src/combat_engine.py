@@ -30,7 +30,7 @@ class Event():
         self.player=getter[int(player_id)]
         if type=="END_TURN":
             self.event_type="END_TURN"
-            return self
+            return
         card_id, target_id_list=detag_given_tags(string, "card_id", "target_id_list")
         if type=="PLAY_CARD":
             self.event_type="PLAY_CARD"

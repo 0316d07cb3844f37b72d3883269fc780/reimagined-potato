@@ -2,15 +2,17 @@ import socket
 
 from select import select
 
-from networking_constants import *
+from game_logic.src.networking_constants import *
 
 
-class Game_Server():
-    def __init__(self):
+class Server_Networker():
+    def __init__(self, HOST : str = '127.0.0.1'):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind(('127.0.0.1', PORT))
-        self.server_socket.listen()
-        self.local_connection, self.local_address = self.server_socket.accept()
+        self.server_socket.bind((HOST, PORT))
+        self.server_socket.listen(5)
+        (connection, address) = self.server_socket.accept()
+        self.local_connection, self.local_adress=connection,address
+
 
     def send(self, message: str):
         message = message.encode(FORMAT)
@@ -29,6 +31,10 @@ class Game_Server():
                 while datasize > 0:
                     data_recieved = self.local_connection.recv(datasize)
                     data += data_recieved
-                    datasize -= data_recieved
+                    datasize -= len(data_recieved)
                 return data.decode(FORMAT)
         return ""
+
+    def close(self):
+        self.server_socket.close()
+        self.local_connection.close()
