@@ -96,5 +96,4 @@ class Person_Fighting():
         pass
 
 
-def get_Person(id):
-    return Person_Fighting.all_people[id]
+

@@ -44,3 +44,6 @@ class Person_Data:
         self.health -= damage
         if (self.health <= 0):
             self.die()
+
+    def die(self):
+        pass

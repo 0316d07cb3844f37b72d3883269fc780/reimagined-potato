@@ -7,15 +7,19 @@ import time
 
 class Test_Inits(unittest.TestCase):
 
-    def test_initializations(self):
+    def test_sending_and_recieving(self):
         my_process=Process(target=server_thread)
         my_process.start()
         time.sleep(0.01)
         client=Client_Networker()
         client.send("test")
+        for _ in range(60):
+            client.send("test")
         time.sleep(0.01)
         string=client.receive()
         self.assertEqual(string, "test")
+        empty=client.receive()
+        self.assertEqual(empty, "")
         client.close()
 
 
@@ -24,6 +28,8 @@ def server_thread():
     server.send("test")
     time.sleep(0.01)
     server.receive()
+    for _ in range(60):
+        server.receive()
     server.close()
 
 
