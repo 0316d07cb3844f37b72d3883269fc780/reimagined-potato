@@ -13,24 +13,24 @@ def create_tag(tag: str, string_to_add) -> str:
     return _t(tag) + str(string_to_add).replace("<", "<!") + _et(tag)
 
 
-def _find_next_tag_and_tag_end(string: str) -> (str, str):
+def _find_next_tag_and_tag_end(string: str) -> tuple:
     end = string.find(">")
     return string[1:end], end
 
 
-def _find_content_and_tag_end(string: str, tag: str) -> (str, str):
+def _find_content_and_tag_end(string: str, tag: str) -> tuple:
     content_end = string.find(_et(tag))
     tag_end = string[content_end:].find(">") + content_end
     return content_end, tag_end
 
 
-def _find_tag_and_tag_end(string: str, tag: str) -> (str, str):
+def _find_tag_and_tag_end(string: str, tag: str) -> tuple:
     tag_start = string.find(_t(tag))
     tag_end = string[tag_start:].find(">") + tag_start
     return tag_start, tag_end
 
 
-def _detag(string: str) -> [str]:
+def _detag(string: str) -> tuple:
     to_detag = string
     result = ()
     while (len(to_detag) != 0):
@@ -41,7 +41,7 @@ def _detag(string: str) -> [str]:
     return result
 
 
-def _detag_given_tag(string: str, tag: str) -> (str, str):
+def _detag_given_tag(string: str, tag: str) -> tuple:
     tag_start, content_start = _find_tag_and_tag_end(string, tag)
     content_end, tag_end = _find_content_and_tag_end(string, tag)
     result = string[content_start + 1:content_end]
@@ -50,7 +50,7 @@ def _detag_given_tag(string: str, tag: str) -> (str, str):
     return result, remainder
 
 
-def detag_given_tags(string: str, *tags: (str,)) -> (str,):
+def detag_given_tags(string: str, *tags: (str,)) -> tuple:
     result = ()
     for tag in tags:
         value, string = _detag_given_tag(string, tag)
@@ -58,7 +58,7 @@ def detag_given_tags(string: str, *tags: (str,)) -> (str,):
     return result
 
 
-def detag_repeated(string: str, tag: str) -> [str]:
+def detag_repeated(string: str, tag: str) -> list:
     results = []
     while (_t(tag) in string):
         result, string = _detag_given_tag(string, tag)
@@ -66,5 +66,5 @@ def detag_repeated(string: str, tag: str) -> [str]:
     return results
 
 
-def get_id_list(string: str) -> [int]:
+def get_id_list(string: str) -> list:
     return [int(a) for a in (list(string[1:-1].split(",")))]
