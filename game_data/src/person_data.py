@@ -9,7 +9,7 @@ from utility.src.string_utils import create_tag, detag_given_tags, detag_repeate
 class Person_Data:
     legal_types = ["Testtype"]
 
-    def __init__(self, max_health, type, deck=[]):
+    def __init__(self, max_health: int, type: str, deck: list = []):
         self.max_health = self.health = max_health
         self.deck = deck
         self.scene_id = getter.register(self)
@@ -30,7 +30,7 @@ class Person_Data:
         return my_string
 
     @classmethod
-    def create_from_string(cls, string):
+    def create_from_string(cls, string: str):
         max_health, health, scene_id, person_type = detag_given_tags(string, "max_health", "health", "scene_id",
                                                                      "person_type")
         deck_string, = detag_given_tags(string, "deck")
@@ -40,7 +40,7 @@ class Person_Data:
         getter[scene_id] = my_person
         return my_person
 
-    def damage(self, damage):
+    def damage(self, damage: int):
         self.health -= damage
         if (self.health <= 0):
             self.die()

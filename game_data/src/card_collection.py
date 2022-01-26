@@ -9,7 +9,7 @@ from utility.src.string_utils import create_tag, detag_given_tags, detag_repeate
 
 
 class Card_Collection():
-    def __init__(self, cardlist):
+    def __init__(self, cardlist : list):
         self.cards = {}
         for card in cardlist:
             self.cards[card.scene_id] = card
@@ -25,7 +25,7 @@ class Card_Collection():
         return card in self.cards.values()
 
 
-    def __str__(self):
+    def __str__(self) -> str:
         def string_card_pair(id, card):
             result=create_tag("id",str(id))+create_tag("card",str(card))
             return create_tag("card_pair", result)
@@ -34,7 +34,7 @@ class Card_Collection():
         result+=create_tag("scene_id",self.scene_id)
         return result
     @classmethod
-    def create_from_string(cls, string):
+    def create_from_string(cls, string : str):
         cards_tagged_string,scene_id_string=detag_given_tags(string, "cards","scene_id")
         cards_tagged_list=detag_repeated(cards_tagged_string,"card_pair")
         card_pairs_string=[detag_given_tags(card_pair,"id","card")for card_pair in cards_tagged_list]
@@ -52,16 +52,16 @@ class Card_Collection():
 
 
 
-    def get_a_card(self):
+    def get_a_card(self) -> Card:
         if len(self) == 0:
             raise IndexError("Card_Container empty")
         values = iter(self.cards.values())
         return next(values)
 
-    def get_all_cards(self):
+    def get_all_cards(self) -> list:
         return list(self.cards.values())
 
-    def remove_card(self, card):
+    def remove_card(self, card : Card) -> None:
         """
         Use card.move instead if possible.
         :param card: the card to remove.
@@ -70,7 +70,7 @@ class Card_Collection():
         self.cards.pop(card.scene_id)
         card.location = None
 
-    def add_card(self, card):
+    def add_card(self, card : Card):
         """
         Use card.move instead if possible.
         :param card: card to add.
@@ -83,7 +83,7 @@ class Card_Collection():
         pass
 
 
-def create_drawpile(deck):
+def create_drawpile(deck : list) -> Card_Collection:
     drawpile = Card_Collection([])
     for card in deck:
         create_card(card, drawpile)

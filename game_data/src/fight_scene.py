@@ -6,8 +6,12 @@ from enum import Enum
 from utility.src.string_utils import create_tag, detag_given_tags,detag_repeated
 from game_data.src.person_fighting import Person_Fighting
 
+class Side(Enum):
+    allies = 0
+    foes = 1
+
 class Fight_Scene():
-    def __init__(self, allies, foes):
+    def __init__(self, allies : list, foes : list):
         """
 
         :param allies:
@@ -20,11 +24,11 @@ class Fight_Scene():
         self.turn_index = 1
 
     @property
-    def current_side(self):
+    def current_side(self) -> str:
         return getattr(self, self._turn_side.name)
 
 
-    def change_turn(self):
+    def change_turn(self) -> None:
         if self._turn_side == Side.allies:
             self._turn_side= Side.foes
         else:
@@ -32,21 +36,19 @@ class Fight_Scene():
         for person in self.current_side:
             person.turn_ended=False
 
-    def side_to_string(self, side):
+    def side_to_string(self, side : Side) -> str:
         side=getattr(self, side.name)
         return ", ".join([create_tag("fighter" ,lad) for lad in side])
 
 
     @classmethod
-    def create_team_from_string(cls, string):
+    def create_team_from_string(cls, string : str) -> list:
         fighter_strings=detag_repeated(string,"fighter")
         return [Person_Fighting.create_from_string(fighter) for fighter in fighter_strings]
 
 
 
 
-class Side(Enum):
-    allies = 0
-    foes = 1
+
 
 

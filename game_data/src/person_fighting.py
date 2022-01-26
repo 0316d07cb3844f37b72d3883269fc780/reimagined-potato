@@ -10,7 +10,7 @@ from utility.src.string_utils import create_tag, detag_repeated, detag_given_tag
 
 
 class Person_Fighting():
-    def __init__(self, base_person):
+    def __init__(self, base_person :Person_Data):
         self.base_person = base_person
         self.actions = []
         self.resist = 0
@@ -36,7 +36,7 @@ class Person_Fighting():
         return my_string
 
     @classmethod
-    def create_from_string(cls, string):
+    def create_from_string(cls, string :str):
         base_person_string, = detag_given_tags(string, "base_person")
         base_person = Person_Data.create_from_string(base_person_string)
         my_person_fighting = Person_Fighting(base_person)
@@ -53,6 +53,12 @@ class Person_Fighting():
         id_string,=detag_given_tags(string, "scene_id")
         getter[int(id_string)]=my_person_fighting
         return my_person_fighting
+
+    @classmethod
+    def load_from_file(cls, card_name:str):
+
+        with open("/../../resources/cards/"+card_name,'r') as file:
+            return cls.create_from_string(file.read())
 
     def damage(self, damage):
         if damage > self.resist:

@@ -7,7 +7,7 @@ from enum import Enum
 
 
 class Action_Factory():
-    def __init__(self, factory_method, name):
+    def __init__(self, factory_method, name : str):
         self.factory_method = factory_method
         self.factory_name = name
         Factories[name] = self
@@ -15,7 +15,7 @@ class Action_Factory():
     def __call__(self, performer, target_list):
         return self.factory_method(performer, target_list)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.factory_name
 
     def __eq__(self, other):
@@ -41,5 +41,5 @@ class Action_Factories(Action_Factory, Enum):
     brace_factory = (create_brace, "Brace_Factory")
 
 
-def create_from_string(string):
+def create_from_string(string : str) -> Action_Factory:
     return Factories[string]
