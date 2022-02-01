@@ -14,6 +14,9 @@ def create_tag(tag: str, string_to_add) -> str:
 
 
 def _find_next_tag_and_tag_end(string: str) -> tuple:
+    tag_start=string.find("<")
+    if string[tag_start+1]=="\\" :
+        return _find_next_tag_and_tag_end(string[tag_start+1:])
     end = string.find(">")
     return string[1:end], end
 

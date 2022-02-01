@@ -25,6 +25,14 @@ class Test_Utils(unittest.TestCase):
         expected_result=["value1","value3"]
         self.assertEqual(result, expected_result)
 
+    def test_hostile_detag(self):
+        string = "<\\garbage end tag>" + create_tag("my_tag1", "value1") + create_tag("my_tag2", "value2")
+        result = detag_given_tags(string, "my_tag2", "my_tag1")
+        expected_result = ("value2", "value1")
+        self.assertEqual(result, expected_result)
+
+
+
 
 
 if __name__ == '__main__':
