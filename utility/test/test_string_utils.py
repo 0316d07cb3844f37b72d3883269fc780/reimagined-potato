@@ -31,6 +31,11 @@ class Test_Utils(unittest.TestCase):
         expected_result = ("value2", "value1")
         self.assertEqual(result, expected_result)
 
+    def test_detagging_what_is_not_there(self):
+        string="no tags"
+        self.assertEqual(detag_given_tags(string,"tag"),("",))
+
+
 
 
 

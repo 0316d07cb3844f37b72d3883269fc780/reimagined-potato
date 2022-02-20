@@ -52,6 +52,7 @@ class Card:
         my_string += create_tag("speed", str(self.speed))
         my_string += create_tag("target_checker", str(self.target_checker))
         my_string += create_tag("location", self.location.scene_id)
+        my_string += create_tag("scene_id", self.scene_id)
         return my_string
 
     @classmethod
@@ -61,7 +62,11 @@ class Card:
         speed = getattr(Speed, speed)
         target_checker = getattr(Target_Checker, target_checker)
         location = getter[int(location)]
-        return Card(name, action_factory, speed, target_checker, location)
+        result = Card(name, action_factory, speed, target_checker, location)
+        scene_id,=detag_given_tags(string, "scene_id")
+        if scene_id != "":
+            getter[int(scene_id)]=result
+        return result
 
     def __eq__(self, other):
         return str(self) == str(other)
