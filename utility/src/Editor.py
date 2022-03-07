@@ -38,23 +38,27 @@ def main():
     main_fields=tkinter.Frame(root)
     main_fields.grid(row=1)
 
+    test_label=tkinter.Label(main_fields,text="test")
+    test_label.pack()
+
     class Attribute_Widget():
         def __init__(self, tag, value):
             self.tag=tag
             attribute_frame = tkinter.Frame(main_fields)
             attribute_label = tkinter.Label(attribute_frame, text=tag)
-            attribute_value = tkinter.Entry(attribute_frame).insert(0,value)
-            attribute_value.pack(fill=tkinter.X)
+            attribute_value = tkinter.Entry(attribute_frame)
+            attribute_value.insert(0,value)
             attribute_label.pack(fill=tkinter.X)
+            attribute_value.pack(fill=tkinter.X)
             attribute_frame.pack(fill=tkinter.X)
 
     def set_main_fields():
         for child in main_fields.winfo_children():
             child.destroy()
-        for tag, type in attributes_by_mode[mode]:
-            if type=="string":
+        for tag, attribute_type in attributes_by_mode[mode].items():
+            if attribute_type == "string":
                 Attribute_Widget(tag,"")
-                break
+
 
     def select_file():
         file_types=(("Card File", "*.card"),
