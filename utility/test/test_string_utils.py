@@ -35,6 +35,12 @@ class Test_Utils(unittest.TestCase):
         string="no tags"
         self.assertEqual(detag_given_tags(string,"tag"),("",))
 
+    def test_list_tags_and_values(self):
+        string = create_tag("my_tag1", "value1") + create_tag("my_tag2", "value2") + create_tag("my_tag1", "value3")
+        result = list_tags_and_values(string)
+        expected_result = [("my_tag1","value1"), ("my_tag2","value2"), ("my_tag1","value3")]
+        self.assertEqual(result, expected_result)
+
 
 
 

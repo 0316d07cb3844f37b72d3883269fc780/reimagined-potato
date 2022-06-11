@@ -44,6 +44,17 @@ def _detag(string: str) -> tuple:
     return result
 
 
+def list_tags_and_values(string: str) -> list:
+    to_detag = string
+    result = []
+    while (len(to_detag)!=0):
+        tag, opening_end = _find_next_tag_and_tag_end(to_detag)
+        content_end, closing_end = _find_content_and_tag_end(to_detag, tag)
+        result += [(tag, str(to_detag[opening_end + 1:content_end]),)]
+        to_detag = str(to_detag[closing_end + 1:])
+    return result
+
+
 def _detag_given_tag(string: str, tag: str) -> tuple:
     tag_start, content_start = _find_tag_and_tag_end(string, tag)
     content_end, tag_end = _find_content_and_tag_end(string, tag)
