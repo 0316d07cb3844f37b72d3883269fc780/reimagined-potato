@@ -5,13 +5,16 @@ Carries all state of a combat encounter.
 from enum import Enum
 from utility.src.string_utils import create_tag, detag_given_tags,detag_repeated
 from game_data.src.person_fighting import Person_Fighting
+from game_data.src.action import Action
+
 
 class Side(Enum):
     allies = 0
     foes = 1
 
+
 class Fight_Scene():
-    def __init__(self, allies : list, foes : list):
+    def __init__(self, allies : list, foes : list, actions : list = []):
         """
 
         :param allies:
@@ -22,6 +25,7 @@ class Fight_Scene():
         self.foes = foes
         self._turn_side = Side.allies
         self.turn_index = 1
+        self.actions=actions
 
     @property
     def current_side(self) -> str:
@@ -49,7 +53,10 @@ class Fight_Scene():
     @classmethod
     def create_scene_from_string(cls, string : str):
         allies_string, foes_string=detag_given_tags(string, "allies", "foes")
-        return Fight_Scene(Fight_Scene.create_team_from_string(allies_string), Fight_Scene.create_team_from_string(foes_string))
+        actions_string= detag_given_tags(string, "actions")
+        list_of_action_strings = detag_repeated(actions_string, "action")
+        actions = [Action.create_from_string(string) for string in list_of_action_strings]
+        return Fight_Scene(Fight_Scene.create_team_from_string(allies_string), Fight_Scene.create_team_from_string(foes_string), actions)
 
 
 
