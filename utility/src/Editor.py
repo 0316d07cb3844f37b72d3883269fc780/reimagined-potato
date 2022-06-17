@@ -19,10 +19,9 @@ file_extension_by_mode = {
     Mode.team: ".team"
 }
 
-mode_by_file_extension={}
+mode_by_file_extension = {}
 for mode, extension in file_extension_by_mode.items():
-    mode_by_file_extension[extension]=mode
-
+    mode_by_file_extension[extension] = mode
 
 attributes_by_mode = {
     Mode.card: {
@@ -46,6 +45,7 @@ def main():
     root = tkinter.Tk()
     state.mode = Mode.card
     state.current_file_name = None
+    initial_directory = sys.path[1] + "/resources"
 
     top_row = tkinter.Frame(root)
     top_row.grid(row=0)
@@ -56,8 +56,21 @@ def main():
     test_label = tkinter.Label(main_fields, text="test")
     test_label.pack()
 
-    class AttributeWidget:
+    def create_widget_from_string(type: str, string: str):
+        if type == "string":
+            return StringAttributeWidget(*(list_tags_and_values(string)[0]))
+
+    class Widget:
+        widgets=[]
+        def __init__(self):
+            Widget.widgets += self
+        @classmethod
+        def flush(cls):
+            widgets=[]
+
+    class StringAttributeWidget(Widget):
         def __init__(self, tag, value):
+            super.__init__(self)
             self.tag = tag
             attribute_frame = tkinter.Frame(main_fields)
             attribute_label = tkinter.Label(attribute_frame, text=tag)
@@ -66,34 +79,47 @@ def main():
             attribute_label.pack(fill=tkinter.X)
             self.attribute_value.pack(fill=tkinter.X)
             attribute_frame.pack(fill=tkinter.X)
+            self.attribute_type = "string"
 
         def __str__(self):
-            return create_tag(self.tag, self.attribute_value.get())
+            inner_part = create_tag(self.tag, self.attribute_value.get())
+            return create_tag("string", inner_part)
+
+    class ListOfStringsAttributeWidget:
+        pass
+
+    class FileAttributeWidget:
+        pass
+
+    class ListOfFilesAttributeWidget:
+        pass
+
+    def clear_fields():
+        for child in main_fields.winfo_children():
+            child.destroy()
+        Widget.flush()
 
     def set_main_fields():
-        for child in main_fields.winfo_children():
-            child.destroy()
+        clear_fields()
         for tag, attribute_type in attributes_by_mode[state.mode].items():
             if attribute_type == "string":
-                AttributeWidget(tag, "")
+                StringAttributeWidget(tag, "")
 
     def set_main_fields_from_str(string: str):
-        for child in main_fields.winfo_children():
-            child.destroy()
+        clear_fields()
         list_of_tags_and_values = list_tags_and_values(string)
-        for tag_pair in list_of_tags_and_values:
-            AttributeWidget(*tag_pair)
+        #for tag_pair in list_of_tags_and_values:
+        #    create_widget_from_string(*tag_pair)
 
     def open_file():
 
-        state.current_file_name = fd.askopenfilename(initialdir=sys.path[1] + "/resources")
+        state.current_file_name = fd.askopenfilename(initialdir=initial_directory)
 
         if not path.exists(state.current_file_name):
             return
 
         with open(state.current_file_name, "r") as file:
             file_content = file.read()
-            file.close()
 
         set_main_fields_from_str(file_content)
 
@@ -116,11 +142,13 @@ def main():
     def save():
         if not path.exists(state.current_file_name):
             return
-        with open(state.current_file_name,"w") as file:
+        with open(state.current_file_name, "w") as file:
             file.write(state_to_string())
 
     def save_as():
-        pass
+        with fd.asksaveasfile(initialdir=initial_directory, initialfile=state.current_file_name, defaultextension= file_extension_by_mode[state.mode])as file:
+            file.write(state_to_string())
+            #file.tell()
 
     open_file_button = tkinter.Button(top_row, text="Open File", command=open_file)
     open_file_button.grid(column=0, row=0)

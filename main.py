@@ -11,12 +11,8 @@ def main():
     # start pygame
     pygame.init()
     screen = pygame.display.set_mode((1800, 800))
-    clock = pygame.time.Clock()
     # set up allsprites
     allsprites = pygame.sprite.RenderPlain()
-
-    # set up lil sprite guy
-    #guy_test(allsprites)
 
     # make background
     background = pygame.Surface(screen.get_size())
@@ -24,12 +20,13 @@ def main():
     background.fill((240, 240, 240))
     screen.blit(background, (0, 0))
 
-    # make button
-    #button_test(allsprites)
 
-    # test person
-    testp(allsprites)
 
+    # gameloop
+    client_loop(allsprites, screen, background)
+
+def client_loop(allsprites, screen, background):
+    clock = pygame.time.Clock()
     running = True
     while running:
         clock.tick(60)
@@ -45,7 +42,6 @@ def main():
 
         pygame.display.flip()
     pygame.quit()
-
 
 def button_test(allsprites):
     button_image = pygame.Surface([200, 40])

@@ -2,11 +2,12 @@
 Contains the underlying data of a Card inside a scene.
 """
 
-from game_data.src.getter_scene import getter
+from enum import Enum
+
 from game_data.src.action_factory import Action_Factories, create_from_string, Action_Factory
+from game_data.src.getter_scene import getter
 from utility.src.string_utils import create_tag, detag_given_tags
 
-from enum import Enum
 
 class Speed(Enum):
     Channel = 0
@@ -16,6 +17,7 @@ class Speed(Enum):
 
     def __str__(self):
         return self.name
+
 
 class Target_Checker(Enum):
     no_target = lambda targetlist: len(targetlist) == 0, "no_target"
@@ -27,13 +29,15 @@ class Target_Checker(Enum):
     def __call__(self, target_list):
         return self.value[0](target_list)
 
+
 class Card:
-    def __init__(self, name : str, action_factory : Action_Factory, speed : Speed, target_checker : Target_Checker, location):
+    def __init__(self, name: str, action_factory: Action_Factory, speed: Speed, target_checker: Target_Checker,
+                 location):
         self.name = name
         self.action_factory = action_factory
         self.speed = speed
         self.target_checker = target_checker
-        self.scene_id=getter.register(self)
+        self.scene_id = getter.register(self)
         self.location = location
         location.add_card(self)
 
@@ -56,29 +60,24 @@ class Card:
         return my_string
 
     @classmethod
-    def create_from_string(cls, string : str):
-        name, action_factory, speed, target_checker, location = detag_given_tags(string, "name", "action_factory", "speed", "target_checker", "location")
+    def create_from_string(cls, string: str):
+        name, action_factory, speed, target_checker, location = detag_given_tags(string, "name", "action_factory",
+                                                                                 "speed", "target_checker", "location")
         action_factory = create_from_string(action_factory)
         speed = getattr(Speed, speed)
         target_checker = getattr(Target_Checker, target_checker)
         location = getter[int(location)]
         result = Card(name, action_factory, speed, target_checker, location)
-        scene_id,=detag_given_tags(string, "scene_id")
+        scene_id, = detag_given_tags(string, "scene_id")
         if scene_id != "":
-            getter[int(scene_id)]=result
+            getter[int(scene_id)] = result
         return result
 
     def __eq__(self, other):
         return str(self) == str(other)
 
 
-
-
-
-
-
-
-def create_card(cardname, location):
+def create_card(cardname, location) -> Card:
     return cards_by_string[cardname](location)
 
 

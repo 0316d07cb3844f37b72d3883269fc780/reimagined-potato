@@ -46,6 +46,12 @@ class Fight_Scene():
         fighter_strings=detag_repeated(string,"fighter")
         return [Person_Fighting.create_from_string(fighter) for fighter in fighter_strings]
 
+    @classmethod
+    def create_scene_from_string(cls, string : str):
+        allies_string, foes_string=detag_given_tags(string, "allies", "foes")
+        return Fight_Scene(Fight_Scene.create_team_from_string(allies_string), Fight_Scene.create_team_from_string(foes_string))
+
+
 
 
 
