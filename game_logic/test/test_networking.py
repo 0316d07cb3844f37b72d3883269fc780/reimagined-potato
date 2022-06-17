@@ -22,6 +22,29 @@ class Test_Inits(unittest.TestCase):
         self.assertEqual(empty, "")
         client.close()
 
+    def test_server_waits_for_client(self):
+        my_process=Process(target=patient_server)
+        my_process.start()
+        time.sleep(0.1)
+        client = Client_Networker()
+        client.send("test")
+        string = client.receive()
+        time.sleep(0.1)
+        self.assertEqual(string, "success")
+        time.sleep(0.1)
+        client.close()
+
+    def test_client_doesnt_wait_to_recieve(self):
+        my_process = Process(target=patient_server)
+        my_process.start()
+        time.sleep(0.1)
+        client = Client_Networker()
+        client.receive()
+        client.send("done")
+        client.close()
+
+
+
 
 def server_thread():
     server=Server_Networker()
@@ -32,6 +55,19 @@ def server_thread():
         server.receive()
     server.close()
 
+def patient_server():
+    server = Server_Networker()
+    string=server.receive()
+    if string == "test":
+        server.send("success")
+    else:
+        server.send("failure")
+    server.close()
+
+def silent_server():
+    server = Server_Networker
+    server.receive()
+    server.close()
 
 
 

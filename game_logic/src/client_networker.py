@@ -22,7 +22,7 @@ class Client_Networker():
         self._socket.sendall(message)
 
     def receive(self) -> str:
-        if select([self._socket], [], []):
+        if select([self._socket], [], [], 0.01)[0]:
             data_size = self._socket.recv(HEADER)
             if data_size:
                 data = "".encode(FORMAT)

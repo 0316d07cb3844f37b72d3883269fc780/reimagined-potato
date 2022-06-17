@@ -5,27 +5,34 @@ import game_io
 from pygame.locals import *
 from game_io.button import Button
 from game_io.image_util import stack_vertical
-from testing.person_test import test as testp
+from game_logic.src.server import start_server
+from game_logic.src.client_networker import Client_Networker
+
 
 def main():
+    # start server
+    start_server()
     # start pygame
     pygame.init()
     screen = pygame.display.set_mode((1800, 800))
     # set up allsprites
     allsprites = pygame.sprite.RenderPlain()
 
-    # make background
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
-    background.fill((240, 240, 240))
-    screen.blit(background, (0, 0))
+    # make combat_background
+    combat_background = pygame.Surface(screen.get_size())
+    combat_background = combat_background.convert()
+    combat_background.fill((240, 240, 240))
+    screen.blit(combat_background, (0, 0))
 
+    current_background = combat_background
 
+    networker = Client_Networker()
 
     # gameloop
-    client_loop(allsprites, screen, background)
+    client_loop(allsprites, screen, combat_background, networker)
 
-def client_loop(allsprites, screen, background):
+
+def client_loop(allsprites, screen, background, networker):
     clock = pygame.time.Clock()
     running = True
     while running:
@@ -36,12 +43,14 @@ def client_loop(allsprites, screen, background):
         allsprites.clear(screen, background)
         allsprites.draw(screen)
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 running = False
 
+        networker.send()
         pygame.display.flip()
+
     pygame.quit()
+
 
 def button_test(allsprites):
     button_image = pygame.Surface([200, 40])
