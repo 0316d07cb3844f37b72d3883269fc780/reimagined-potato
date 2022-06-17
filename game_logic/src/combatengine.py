@@ -4,10 +4,11 @@ Runs all the computations.
 from utility.src.string_utils import detag_given_tags
 from game_data.src.getter_scene import getter
 from game_data.src.fight_scene import Fight_Scene
-class Combat_Engine():
+
+
+class CombatEngine:
     def __init__(self, fight_scene=None):
         self.fight_scene=fight_scene
-
 
     def process_event(self,event):
         if event.player.turn_ended:
@@ -22,9 +23,7 @@ class Combat_Engine():
             self.fight_scene.change_turn()
 
 
-
-
-class Event():
+class ClientEvent:
 
     def __init__(self, string):
         type=detag_given_tags(string, "type")
