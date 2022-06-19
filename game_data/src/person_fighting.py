@@ -7,6 +7,7 @@ from game_data.src.card_collection import Card_Collection, create_drawpile
 from game_data.src.getter_scene import getter
 from game_data.src.person_data import Person_Data
 from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags
+from game_logic.src.engine_event import EngineEvent
 
 
 class Person_Fighting():
@@ -66,6 +67,8 @@ class Person_Fighting():
             self.resist = 0
         else:
             self.resist -= damage
+        EngineEvent.trigger_event("Damage")
+
 
     def play_Card(self, card, target_list):
         """
@@ -78,6 +81,7 @@ class Person_Fighting():
             raise IndexError("Card not in Hand can't be played.")
         card.resolve(self, target_list)
         card.move(self.discardpile)
+        EngineEvent.trigger_event("Play Card")
 
     def draw_Card(self):
         if len(self.drawpile) != 0:
@@ -86,11 +90,13 @@ class Person_Fighting():
         elif len(self.discardpile) != 0:
             self.shuffle_discardpile_into_drawpile()
             self.draw_Card()
+        EngineEvent.trigger_event("Draw Card")
 
     def shuffle_discardpile_into_drawpile(self):
         for card in self.discardpile.get_all_cards():
             card.move(self.drawpile)
         self.drawpile.shuffle()
+        EngineEvent.trigger_event("Shuffle Cards")
 
     def get_health(self):
         return self.base_person.health

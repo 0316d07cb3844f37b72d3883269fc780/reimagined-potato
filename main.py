@@ -7,6 +7,7 @@ from game_io.button import Button
 from game_io.image_util import stack_vertical
 from game_logic.src.server import start_server
 from game_logic.src.client_networker import Client_Networker
+from game_io.client_event import ClientEvent
 
 
 def main():
@@ -36,7 +37,9 @@ def client_loop(allsprites, screen, background, networker):
     clock = pygame.time.Clock()
     running = True
     while running:
+        engine_events = get_engine_events()
         clock.tick(60)
+        handle_engine_events(engine_events)
         # update game logic
         allsprites.update()
         # draw new screen
@@ -45,12 +48,24 @@ def client_loop(allsprites, screen, background, networker):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
-        networker.send()
+        for event in ClientEvent.get_and_flush_events():
+            networker.send(event)
         pygame.display.flip()
 
     pygame.quit()
 
+def get_engine_events(networker : Client_Networker):
+    event=networker.receive()
+    result=[]
+    while event != "":
+        result+=event
+        event=networker.receive()
+    return result
+
+
+def handle_engine_events(events):
+    for event in events:
+        pass
 
 def button_test(allsprites):
     button_image = pygame.Surface([200, 40])

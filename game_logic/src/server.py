@@ -1,6 +1,6 @@
 from game_logic.src.server_networker import Server_Networker
 from game_logic.src.combatengine import CombatEngine, ClientEvent
-from game_logic.src.EngineEvent import EngineEvent
+from game_logic.src.engine_event import EngineEvent
 
 
 def start_server():
