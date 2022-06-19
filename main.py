@@ -84,7 +84,7 @@ def button_test(allsprites):
 def guy_test(allsprites):
     my_sprite = pygame.sprite.Sprite()
     try:
-        image = pygame.image.load("resources/testguy.bmp")
+        image = pygame.image.load("resources/Testguy.bmp")
     except pygame.error as message:
         print("Cannot load: " + "resources/testguy.bmp")
         raise SystemExit(message)

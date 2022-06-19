@@ -26,12 +26,12 @@ class CombatEngine:
 class ClientEvent:
 
     def __init__(self, string):
-        type=detag_given_tags(string, "type")
+        type, = detag_given_tags(string, "type")
         if type=="set_fightscene":
             scene_string=detag_given_tags(string, "scene")
             self.fight_scene=Fight_Scene.create_scene_from_string()
-        player_id = detag_given_tags(string, "player_id")
-        self.player=getter[int(player_id)]
+        player_id, = detag_given_tags(string, "player_id")
+        self.player = getter[int(player_id)]
         if type=="END_TURN":
             self.event_type="END_TURN"
             return
