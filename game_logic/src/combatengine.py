@@ -9,6 +9,12 @@ from game_data.src.fight_scene import Fight_Scene
 class CombatEngine:
     def __init__(self, fight_scene=None):
         self.fight_scene=fight_scene
+        self.next_task=None
+        self.next_substeps=[]
+
+    def engine_loop(self):
+        while true:
+            pass
 
     def process_event(self,event):
         if event.player.turn_ended:
@@ -21,6 +27,7 @@ class CombatEngine:
     def check_if_turn_over(self):
         if all([person.turn_ended for person in self.fight_scene.current_side]):
             self.fight_scene.change_turn()
+
 
 
 class ClientEvent:
