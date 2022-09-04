@@ -47,21 +47,15 @@ file_types = (("Card File", "*.card"),
 
 
 class Widget:
-    widgets = []
-
-    def __init__(self):
-        Widget.widgets += self
 
     def test_entry_legal(self):
         pass
 
-    @classmethod
-    def flush(cls):
-        widgets = []
-
 
 class StringAttributeWidget(Widget):
+
     def __init__(self, master, tag, value):
+        super().__init__()
         self.tag = tag
         attribute_frame = tkinter.Frame(master)
         attribute_label = tkinter.Label(attribute_frame, text=tag)
@@ -75,6 +69,7 @@ class StringAttributeWidget(Widget):
     def value_as_tags(self):
         inner_part = create_tag(self.tag, self.attribute_value.get())
         return create_tag("string", inner_part)
+
 
 class IntAttributeWidget(Widget):
     def __init__(self, master, tag, value):
@@ -96,14 +91,38 @@ class IntAttributeWidget(Widget):
         return self.attribute_value.get().isnumeric()
 
 
-
-
 class ListOfStringsAttributeWidget:
-    pass
+    def __init__(self, master, tag, value):
+        self.tag = tag
+        attribute_frame = tkinter.Frame(master)
+        attribute_label = tkinter.Label(attribute_frame, text=tag)
+        self.attribute_value = tkinter.Entry(attribute_frame)
+        self.attribute_value.insert(0, value)
+        attribute_label.pack(fill=tkinter.X)
+        self.attribute_value.pack(fill=tkinter.X)
+        attribute_frame.pack(fill=tkinter.X)
+        self.attribute_type = "int"
+
+    def value_as_tags(self):
+        entry = self.attribute_value.get()
+        list_of_strings = entry.split("\n")
+        inner_part = create_tag(self.tag, list_of_strings)
+        return create_tag("int", inner_part)
 
 
 class FileAttributeWidget:
-    pass
+    def __init__(self, master, tag, value):
+        self.tag = tag
+        attribute_frame= tkinter.Frame(master)
+        self.tag_label = tkinter.Label(attribute_frame, text=tag)
+        self.tag_label.pack(fill=tkinter.X)
+        value_frame = tkinter.Frame(attribute_frame)
+        value_editor = EditorState(super_editor_frame=value_frame)
+
+        self.update_tag_label()
+
+    def update_tag_label(self):
+        self.tag_label.after(self.update_tag_label())
 
 
 class ListOfFilesAttributeWidget:
@@ -113,10 +132,16 @@ class ListOfFilesAttributeWidget:
 class EditorState:
     initial_directory = sys.path[1] + "/resources"
 
-    def __init__(self):
-        self.root = tkinter.Tk()
+    def __init__(self, super_editor_frame=None, current_file_name =None):
+
+        if super_editor_frame is None:
+            self.root = tkinter.Tk()
+        else:
+            self.root = super_editor_frame
+
         self.mode = Mode.card
-        self.current_file_name = None
+        self.current_file_name = current_file_name
+        self.widgets = []
 
         self.top_row = tkinter.Frame(self.root)
         self.top_row.grid(row=0)
@@ -138,24 +163,30 @@ class EditorState:
         new_character_button = tkinter.Button(self.top_row, text="New Character", command=self.new_character)
         new_character_button.grid(column=2, row=0)
 
+        if current_file_name is not None:
+            with open(self.current_file_name, "r") as file:
+                file_content = file.read()
+
+            self.set_main_fields_from_str(file_content)
+
     def clear_fields(self):
         for child in self.main_fields.winfo_children():
             child.destroy()
-        Widget.flush()
+        self.widgets = []
 
     def set_main_fields(self):
         self.clear_fields()
         for tag, attribute_type in attributes_by_mode[self.mode].items():
             if attribute_type == "string":
-                StringAttributeWidget(self.main_fields, tag, "")
+                self.widgets += StringAttributeWidget(self.main_fields, tag, "")
             if attribute_type == "int":
-                IntAttributeWidget(self.main_fields, tag, "")
+                self.widgets += IntAttributeWidget(self.main_fields, tag, "")
 
     def set_main_fields_from_str(self, string: str):
         self.clear_fields()
-        list_of_tags_and_values = list_tags_and_values(string)
-        # for tag_pair in list_of_tags_and_values:
-        #    create_widget_from_string(*tag_pair)
+        dict_of_tags_and_values = dict(list_tags_and_values(string))
+        for tag, attribute_type in attributes_by_mode[self.mode].items():
+            pass
 
     def open_file(self):
 
@@ -171,8 +202,8 @@ class EditorState:
 
     def state_to_string(self) -> str:
         result = ""
-        for child in self.main_fields.winfo_children():
-            result += str(child)
+        for child in self.widgets:
+            result += child.value_as_tags()
         return result
 
     def new_card(self):
@@ -196,28 +227,26 @@ class EditorState:
                               defaultextension=file_extension_by_mode[self.mode]) as file:
             file.write(self.state_to_string())
 
+    def check_widget_entries_are_legal(self):
+        return [widget.test_entry_legal() for widget in self.widgets].all()
+
+
     @staticmethod
     def please_use_save_as():
-        mb.showwarning("No file selcted", "Please select a file to save to using Save As")
+        mb.showwarning("No file selected", "Please select a file to save to using Save As")
 
 
 def main():
+    editor = EditorState()
 
-    Editor = EditorState()
+    editor.set_main_fields()
 
-
-
-
-
-    Editor.set_main_fields()
-
-    Editor.root.mainloop()
+    editor.root.mainloop()
 
 
-def create_widget_from_string(type: str, string: str):
+def create_widget_from_string(attribute_type: str, string: str):
     if type == "string":
         return StringAttributeWidget(*(list_tags_and_values(string)[0]))
-
 
 
 if __name__ == "__main__":

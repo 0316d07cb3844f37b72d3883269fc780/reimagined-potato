@@ -3,6 +3,7 @@ from utility.src.Editor import *
 import tkinter
 
 class MyTestCase(unittest.TestCase):
+
     def test_string_attribute_widget(self):
         root = tkinter.Tk()
         widget = StringAttributeWidget(root, "test", "test_value")
@@ -11,3 +12,4 @@ class MyTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
