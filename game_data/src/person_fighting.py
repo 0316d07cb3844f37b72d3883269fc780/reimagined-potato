@@ -11,7 +11,7 @@ from game_logic.src.engine_event import EngineEvent
 
 
 class Person_Fighting():
-    def __init__(self, base_person :Person_Data):
+    def __init__(self, base_person: Person_Data):
         self.base_person = base_person
         self.actions = []
         self.resist = 0
@@ -29,7 +29,7 @@ class Person_Fighting():
         tagged_list = [create_tag("action", string) for string in actions_string]
         my_string += create_tag("actions", ",".join(tagged_list))
         my_string += create_tag("resist", self.resist)
-        my_string+=create_tag("turn_ended", self.turn_ended)
+        my_string += create_tag("turn_ended", self.turn_ended)
         my_string += create_tag("drawpile", str(self.drawpile))
         my_string += create_tag("hand", str(self.hand))
         my_string += create_tag("discardpile", self.discardpile)

@@ -19,7 +19,7 @@ class Speed(Enum):
         return self.name
 
 
-class Target_Checker(Enum):
+class TargetChecker(Enum):
     no_target = lambda targetlist: len(targetlist) == 0, "no_target"
     single_target = lambda targetlist: len(targetlist) == 1, "single_target"
 
@@ -31,9 +31,10 @@ class Target_Checker(Enum):
 
 
 class Card:
-    def __init__(self, card_type:str, name: str, action_factory: Action_Factory, speed: Speed, target_checker: Target_Checker,
+    def __init__(self, card_type: str, name: str, action_factory: Action_Factory, speed: Speed,
+                 target_checker: TargetChecker,
                  location):
-        self.card_type=card_type
+        self.card_type = card_type
         self.name = name
         self.action_factory = action_factory
         self.speed = speed
@@ -63,11 +64,13 @@ class Card:
 
     @classmethod
     def create_from_string(cls, string: str):
-        card_type, name, action_factory, speed, target_checker, location = detag_given_tags(string, "card_type", "name", "action_factory",
-                                                                                 "speed", "target_checker", "location")
+        card_type, name, action_factory, speed, target_checker, location = detag_given_tags(string, "card_type", "name",
+                                                                                            "action_factory", "speed",
+                                                                                            "target_checker",
+                                                                                            "location")
         action_factory = create_from_string(action_factory)
         speed = getattr(Speed, speed)
-        target_checker = getattr(Target_Checker, target_checker)
+        target_checker = getattr(TargetChecker, target_checker)
         location = getter[int(location)]
         result = Card(card_type, name, action_factory, speed, target_checker, location)
         scene_id, = detag_given_tags(string, "scene_id")
@@ -84,12 +87,13 @@ def create_card(cardname, location) -> Card:
 
 
 def create_tackle(location) -> Card:
-    tackle = Card("Tackle", "Tackle", Action_Factories.tackle_factory, Speed.Fast, Target_Checker.single_target, location)
+    tackle = Card("Tackle", "Tackle", Action_Factories.tackle_factory, Speed.Fast, TargetChecker.single_target,
+                  location)
     return tackle
 
 
 def create_brace(location) -> Card:
-    brace = Card("Brace", "Brace", Action_Factories.brace_factory, Speed.Instant, Target_Checker.no_target, location)
+    brace = Card("Brace", "Brace", Action_Factories.brace_factory, Speed.Instant, TargetChecker.no_target, location)
     return brace
 
 

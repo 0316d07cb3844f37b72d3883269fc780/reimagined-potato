@@ -1,5 +1,5 @@
 import unittest
-from game_data.src.card import create_tackle, Target_Checker, Card
+from game_data.src.card import create_tackle, TargetChecker, Card
 from game_data.src.card_collection import Card_Collection
 
 
