@@ -18,6 +18,8 @@ class AttributeType(Enum):
     string = 0
     int = 1
     file = 2
+    cards = 3
+    person = 4
 
 
 file_extension_by_mode = {
@@ -142,12 +144,13 @@ class List_item_widget:
 
 
 class FileAttributeWidget:
-    def __init__(self, master, tag, value):
+    def __init__(self, master, tag, value, restriction=Mode.card):
         self.tag = tag
         attribute_frame = tkinter.Frame(master)
         self.tag_label = tkinter.Label(attribute_frame, text=tag)
         value_frame = tkinter.Frame(attribute_frame)
-        self.value_editor = EditorState(super_editor_frame=value_frame, current_file_name=value)
+        self.value_editor = EditorState(super_editor_frame=value_frame, current_file_name=value,
+                                        starting_mode=restriction)
         for widget in [attribute_frame, self.tag_label, value_frame]:
             widget.pack(fill=tkinter.X)
         self.update_tag_label()
@@ -162,30 +165,36 @@ class FileAttributeWidget:
 
 
 class ListOfFilesAttributeWidget:
-    def __init__(self, master, tag, value: str):
+    def __init__(self, master, tag, value: str, file_type_restriction=None):
         self.tag = tag
+        self.file_type_restriction = None
         main_frame = tkinter.Frame(master)
         self.tag_label = tkinter.Label(main_frame, text=tag)
         self.files_frame = tkinter.Frame(main_frame)
         self.list_of_filenames = [detag_given_tags(tagged_entry, "file")[0] for tagged_entry in value.split(",")]
         self.list_items = [List_item_widget(self.files_frame, self) for name in self.list_of_filenames]
-        self.list_of_file_widgets = [FileAttributeWidget(list_item.widget_frame, self.tag, name) for list_item, name in zip(self.list_items, self.list_of_filenames)]
+        self.list_of_file_widgets = [FileAttributeWidget(list_item.widget_frame, self.tag, name) for list_item, name in
+                                     zip(self.list_items, self.list_of_filenames)]
         for list_item, file_widget in zip(self.list_items, self.list_of_file_widgets):
             list_item.contained_widget = file_widget
         self.repack()
         self.bottom_row = tkinter.Frame(main_frame)
+
+    @classmethod
+    def get_restricted_constructor(cls, restriction):
+        return lambda *arguments: ListOfFilesAttributeWidget(*arguments, file_type_restriction=restriction)
 
     def add_file_attribute_widget(self, file_name):
         new_list_item_widget = List_item_widget(self.files_frame, self)
         self.list_items.append(new_list_item_widget)
 
     def value_as_tags(self):
-        value_of_list_items=", ".join([item.value_as_tags() for item in self.list_items])
+        value_of_list_items = ", ".join([item.value_as_tags() for item in self.list_items])
         return create_tag(self.tag, value_of_list_items)
 
     def move_widget_up(self, index):
         if index > 0:
-            self.list_items[index-1], self.list_items[index] = self.list_items[index], self.list_items[index-1]
+            self.list_items[index - 1], self.list_items[index] = self.list_items[index], self.list_items[index - 1]
         self.repack()
 
     def delete_from_list(self, index):
@@ -205,24 +214,26 @@ class ListOfFilesAttributeWidget:
         for i, list_item in enumerate(self.list_items):
             list_item.index = i
 
+
 widget_by_attribute_type = {
-    AttributeType.string : StringAttributeWidget,
-    AttributeType.int : IntAttributeWidget,
-    AttributeType.file : ListOfFilesAttributeWidget
+    AttributeType.string: StringAttributeWidget,
+    AttributeType.int: IntAttributeWidget,
+    AttributeType.file: ListOfFilesAttributeWidget,
+    AttributeType.cards: ListOfFilesAttributeWidget.get_restricted_constructor(Mode.card)
 }
 
 
 class EditorState:
     initial_directory = sys.path[0] + "/../../resources/"
 
-    def __init__(self, super_editor_frame=None, current_file_name = None):
+    def __init__(self, super_editor_frame=None, current_file_name=None, starting_mode=Mode.card):
 
         if super_editor_frame is None:
             self.root = tkinter.Tk()
         else:
             self.root = super_editor_frame
 
-        self.mode = Mode.card
+        self.mode = starting_mode
         self.current_file_name = current_file_name
         self.widgets = []
 
@@ -247,7 +258,7 @@ class EditorState:
         new_character_button.grid(column=2, row=0)
 
         if current_file_name is not None:
-            with open(EditorState.initial_directory+self.current_file_name, "r") as file:
+            with open(EditorState.initial_directory + self.current_file_name, "r") as file:
                 file_content = file.read()
 
             self.set_main_fields_from_str(file_content)
@@ -264,7 +275,7 @@ class EditorState:
         self.clear_fields()
         dict_of_tags_and_values = dict(list_tags_and_values(string))
         for tag, attribute_type in attributes_by_mode[self.mode].items():
-            initial_value=dict_of_tags_and_values.get(tag, "")
+            initial_value = dict_of_tags_and_values.get(tag, "")
             self.widgets.append(widget_by_attribute_type[attribute_type](self.main_fields, tag, initial_value))
 
     def open_file(self):

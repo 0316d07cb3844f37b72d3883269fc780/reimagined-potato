@@ -35,6 +35,11 @@ class Card_Collection():
         return result
     @classmethod
     def create_from_string(cls, string : str):
+        filename,=detag_given_tags("file")
+        if filename!="":
+            with open(filename) as file:
+                file_contents = file.read()
+            return cls.create_from_string(file_contents)
         cards_tagged_string,scene_id_string=detag_given_tags(string, "cards","scene_id")
         cards_tagged_list=detag_repeated(cards_tagged_string,"card_pair")
         card_pairs_string=[detag_given_tags(card_pair,"id","card")for card_pair in cards_tagged_list]

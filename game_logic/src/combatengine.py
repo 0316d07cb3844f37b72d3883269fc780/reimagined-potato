@@ -20,7 +20,7 @@ class CombatEngine:
         if event.player.turn_ended:
             return
         if event.event_type=="PLAY_CARD":
-            event.card.resolve(event.player,event.target_list)
+            event.cards.resolve(event.player, event.target_list)
         event.player.turn_ended=True
         self.check_if_turn_over()
 

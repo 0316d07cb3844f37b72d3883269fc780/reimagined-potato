@@ -23,7 +23,12 @@ class Action():
         return my_string
 
     @classmethod
-    def create_from_string(cls, string : str) :
+    def create_from_string(cls, string : str):
+        filename,=detag_given_tags("file")
+        if filename!="":
+            with open(filename) as file:
+                file_contents = file.read()
+            return cls.create_from_string(file_contents)
         tags = "name", "performer_id", "target_id_list", "action_id"
         name, performer_id, target_id_list, id = detag_given_tags(string, *tags)
         target_id_list = get_id_list(target_id_list)
