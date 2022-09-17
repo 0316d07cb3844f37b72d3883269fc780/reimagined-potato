@@ -45,9 +45,9 @@ class Fight_Scene():
 
     @classmethod
     def create_team_from_string(cls, string: str) -> list:
-        filename,=detag_given_tags("file")
-        if filename!="":
-            with open(filename) as file:
+        possible_filename = detag_given_tags("file")
+        if len(possible_filename) == 1:
+            with open(*possible_filename) as file:
                 file_contents = file.read()
             return cls.create_team_from_string(file_contents)
         fighter_strings = detag_repeated(string, "fighter")
@@ -55,9 +55,9 @@ class Fight_Scene():
 
     @classmethod
     def create_scene_from_string(cls, string: str):
-        filename,=detag_given_tags("file")
-        if filename!="":
-            with open(filename) as file:
+        possible_filename = detag_given_tags("file")
+        if len(possible_filename) == 1:
+            with open(*possible_filename) as file:
                 file_contents = file.read()
             return cls.create_scene_from_string(file_contents)
         allies_string, foes_string = detag_given_tags(string, "allies", "foes")

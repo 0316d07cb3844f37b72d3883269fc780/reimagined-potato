@@ -18,6 +18,9 @@ class Getter_Scene:
 
     def __setitem__(self, new_id, object_to_set):
         del (self.all_objects[object_to_set.scene_id])
+        if new_id == "auto":
+            self.register(object_to_set)
+            return
         object_to_set.scene_id = new_id
         self.all_objects[new_id] = object_to_set
 

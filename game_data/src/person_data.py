@@ -31,9 +31,9 @@ class Person_Data:
 
     @classmethod
     def create_from_string(cls, string: str):
-        filename,=detag_given_tags("file")
-        if filename!="":
-            with open(filename) as file:
+        possible_filename = detag_given_tags("file")
+        if len(possible_filename) == 1:
+            with open(*possible_filename) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
         max_health, health, scene_id, person_type = detag_given_tags(string, "max_health", "health", "scene_id",

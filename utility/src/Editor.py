@@ -10,8 +10,10 @@ from utility.src.string_utils import *
 
 class Mode(Enum):
     card = 0
-    person = 1
-    team = 1
+    person_base = 1
+    person_fighting = 2
+    team = 3
+    scene = 4
 
 
 class AttributeType(Enum):
@@ -19,12 +21,13 @@ class AttributeType(Enum):
     int = 1
     file = 2
     cards = 3
-    person = 4
+    person_base = 4
+    people = 5
 
 
 file_extension_by_mode = {
     Mode.card: ".card",
-    Mode.person: ".person",
+    Mode.person_base: ".person",
     Mode.team: ".team"
 }
 
@@ -41,7 +44,7 @@ attributes_by_mode = {
         "image": AttributeType.string
     },
 
-    Mode.person: {
+    Mode.person_base: {
 
     },
 
@@ -57,6 +60,9 @@ file_types = (("Card File", "*.card"),
 class Widget:
 
     def test_entry_legal(self):
+        pass
+
+    def save(self):
         pass
 
 
@@ -98,7 +104,7 @@ class IntAttributeWidget(Widget):
         return self.attribute_value.get().isnumeric()
 
 
-class ListOfStringsAttributeWidget:
+class ListOfStringsAttributeWidget(Widget):
     def __init__(self, master, tag, value):
         self.tag = tag
         attribute_frame = tkinter.Frame(master)
@@ -117,14 +123,18 @@ class ListOfStringsAttributeWidget:
         return create_tag("int", inner_part)
 
 
-class List_item_widget:
+class List_item_widget(Widget):
     def __init__(self, master, widget_list):
         self.widget_list = widget_list
+        self.main_frame = tkinter.Frame(master, relief="sunken")
         self.top_row_frame = tkinter.Frame(master)
         self.widget_frame = tkinter.Frame(master)
         self.top_row_frame.pack(), self.widget_frame.pack()
         self.index = None
         self.contained_widget = None
+        for command, text in [(self.add_item, "Add item above"), (self.move_up, "Move Up"), (self.add_item, "Add above")]:
+            new_button=tkinter.Button(master=self.top_row_frame, command=command, text=text)
+            new_button.pack()
 
     def move_up(self):
         self.widget_list.move_widget_up(self.get_index())
@@ -143,7 +153,7 @@ class List_item_widget:
         return self.contained_widget.value_as_tags
 
 
-class FileAttributeWidget:
+class FileAttributeWidget(Widget):
     def __init__(self, master, tag, value, restriction=Mode.card):
         self.tag = tag
         attribute_frame = tkinter.Frame(master)
@@ -156,19 +166,23 @@ class FileAttributeWidget:
         self.update_tag_label()
 
     def value_as_tags(self):
-        value = self.value_editor.state_to_string()
+        value = self.value_editor.current_file_name
         return create_tag("file", value)
 
     def update_tag_label(self):
         self.tag_label.configure(text=self.value_editor.current_file_name)
         self.tag_label.after(16, func=self.update_tag_label)
 
+    def save(self):
+        self.value_editor.save()
 
-class ListOfFilesAttributeWidget:
+
+class ListOfFilesAttributeWidget(Widget):
     def __init__(self, master, tag, value: str, file_type_restriction=None):
         self.tag = tag
         self.file_type_restriction = None
         main_frame = tkinter.Frame(master)
+        main_frame.pack()
         self.tag_label = tkinter.Label(main_frame, text=tag)
         self.files_frame = tkinter.Frame(main_frame)
         self.list_of_filenames = [detag_given_tags(tagged_entry, "file")[0] for tagged_entry in value.split(",")]
@@ -202,7 +216,12 @@ class ListOfFilesAttributeWidget:
         self.repack()
 
     def add_item(self, index):
-        pass
+        new_list_item = List_item_widget(self.files_frame, self)
+        new_file_widget = FileAttributeWidget(new_list_item.widget_frame, self.tag, value=None,
+                                              restriction=self.file_type_restriction)
+        new_list_item.contained_widget=new_file_widget
+        self.list_of_file_widgets.insert(index, new_file_widget)
+        self.repack()
 
     def repack(self):
         for child in self.files_frame.winfo_children():
@@ -213,6 +232,10 @@ class ListOfFilesAttributeWidget:
     def set_indices(self):
         for i, list_item in enumerate(self.list_items):
             list_item.index = i
+
+    def save(self):
+        for child in self.list_items:
+            child.save()
 
 
 widget_by_attribute_type = {
@@ -258,7 +281,7 @@ class EditorState:
         new_character_button.grid(column=2, row=0)
 
         if current_file_name is not None:
-            with open(EditorState.initial_directory + self.current_file_name, "r") as file:
+            with open(self.current_file_name, "r") as file:
                 file_content = file.read()
 
             self.set_main_fields_from_str(file_content)
@@ -303,7 +326,7 @@ class EditorState:
 
     def new_character(self):
         self.current_file_name = None
-        self.mode = Mode.person
+        self.mode = Mode.person_base
         self.set_main_fields()
 
     def save(self):
@@ -311,11 +334,15 @@ class EditorState:
             return self.please_use_save_as()
         with open(self.current_file_name, "w") as file:
             file.write(self.state_to_string())
+        for widget in self.widgets:
+            widget.save()
 
     def save_as(self):
         with fd.asksaveasfile(initialdir=EditorState.initial_directory, initialfile=self.current_file_name,
                               defaultextension=file_extension_by_mode[self.mode]) as file:
             file.write(self.state_to_string())
+        for widget in self.widgets:
+            widget.save()
 
     def check_widget_entries_are_legal(self):
         return all([widget.test_entry_legal() for widget in self.widgets])

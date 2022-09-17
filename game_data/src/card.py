@@ -64,9 +64,9 @@ class Card:
 
     @classmethod
     def create_from_string(cls, string: str):
-        filename,=detag_given_tags("file")
-        if filename!="":
-            with open(filename) as file:
+        possible_filename = detag_given_tags("file")
+        if len(possible_filename) == 1:
+            with open(*possible_filename) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
         card_type, name, action_factory, speed, target_checker, location = detag_given_tags(string, "card_type", "name",

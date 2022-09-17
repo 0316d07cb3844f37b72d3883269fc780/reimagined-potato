@@ -38,6 +38,11 @@ class Person_Fighting():
 
     @classmethod
     def create_from_string(cls, string :str):
+        possible_filename = detag_given_tags("file")
+        if len(possible_filename) == 1:
+            with open(*possible_filename) as file:
+                file_contents = file.read()
+            return cls.create_from_string(file_contents)
         base_person_string, = detag_given_tags(string, "base_person")
         base_person = Person_Data.create_from_string(base_person_string)
         my_person_fighting = Person_Fighting(base_person)
