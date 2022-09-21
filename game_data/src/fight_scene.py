@@ -3,9 +3,10 @@ Carries all state of a combat encounter.
 """
 
 from enum import Enum
-from utility.src.string_utils import create_tag, detag_given_tags,detag_repeated
-from game_data.src.person_fighting import Person_Fighting
+
 from game_data.src.action import Action
+from game_data.src.person_fighting import Person_Fighting
+from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated
 
 
 class Side(Enum):
@@ -14,7 +15,7 @@ class Side(Enum):
 
 
 class Fight_Scene():
-    def __init__(self, allies : list, foes : list, actions : list = []):
+    def __init__(self, allies: list, foes: list, actions: list = []):
         """
 
         :param allies:
@@ -37,11 +38,13 @@ class Fight_Scene():
         else:
             self._turn_side = Side.allies
         for person in self.current_side:
-            person.turn_ended=False
+            person.turn_ended = False
 
-    def side_to_string(self, side : Side) -> str:
-        side=getattr(self, side.name)
-        return ", ".join([create_tag("fighter" ,lad) for lad in side])
+    def side_to_string(self, side: Side) -> str:
+        side = getattr(self, side.name)
+        result = "\n".join([create_tag("fighter", lad) for lad in side])
+        result = create_tag("team", result)
+        return result
 
     @classmethod
     def create_team_from_string(cls, string: str) -> list:
@@ -50,8 +53,13 @@ class Fight_Scene():
             with open(*possible_filename) as file:
                 file_contents = file.read()
             return cls.create_team_from_string(file_contents)
-        fighter_strings = detag_repeated(string, "fighter")
+        string_of_fighters, = detag_given_tags(string, "team")
+        fighter_strings = detag_repeated(string_of_fighters, "fighter")
         return [Person_Fighting.create_from_string(fighter) for fighter in fighter_strings]
+
+    def __str__(self):
+        result = ""
+        return result
 
     @classmethod
     def create_scene_from_string(cls, string: str):
@@ -64,12 +72,5 @@ class Fight_Scene():
         actions_string, = detag_given_tags(string, "actions")
         list_of_action_strings = detag_repeated(actions_string, "action")
         actions = [Action.create_from_string(string) for string in list_of_action_strings]
-        return Fight_Scene(Fight_Scene.create_team_from_string(allies_string), Fight_Scene.create_team_from_string(foes_string), actions)
-
-
-
-
-
-
-
-
+        return Fight_Scene(Fight_Scene.create_team_from_string(allies_string),
+                           Fight_Scene.create_team_from_string(foes_string), actions)

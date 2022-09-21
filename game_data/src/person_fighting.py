@@ -15,7 +15,7 @@ class Person_Fighting():
         self.base_person = base_person
         self.actions = []
         self.resist = 0
-        self.turn_ended=False
+        self.turn_ended = False
         "Create Cardcontainers."
         self.drawpile = create_drawpile(base_person.deck)
         self.hand = Card_Collection([])
@@ -37,7 +37,7 @@ class Person_Fighting():
         return my_string
 
     @classmethod
-    def create_from_string(cls, string :str):
+    def create_from_string(cls, string: str):
         possible_filename = detag_given_tags("file")
         if len(possible_filename) == 1:
             with open(*possible_filename) as file:
@@ -51,7 +51,8 @@ class Person_Fighting():
         my_person_fighting.actions.append(
             [Action.create_from_string(action_string) for action_string in action_strings])
         resist, turn_ended=detag_given_tags(string, "resist", "turn_ended")
-        my_person_fighting.resist, my_person_fighting.turn_ended=int(resist), bool(turn_ended)
+        if (resist, turn_ended)!= ("",""):
+            my_person_fighting.resist, my_person_fighting.turn_ended=int(resist), bool(turn_ended)
         drawpile_string, hand_string, discardpile_string = detag_given_tags(string, "drawpile", "hand", "discardpile")
         my_person_fighting.drawpile = Card_Collection.create_from_string(drawpile_string)
         my_person_fighting.hand = Card_Collection.create_from_string(hand_string)
@@ -61,7 +62,7 @@ class Person_Fighting():
         return my_person_fighting
 
     @classmethod
-    def load_from_file(cls, card_name:str):
+    def load_from_file(cls, card_name: str):
 
         with open("/../../resources/cards/"+card_name,'r') as file:
             return cls.create_from_string(file.read())
