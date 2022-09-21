@@ -2,6 +2,8 @@
 Contains utility functions for turning objects into strings and back.
 """
 
+from global_variables import ROOT
+
 
 def _t(tag): return "<" + tag + ">"
 
@@ -82,3 +84,38 @@ def detag_repeated(string: str, tag: str) -> list:
 
 def get_id_list(string: str) -> list:
     return [int(a) for a in (list(string[1:-1].split(",")))]
+
+
+def _find_next_file(string: str):
+    ending_of_file_tag = string.find("file>")
+    if ending_of_file_tag == -1:
+        return -1, -1, 0, ""
+    reversed_string= string[ending_of_file_tag::-1]
+    order_of_depth = reversed_string.find("<")-1  # AKA amount of ! bangs
+    start_of_file_tag = ending_of_file_tag-1-order_of_depth
+    end_of_closing_tag = string.find("\\file>")+6
+    start_of_content = string[start_of_file_tag:end_of_closing_tag].find(">")+1
+    end_of_content = -start_of_content-1
+    file_name = string[start_of_file_tag:end_of_closing_tag][start_of_content:end_of_content]
+    return start_of_file_tag, end_of_closing_tag, order_of_depth, file_name
+
+
+def increase_order(string: str, order: int) -> str:
+    return string.replace("<", "<"+"!"*order)
+
+
+def load_files(string: str) -> str:
+    start, end, order, file_name=_find_next_file(string)
+    if start == -1:
+        return string
+    with open(root_path(file_name)) as file:
+        file_content=file.read()
+    return string[:start]+increase_order(file_content, order)+string[end:]
+
+
+def unroot_path(path: str)->str:
+    return path.replace(ROOT, "", 1)
+
+
+def root_path(path: str) -> str:
+    return ROOT + path

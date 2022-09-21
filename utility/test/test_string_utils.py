@@ -1,6 +1,7 @@
 import unittest
 
 from utility.src.string_utils import *
+import utility.src.string_utils as su
 
 
 class Test_Utils(unittest.TestCase):
@@ -40,6 +41,16 @@ class Test_Utils(unittest.TestCase):
         result = list_tags_and_values(string)
         expected_result = [("my_tag1","value1"), ("my_tag2","value2"), ("my_tag1","value3")]
         self.assertEqual(result, expected_result)
+
+    def test_finding_the_files(self):
+        string = "Noise<noisetag>noise_value<\\noisetag><!!file>file content.cool_file_ending<!!\\file>"
+        expected_result=(37,83,2,"file content.cool_file_ending")
+        self.assertEqual(expected_result, su._find_next_file(string))
+
+    def test_load_file(self):
+        string = "testtext<tag><!file>\\utility\\test\\resources\\string_util.test_format<!\\file><!tag>"
+        expected_result = "testtext<tag>cool file content<!!tag>content<!!\\tag>\nline 2 <!tag><!tag>"
+        self.assertEqual(expected_result,load_files(string))
 
 
 

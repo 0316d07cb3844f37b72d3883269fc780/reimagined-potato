@@ -6,7 +6,7 @@ from game_data.src.getter_scene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated
 
 
-class Person_Data:
+class PersonData:
     legal_types = ["Testtype"]
 
     def __init__(self, max_health: int, type: str, deck: list = []):
@@ -14,7 +14,7 @@ class Person_Data:
         self.deck = deck
         self.scene_id = getter.register(self)
 
-        if (type in Person_Data.legal_types):
+        if type in PersonData.legal_types:
             self.person_type = type
         else:
             raise Exception("Illegal type")
@@ -40,7 +40,7 @@ class Person_Data:
                                                                      "person_type")
         deck_string, = detag_given_tags(string, "deck")
         deck = detag_repeated(deck_string, "card")
-        my_person = Person_Data(int(max_health), person_type, deck)
+        my_person = PersonData(int(max_health), person_type, deck)
         my_person.health = int(health)
         getter[scene_id] = my_person
         return my_person

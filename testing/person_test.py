@@ -1,9 +1,9 @@
 import game_io.person_io as person_io
-import game_data.src.person_data as person_data
+import game_data.src.persondata as person_data
 import pygame
 
 def test(allsprites):
-    person = person_data.Person_Data(10, "Testtype")
+    person = person_data.PersonData(10, "Testtype")
     try:
         image = pygame.image.load("resources/testguy.bmp")
     except pygame.error as message:

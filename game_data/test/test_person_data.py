@@ -1,5 +1,5 @@
 import unittest
-from game_data.src.person_data import Person_Data as Person
+from game_data.src.persondata import PersonData as Person
 
 
 class Test_Testtype_Person(unittest.TestCase):

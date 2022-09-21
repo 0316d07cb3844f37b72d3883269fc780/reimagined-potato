@@ -6,7 +6,7 @@ from utility.src.string_utils import create_tag, get_id_list, detag_given_tags
 from game_data.src.getter_scene import getter
 
 
-class Action():
+class Action:
     def __init__(self, name : str, performer, target_list : list, method : callable, id : int):
         self.name = name
         self.performer = performer

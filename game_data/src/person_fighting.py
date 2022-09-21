@@ -5,13 +5,13 @@ A person as it is in the Fight_Scene.
 from game_data.src.action import Action
 from game_data.src.card_collection import Card_Collection, create_drawpile
 from game_data.src.getter_scene import getter
-from game_data.src.person_data import Person_Data
+from game_data.src.persondata import PersonData
 from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags
 from game_logic.src.engine_event import EngineEvent
 
 
 class Person_Fighting():
-    def __init__(self, base_person: Person_Data):
+    def __init__(self, base_person: PersonData):
         self.base_person = base_person
         self.actions = []
         self.resist = 0
@@ -44,7 +44,7 @@ class Person_Fighting():
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
         base_person_string, = detag_given_tags(string, "base_person")
-        base_person = Person_Data.create_from_string(base_person_string)
+        base_person = PersonData.create_from_string(base_person_string)
         my_person_fighting = Person_Fighting(base_person)
         actions_string, = detag_given_tags(string, "actions")
         action_strings = detag_repeated(actions_string, "action")

@@ -5,13 +5,15 @@ Contains a collection of cards. Meant to be derived from.
 from game_data.src.card import create_card, Card
 from game_data.src.getter_scene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated
+import random
 
 
 class Card_Collection():
-    def __init__(self, cardlist: list):
+    def __init__(self, card_list: list):
         self.cards = {}
-        for card in cardlist:
+        for card in card_list:
             self.cards[card.scene_id] = card
+        self.card_order = list(self.cards.keys())
         self.scene_id = getter.register(self)
 
     def __len__(self):
@@ -54,11 +56,12 @@ class Card_Collection():
     def get_a_card(self) -> Card:
         if len(self) == 0:
             raise IndexError("Card_Container empty")
-        values = iter(self.cards.values())
-        return next(values)
+        card_id = self.card_order[-1]
+        return self.cards[card_id]
 
     def get_all_cards(self) -> list:
-        return list(self.cards.values())
+
+        return [self.cards[card_id] for card_id in self.card_order]
 
     def remove_card(self, card: Card) -> None:
         """
@@ -66,6 +69,7 @@ class Card_Collection():
         :param card: the card to remove.
         :return:
         """
+        self.card_order.pop(card.scene_id)
         self.cards.pop(card.scene_id)
         card.location = None
 
@@ -75,11 +79,13 @@ class Card_Collection():
         :param card: card to add.
         :return:
         """
+        if not card.scene_id in self.card_order:
+            self.card_order.append(card.scene_id)
         self.cards[card.scene_id] = card
         card.location = self
 
     def shuffle(self):
-        pass
+        random.shuffle(self.card_order)
 
 
 def create_drawpile(deck: list) -> Card_Collection:
