@@ -6,7 +6,7 @@ from enum import Enum
 
 from game_data.src.action_factory import Action_Factories, create_from_string, Action_Factory
 from game_data.src.getter_scene import getter
-from utility.src.string_utils import create_tag, detag_given_tags
+from utility.src.string_utils import create_tag, detag_given_tags, root_path
 
 
 class Speed(Enum):
@@ -66,7 +66,7 @@ class Card:
     def create_from_string(cls, string: str):
         possible_filename = detag_given_tags("file")
         if len(possible_filename) == 1:
-            with open(*possible_filename) as file:
+            with open(rootpath(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
         card_type, name, action_factory, speed, target_checker, location = detag_given_tags(string, "card_type", "name",

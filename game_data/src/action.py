@@ -2,7 +2,7 @@
 An action that a person will perform at the end of the turn.
 """
 
-from utility.src.string_utils import create_tag, get_id_list, detag_given_tags
+from utility.src.string_utils import create_tag, get_id_list, detag_given_tags, root_path
 from game_data.src.getter_scene import getter
 
 
@@ -26,7 +26,7 @@ class Action:
     def create_from_string(cls, string : str):
         possible_filename = detag_given_tags("file")
         if len(possible_filename) == 1:
-            with open(*possible_filename) as file:
+            with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
         tags = "name", "performer_id", "target_id_list", "action_id"

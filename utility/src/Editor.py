@@ -2,32 +2,33 @@ import sys
 import tkinter
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
-from enum import Enum, auto, IntFlag
+from enum import Enum
+from enum import auto as auto
 from os import path
 
 from utility.src.string_utils import *
-
+from global_variables import ROOT
 
 class Mode(Enum):
-    card = auto(IntFlag)
-    card_collection = auto(IntFlag)
-    person_base = auto(IntFlag)
-    person_fighting = auto(IntFlag)
-    team = auto(IntFlag)
-    scene = auto(IntFlag)
+    card = auto()
+    card_collection = auto()
+    person_base = auto()
+    person_fighting = auto()
+    team = auto()
+    scene = auto()
 
 
 class AttributeType(Enum):
-    string = auto(IntFlag)
-    int = auto(IntFlag)
-    single_file = auto(IntFlag)
-    files_list = auto(IntFlag)
-    cards = auto(IntFlag)
-    card_collection = auto(IntFlag)
-    person_base = auto(IntFlag)
-    people = auto(IntFlag)
-    deck = auto(IntFlag)
-    team = auto(IntFlag)
+    string = auto()
+    int = auto()
+    single_file = auto()
+    files_list = auto()
+    cards = auto()
+    card_collection = auto()
+    person_base = auto()
+    people = auto()
+    deck = auto()
+    team = auto()
 
 
 file_extension_by_mode = {
@@ -220,7 +221,7 @@ class FileAttributeWidget(Widget):
         attribute_frame = tkinter.Frame(master)
         self.tag_label = tkinter.Label(attribute_frame, text=tag)
         value_frame = tkinter.Frame(attribute_frame)
-        self.value_editor = EditorState(super_editor_frame=value_frame, current_file_name=value,
+        self.value_editor = EditorState(super_editor_frame=value_frame, file_name=value,
                                         starting_mode=restriction)
         for widget in [attribute_frame, self.tag_label, value_frame]:
             widget.pack(fill=tkinter.X)
@@ -232,7 +233,7 @@ class FileAttributeWidget(Widget):
 
     def value_as_tags(self):
         value = self.value_editor.current_file_name
-        return create_tag("file", value)
+        return create_tag("file", unroot_path(value))
 
     def update_tag_label(self):
         self.tag_label.configure(text=self.value_editor.current_file_name)
@@ -340,9 +341,9 @@ widget_by_attribute_type = {
 
 
 class EditorState:
-    initial_directory = sys.path[0] + "/../../resources/"
+    initial_directory = ROOT + "/resources/"
 
-    def __init__(self, super_editor_frame=None, current_file_name=None, starting_mode=Mode.card):
+    def __init__(self, super_editor_frame=None, file_name=None, starting_mode=Mode.card):
 
         if super_editor_frame is None:
             self.root_window = tkinter.Tk()
@@ -360,7 +361,7 @@ class EditorState:
             self.root = super_editor_frame
 
         self.mode = starting_mode
-        self.current_file_name = current_file_name
+        self.current_file_name = root_path(file_name)
         self.widgets = []
 
         self.top_row = tkinter.Frame(self.root)
@@ -383,7 +384,7 @@ class EditorState:
         new_character_button = tkinter.Button(self.top_row, text="New Character", command=self.new_character)
         new_character_button.grid(column=2, row=0)
 
-        if current_file_name is not None:
+        if file_name is not None:
             with open(self.current_file_name, "r") as file:
                 file_content = file.read()
 

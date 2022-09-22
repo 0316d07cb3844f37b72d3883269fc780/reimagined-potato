@@ -6,7 +6,7 @@ from enum import Enum
 
 from game_data.src.action import Action
 from game_data.src.person_fighting import Person_Fighting
-from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated
+from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
 
 
 class Side(Enum):
@@ -15,7 +15,7 @@ class Side(Enum):
 
 
 class Fight_Scene():
-    def __init__(self, allies: list, foes: list, actions: list = []):
+    def __init__(self, allies: list, foes: list, actions: list = None):
         """
 
         :param allies:
@@ -25,8 +25,9 @@ class Fight_Scene():
         self.allies = allies
         self.foes = foes
         self._turn_side = Side.allies
-        self.turn_index = 1
         self.actions = actions
+        if actions is None:
+            self.actions = []
 
     @property
     def current_side(self) -> str:
@@ -50,7 +51,7 @@ class Fight_Scene():
     def create_team_from_string(cls, string: str) -> list:
         possible_filename = detag_given_tags("file")
         if len(possible_filename) == 1:
-            with open(*possible_filename) as file:
+            with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_team_from_string(file_contents)
         string_of_fighters, = detag_given_tags(string, "team")
@@ -58,14 +59,17 @@ class Fight_Scene():
         return [Person_Fighting.create_from_string(fighter) for fighter in fighter_strings]
 
     def __str__(self):
-        result = ""
+        result = create_tag("allies", self.side_to_string(Side.allies)) \
+                 + create_tag("foes", self.side_to_string(Side.foes))
+        result += create_tag("turn_side", self.current_side)
+
         return result
 
     @classmethod
     def create_scene_from_string(cls, string: str):
         possible_filename = detag_given_tags("file")
         if len(possible_filename) == 1:
-            with open(*possible_filename) as file:
+            with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_scene_from_string(file_contents)
         allies_string, foes_string = detag_given_tags(string, "allies", "foes")

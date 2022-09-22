@@ -3,7 +3,7 @@ Contains the Person class representing characters as game units. Contains attrib
 """
 
 from game_data.src.getter_scene import getter
-from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated
+from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
 
 
 class PersonData:
@@ -33,7 +33,7 @@ class PersonData:
     def create_from_string(cls, string: str):
         possible_filename = detag_given_tags("file")
         if len(possible_filename) == 1:
-            with open(*possible_filename) as file:
+            with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
         max_health, health, scene_id, person_type = detag_given_tags(string, "max_health", "health", "scene_id",

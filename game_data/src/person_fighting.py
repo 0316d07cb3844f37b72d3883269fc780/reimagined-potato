@@ -6,7 +6,7 @@ from game_data.src.action import Action
 from game_data.src.card_collection import Card_Collection, create_drawpile
 from game_data.src.getter_scene import getter
 from game_data.src.persondata import PersonData
-from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags
+from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags, root_path
 from game_logic.src.engine_event import EngineEvent
 
 
@@ -40,7 +40,7 @@ class Person_Fighting():
     def create_from_string(cls, string: str):
         possible_filename = detag_given_tags("file")
         if len(possible_filename) == 1:
-            with open(*possible_filename) as file:
+            with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
         base_person_string, = detag_given_tags(string, "base_person")

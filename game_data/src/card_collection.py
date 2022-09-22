@@ -6,7 +6,7 @@ import random
 
 from game_data.src.card import create_card, Card
 from game_data.src.getter_scene import getter
-from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated
+from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
 
 
 class Card_Collection():
@@ -34,6 +34,11 @@ class Card_Collection():
 
     @classmethod
     def create_from_string(cls, string: str):
+        possible_filename = detag_given_tags("file")
+        if len(possible_filename) == 1:
+            with open(root_path(*possible_filename)) as file:
+                file_contents = file.read()
+            return cls.create_from_string(file_contents)
         cards_string, scene_id = detag_given_tags(string, "cards", "scene_id")
         card_strings = detag_repeated(cards_string, "card")
         card_list = [Card.create_from_string(my_string) for my_string in card_strings]
