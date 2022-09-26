@@ -17,7 +17,7 @@ def make_game_state():
 
 class MyTestCase(unittest.TestCase):
     def test_make_game_state(self):
-        my_state = make_game_state()
+        make_game_state()
 
     def test_string_side(self):
         my_state= make_game_state()
@@ -31,6 +31,11 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(my_state.current_side == my_state.foes)
         my_state.change_turn()
         self.assertTrue(my_state.current_side == my_state.allies)
+
+    def test_state_to_string_and_back(self):
+        my_state=make_game_state()
+        my_string=str(my_state)
+        Scene.create_scene_from_string(my_string)
 
 
 if __name__ == '__main__':

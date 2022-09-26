@@ -15,6 +15,7 @@ class Side(Enum):
 
 
 class Fight_Scene():
+
     def __init__(self, allies: list, foes: list, actions: list = None):
         """
 
@@ -61,8 +62,9 @@ class Fight_Scene():
     def __str__(self):
         result = create_tag("allies", self.side_to_string(Side.allies)) \
                  + create_tag("foes", self.side_to_string(Side.foes))
-        result += create_tag("turn_side", self.current_side)
-
+        result += create_tag("turn_side", self._turn_side.name)
+        action_strings = "\n".join([create_tag("action",str(action)) for action in self.actions])
+        result += create_tag("actions", action_strings)
         return result
 
     @classmethod
@@ -76,5 +78,6 @@ class Fight_Scene():
         actions_string, = detag_given_tags(string, "actions")
         list_of_action_strings = detag_repeated(actions_string, "action")
         actions = [Action.create_from_string(string) for string in list_of_action_strings]
+        side = Side[detag_given_tags(string, "turn_side")[0]]
         return Fight_Scene(Fight_Scene.create_team_from_string(allies_string),
                            Fight_Scene.create_team_from_string(foes_string), actions)
