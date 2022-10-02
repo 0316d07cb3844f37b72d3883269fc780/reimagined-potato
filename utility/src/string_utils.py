@@ -113,9 +113,13 @@ def load_files(string: str) -> str:
     return string[:start]+increase_order(file_content, order)+string[end:]
 
 
-def unroot_path(path: str)->str:
+def unroot_path(path: str) -> str:
+    if path is None:
+        return None
     return path.replace(ROOT, "", 1)
 
 
 def root_path(path: str) -> str:
+    if path is None:
+        return None
     return ROOT + path

@@ -4,19 +4,10 @@ Contains the underlying data of a Card inside a scene.
 
 from enum import Enum
 
+from game_data.src.action import Speed
 from game_data.src.action_factory import Action_Factories, create_from_string, Action_Factory
 from game_data.src.getter_scene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, root_path
-
-
-class Speed(Enum):
-    Channel = 0
-    Regular = 1
-    Fast = 2
-    Instant = 3
-
-    def __str__(self):
-        return self.name
 
 
 class TargetChecker(Enum):
@@ -41,7 +32,8 @@ class Card:
         self.target_checker = target_checker
         self.scene_id = getter.register(self)
         self.location = location
-        location.add_card(self)
+        if location is not None:
+            location.add_card(self)
 
     def move(self, new_location):
         self.location.remove_card(self)
@@ -56,7 +48,7 @@ class Card:
         my_string = create_tag("card_type", self.card_type)
         my_string += create_tag("name", self.name)
         my_string += create_tag("action_factory", str(self.action_factory))
-        my_string += create_tag("speed", str(self.speed))
+        my_string += create_tag("speed", self.speed.name)
         my_string += create_tag("target_checker", str(self.target_checker))
         my_string += create_tag("location", self.location.scene_id)
         my_string += create_tag("scene_id", self.scene_id)
@@ -66,17 +58,22 @@ class Card:
     def create_from_string(cls, string: str):
         possible_filename = detag_given_tags("file")
         if len(possible_filename) == 1:
-            with open(rootpath(*possible_filename)) as file:
+            with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
-        card_type, name, action_factory, speed, target_checker, location = detag_given_tags(string, "card_type", "name",
-                                                                                            "action_factory", "speed",
-                                                                                            "target_checker",
-                                                                                            "location")
+        card_type, name, action_factory, speed, target_checker, location_string = detag_given_tags(string, "card_type",
+                                                                                                   "name",
+                                                                                                   "action_factory",
+                                                                                                   "speed",
+                                                                                                   "target_checker",
+                                                                                                   "location")
         action_factory = create_from_string(action_factory)
-        speed = getattr(Speed, speed)
+        speed = Speed[speed]
         target_checker = getattr(TargetChecker, target_checker)
-        location = getter[int(location)]
+        if location_string == "":
+            location = None
+        else:
+            location = getter[int(location_string)]
         result = Card(card_type, name, action_factory, speed, target_checker, location)
         scene_id, = detag_given_tags(string, "scene_id")
         if scene_id != "":

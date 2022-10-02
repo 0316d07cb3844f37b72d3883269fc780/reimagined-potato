@@ -5,6 +5,7 @@ Carries all state of a combat encounter.
 from enum import Enum
 
 from game_data.src.action import Action
+from game_data.src.card import Card
 from game_data.src.person_fighting import Person_Fighting
 from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
 
@@ -27,6 +28,8 @@ class Fight_Scene():
         self.foes = foes
         self._turn_side = Side.allies
         self.actions = actions
+        self.card_in_resolution = None
+        self.targets_being_selected_ids = []
         if actions is None:
             self.actions = []
 
@@ -63,8 +66,15 @@ class Fight_Scene():
         result = create_tag("allies", self.side_to_string(Side.allies)) \
                  + create_tag("foes", self.side_to_string(Side.foes))
         result += create_tag("turn_side", self._turn_side.name)
-        action_strings = "\n".join([create_tag("action",str(action)) for action in self.actions])
+        action_strings = "\n".join([create_tag("action", str(action)) for action in self.actions])
         result += create_tag("actions", action_strings)
+        if self.card_in_resolution is None:
+            card_in_resolution_string = ""
+        else:
+            card_in_resolution_string = str(self.card_in_resolution)
+        result += create_tag("card_in_resolution", card_in_resolution_string)
+        targets_string = "\n".join([str(target_id) for target_id in self.targets_being_selected_ids])
+        result += create_tag("targets_being_selected_ids", targets_string)
         return result
 
     @classmethod
@@ -78,6 +88,13 @@ class Fight_Scene():
         actions_string, = detag_given_tags(string, "actions")
         list_of_action_strings = detag_repeated(actions_string, "action")
         actions = [Action.create_from_string(string) for string in list_of_action_strings]
-        side = Side[detag_given_tags(string, "turn_side")[0]]
-        return Fight_Scene(Fight_Scene.create_team_from_string(allies_string),
-                           Fight_Scene.create_team_from_string(foes_string), actions)
+        scene = Fight_Scene(Fight_Scene.create_team_from_string(allies_string),
+                            Fight_Scene.create_team_from_string(foes_string), actions)
+        scene._turn_side = Side[detag_given_tags(string, "turn_side")[0]]
+        card_in_resolution_string, targets_being_chosen_string = detag_given_tags(string, "card_in_resolution",
+                                                                                  "targets_being_selected_ids")
+        if card_in_resolution_string != "":
+            scene.card_in_resolution = Card.create_from_string(card_in_resolution_string)
+        if targets_being_chosen_string != "":
+            scene.targets_being_selected_ids = [int(target_id) for target_id in targets_being_chosen_string.split("\n")]
+        return scene

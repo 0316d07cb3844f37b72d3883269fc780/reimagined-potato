@@ -1,4 +1,3 @@
-import sys
 import tkinter
 import tkinter.filedialog as fd
 import tkinter.messagebox as mb
@@ -6,8 +5,9 @@ from enum import Enum
 from enum import auto as auto
 from os import path
 
-from utility.src.string_utils import *
 from global_variables import ROOT
+from utility.src.string_utils import *
+
 
 class Mode(Enum):
     card = auto()
@@ -23,12 +23,18 @@ class AttributeType(Enum):
     int = auto()
     single_file = auto()
     files_list = auto()
+    card = auto()
     cards = auto()
     card_collection = auto()
+    location = auto()
     person_base = auto()
     people = auto()
     deck = auto()
+    team_internal = auto()
     team = auto()
+    action_empty = auto()
+    turn_side_allies = auto()
+    empty = auto()
 
 
 file_extension_by_mode = {
@@ -47,16 +53,18 @@ for mode, extension in file_extension_by_mode.items():
 
 attributes_by_mode = {
     Mode.card: {
-        "type": AttributeType.string,
+        "card_type": AttributeType.string,
         "name": AttributeType.string,
         "action_factory": AttributeType.string,
         "speed": AttributeType.string,
         "target_checker": AttributeType.string,
+        "location": AttributeType.location,
         "scene_id": AttributeType.string
     },
 
     Mode.card_collection: {
         "cards": AttributeType.cards,
+        "scene_id": AttributeType.string,
     },
 
     Mode.person_base: {
@@ -65,12 +73,14 @@ attributes_by_mode = {
         "deck": AttributeType.deck,
         "scene_id": AttributeType.string,
         "person_type": AttributeType.string,
-
     },
 
     Mode.person_fighting: {
         "base_person": AttributeType.person_base,
-        "drapile": AttributeType.card_collection,
+        "actions": AttributeType.empty,
+        "resist": AttributeType.string,
+        "turn_ended": AttributeType.string,
+        "drawpile": AttributeType.card_collection,
         "hand": AttributeType.card_collection,
         "discardpile": AttributeType.card_collection,
         "scene_id": AttributeType.string,
@@ -78,11 +88,16 @@ attributes_by_mode = {
     },
 
     Mode.team: {
-        "team": AttributeType.team
+        "team": AttributeType.team_internal
     },
 
     Mode.scene: {
-
+        "allies": AttributeType.team,
+        "foes": AttributeType.team,
+        "turn_side": AttributeType.turn_side_allies,
+        "actions": AttributeType.empty,
+        "card_in_resolution": AttributeType.empty,
+        "targets_being_selected_ids": AttributeType.empty,
     },
 
 }
@@ -91,9 +106,11 @@ file_types = (("Card File", "*.card"),
               ("Collection File", "*.collection"),
               ("Person Base File", "*.person_base"),
               ("Person Fighting File", "*.person_fighting"),
-              ("Team File", ".team"),
-              ("Scene File", ".scene")
+              ("Team File", "*.team"),
+              ("Scene File", "*.scene")
               )
+
+name_by_ending = dict([(ending.replace("*", ""), name) for name, ending in file_types])
 
 
 class Widget:
@@ -114,9 +131,9 @@ class StringAttributeWidget(Widget):
         attribute_label = tkinter.Label(attribute_frame, text=tag)
         self.attribute_value = tkinter.Entry(attribute_frame)
         self.attribute_value.insert(0, value)
-        attribute_label.pack(side=tkinter.TOP)
-        self.attribute_value.pack(side=tkinter.BOTTOM)
-        attribute_frame.pack(side=tkinter.BOTTOM)
+        attribute_label.pack(side=tkinter.TOP, fill=tkinter.X)
+        self.attribute_value.pack(side=tkinter.TOP, fill=tkinter.X)
+        attribute_frame.pack(side=tkinter.TOP, fill=tkinter.X)
         self.attribute_type = "string"
 
     def value_as_tags(self):
@@ -130,9 +147,9 @@ class IntAttributeWidget(Widget):
         attribute_label = tkinter.Label(attribute_frame, text=tag)
         self.attribute_value = tkinter.Entry(attribute_frame)
         self.attribute_value.insert(0, value)
-        attribute_label.pack(side=tkinter.BOTTOM, fill=tkinter.X)
-        self.attribute_value.pack(side=tkinter.BOTTOM, fill=tkinter.X)
-        attribute_frame.pack(side=tkinter.BOTTOM, fill=tkinter.X)
+        attribute_label.pack(side=tkinter.TOP, fill=tkinter.X)
+        self.attribute_value.pack(side=tkinter.TOP, fill=tkinter.X)
+        attribute_frame.pack(side=tkinter.TOP, fill=tkinter.X)
         self.attribute_type = "int"
 
     def value_as_tags(self):
@@ -166,13 +183,15 @@ class ListItemWidget(Widget):
     def __init__(self, master, widget_list):
         self.widget_list = widget_list
         self.main_frame = tkinter.Frame(master, relief="sunken")
-        self.top_row_frame = tkinter.Frame(master)
-        self.widget_frame = tkinter.Frame(master)
-        self.top_row_frame.pack(), self.widget_frame.pack()
+        self.main_frame.pack()
+        self.top_row_frame = tkinter.Frame(self.main_frame)
+        self.widget_frame = tkinter.Frame(self.main_frame)
+        self.top_row_frame.pack()
+        self.widget_frame.pack()
         self.index = None
         self.contained_widget = None
         for command, text in [(self.add_item, "Add item above"), (self.move_up, "Move Up"),
-                              (self.add_item, "Add above")]:
+                              (self.delete_from_list, "Delete Me")]:
             new_button = tkinter.Button(master=self.top_row_frame, command=command, text=text)
             new_button.pack(side=tkinter.RIGHT)
 
@@ -201,7 +220,7 @@ class DeckAttributeWidget(Widget):
         attribute_frame = tkinter.Frame(master)
         attribute_label = tkinter.Label(attribute_frame, text=tag)
         self.attribute_value = tkinter.Text(attribute_frame)
-        self.attribute_value.insert(0, value)
+        self.attribute_value.insert(tkinter.INSERT, value)
         attribute_label.pack(fill=tkinter.X)
         self.attribute_value.pack(fill=tkinter.X)
         attribute_frame.pack(fill=tkinter.X)
@@ -221,10 +240,18 @@ class FileAttributeWidget(Widget):
         attribute_frame = tkinter.Frame(master)
         self.tag_label = tkinter.Label(attribute_frame, text=tag)
         value_frame = tkinter.Frame(attribute_frame)
-        self.value_editor = EditorState(super_editor_frame=value_frame, file_name=value,
-                                        starting_mode=restriction)
+        file_name, = detag_given_tags(value, "file")
+        if file_name != "":
+            self.value_editor = EditorState(super_editor_frame=value_frame, file_name=file_name,
+                                            mode_restriction=restriction)
+        else:
+            self.value_editor = EditorState(super_editor_frame=value_frame, file_name=None,
+                                            mode_restriction=restriction)
+            if value != "":
+                self.value_editor.set_main_fields_from_str(value)
+
         for widget in [attribute_frame, self.tag_label, value_frame]:
-            widget.pack(fill=tkinter.X)
+            widget.pack(side=tkinter.TOP, fill=tkinter.X)
         self.update_tag_label()
 
     @classmethod
@@ -248,20 +275,31 @@ class ListOfFilesAttributeWidget(Widget):
         self.tag = tag
         if elements_tag is None:
             self.elements_tag = tag
+        else:
+            self.elements_tag = elements_tag
         self.file_type_restriction = file_type_restriction
-        main_frame = tkinter.Frame(master)
-        main_frame.pack()
-        self.tag_label = tkinter.Label(main_frame, text=tag)
-        self.files_frame = tkinter.Frame(main_frame)
-        self.list_of_filenames = [detag_given_tags(tagged_entry, "file")[0] for tagged_entry in value.split(",")]
-        self.list_items = [ListItemWidget(self.files_frame, self) for _ in self.list_of_filenames]
-        self.list_of_file_widgets = [FileAttributeWidget(list_item.widget_frame, self.tag, name) for list_item, name in
-                                     zip(self.list_items, self.list_of_filenames)]
-        for list_item, file_widget in zip(self.list_items, self.list_of_file_widgets):
-            list_item.contained_widget = file_widget
-        self.scrollbar = tkinter.Scrollbar(self.files_frame, orient="vertical")
+        self.main_frame = tkinter.Frame(master)
+        self.tag_label = tkinter.Label(self.main_frame, text=tag)
+        self.files_frame = tkinter.Frame(self.main_frame)
+        self.tag_label.pack(side=tkinter.TOP)
+
+        if value == "":
+            self.list_of_filenames = []
+            self.list_items = [ListItemWidget(self.files_frame, self)]
+            self.list_of_file_widgets = [FileAttributeWidget(self.list_items[0].widget_frame, self.elements_tag, "")]
+            self.list_items[0].contained_widget = self.list_of_file_widgets[0]
+        else:
+            self.list_of_filenames = [detag_given_tags(tagged_entry, "file")[0] for tagged_entry in value.split(",")]
+            self.list_items = [ListItemWidget(self.files_frame, self) for _ in self.list_of_filenames]
+            self.list_of_file_widgets = [FileAttributeWidget(list_item.widget_frame, self.elements_tag, name) for
+                                         list_item, name in
+                                         zip(self.list_items, self.list_of_filenames)]
+            for list_item, file_widget in zip(self.list_items, self.list_of_file_widgets):
+                list_item.contained_widget = file_widget
+        self.files_frame.pack(side=tkinter.TOP,)
         self.repack()
-        self.bottom_row = tkinter.Frame(main_frame)
+        self.bottom_row = tkinter.Frame(self.main_frame)
+        self.main_frame.pack()
 
     @classmethod
     def get_custom_constructor(cls, restriction: Mode, elements_tag: str):
@@ -289,9 +327,10 @@ class ListOfFilesAttributeWidget(Widget):
 
     def add_item(self, index):
         new_list_item = ListItemWidget(self.files_frame, self)
-        new_file_widget = FileAttributeWidget(new_list_item.widget_frame, self.tag, value=None,
+        new_file_widget = FileAttributeWidget(new_list_item.widget_frame, self.tag, value="",
                                               restriction=self.file_type_restriction)
         new_list_item.contained_widget = new_file_widget
+        self.list_items.insert(index, new_list_item)
         self.list_of_file_widgets.insert(index, new_file_widget)
         self.repack()
 
@@ -299,8 +338,7 @@ class ListOfFilesAttributeWidget(Widget):
         for child in self.files_frame.winfo_children():
             child.pack_forget()
         for list_item in self.list_items:
-            list_item.widget_frame.pack()
-        self.scrollbar.pack(side="right", fill="y")
+            list_item.main_frame.pack(side=tkinter.TOP,)
 
     def set_indices(self):
         for i, list_item in enumerate(self.list_items):
@@ -329,13 +367,17 @@ widget_by_attribute_type = {
     AttributeType.string: StringAttributeWidget,
     AttributeType.int: IntAttributeWidget,
     AttributeType.files_list: ListOfFilesAttributeWidget,
+    AttributeType.card: FileAttributeWidget.get_custom_constructor(Mode.card),
     AttributeType.cards: ListOfFilesAttributeWidget.get_custom_constructor(Mode.card, "card"),
     AttributeType.card_collection: FileAttributeWidget.get_custom_constructor(Mode.card_collection),
+    AttributeType.location: StaticInvisibleWidget.get_custom_constructor(""),
     AttributeType.deck: DeckAttributeWidget,
     AttributeType.single_file: FileAttributeWidget,
     AttributeType.person_base: FileAttributeWidget.get_custom_constructor(Mode.person_base),
-    AttributeType.team: ListOfFilesAttributeWidget.get_custom_constructor(Mode.person_fighting, "fighter")
-
+    AttributeType.team_internal: ListOfFilesAttributeWidget.get_custom_constructor(Mode.person_fighting, "fighter"),
+    AttributeType.team: FileAttributeWidget.get_custom_constructor(Mode.team),
+    AttributeType.turn_side_allies: StaticInvisibleWidget.get_custom_constructor("allies"),
+    AttributeType.empty: StaticInvisibleWidget.get_custom_constructor(""),
 
 }
 
@@ -343,7 +385,7 @@ widget_by_attribute_type = {
 class EditorState:
     initial_directory = ROOT + "/resources/"
 
-    def __init__(self, super_editor_frame=None, file_name=None, starting_mode=Mode.card):
+    def __init__(self, super_editor_frame=None, file_name=None, mode_restriction=None):
 
         if super_editor_frame is None:
             self.root_window = tkinter.Tk()
@@ -359,8 +401,10 @@ class EditorState:
             my_canvas.create_window((0, 0), window=self.root, anchor="nw")
         else:
             self.root = super_editor_frame
-
-        self.mode = starting_mode
+        if mode_restriction is None:
+            self.mode = Mode.card
+        else:
+            self.mode = mode_restriction
         self.current_file_name = root_path(file_name)
         self.widgets = []
 
@@ -372,23 +416,30 @@ class EditorState:
         open_file_button = tkinter.Button(self.top_row, text="Open File", command=self.open_file)
         open_file_button.grid(column=0, row=0)
 
+        if mode_restriction is None:
+            relevant_modes = list(Mode)
+        else:
+            relevant_modes = [mode_restriction]
+
+        for i, next_mode in enumerate(relevant_modes, start=1):
+            mode_text = "New " + name_by_ending[file_extension_by_mode[next_mode]]
+            command = self.new_file(next_mode)
+            new_button = tkinter.Button(self.top_row, text=mode_text, command=command)
+            new_button.grid(column=i, row=0)
+
         save_button = tkinter.Button(self.top_row, text="Save", command=self.save)
-        save_button.grid(column=3, row=0)
+        save_button.grid(column=len(Mode) + 1, row=0)
 
         save_button = tkinter.Button(self.top_row, text="Save As", command=self.save_as)
-        save_button.grid(column=3, row=0)
-
-        new_card_button = tkinter.Button(self.top_row, text="New Card", command=self.new_card)
-        new_card_button.grid(column=1, row=0)
-
-        new_character_button = tkinter.Button(self.top_row, text="New Character", command=self.new_character)
-        new_character_button.grid(column=2, row=0)
+        save_button.grid(column=len(Mode) + 2, row=0)
 
         if file_name is not None:
             with open(self.current_file_name, "r") as file:
                 file_content = file.read()
 
             self.set_main_fields_from_str(file_content)
+        else:
+            self.set_main_fields()
 
     def clear_fields(self):
         for child in self.main_fields.winfo_children():
@@ -423,15 +474,13 @@ class EditorState:
             result += child.value_as_tags()
         return result
 
-    def new_card(self):
-        self.current_file_name = None
-        self.mode = Mode.card
-        self.set_main_fields()
+    def new_file(self, my_mode: Mode) -> callable:
+        def my_callable():
+            self.current_file_name = None
+            self.mode = my_mode
+            self.set_main_fields()
 
-    def new_character(self):
-        self.current_file_name = None
-        self.mode = Mode.person_base
-        self.set_main_fields()
+        return my_callable
 
     def save(self):
         if not path.exists(self.current_file_name):
