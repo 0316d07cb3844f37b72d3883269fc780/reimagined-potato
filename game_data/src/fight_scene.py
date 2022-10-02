@@ -4,6 +4,7 @@ Carries all state of a combat encounter.
 
 from enum import Enum
 
+from game_data.src.loadable import Loadable
 from game_data.src.action import Action
 from game_data.src.card import Card
 from game_data.src.person_fighting import Person_Fighting
@@ -15,7 +16,7 @@ class Side(Enum):
     foes = 1
 
 
-class Fight_Scene():
+class Fight_Scene(Loadable):
 
     def __init__(self, allies: list, foes: list, actions: list = None):
         """

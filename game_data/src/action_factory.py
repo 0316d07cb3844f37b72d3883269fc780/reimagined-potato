@@ -2,11 +2,12 @@
 Attribute of a card responsible for generating actions when the card resolves.
 """
 
+from game_data.src.loadable import Loadable
 from game_data.src.action import create_tackle, create_brace
 from enum import Enum
 
 
-class Action_Factory():
+class Action_Factory(Loadable):
     def __init__(self, factory_method, name : str):
         self.factory_method = factory_method
         self.factory_name = name

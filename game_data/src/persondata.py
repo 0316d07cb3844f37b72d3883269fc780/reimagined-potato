@@ -2,11 +2,12 @@
 Contains the Person class representing characters as game units. Contains attributes that persist between fights.
 """
 
+from game_data.src.loadable import Loadable
 from game_data.src.getter_scene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
 
 
-class PersonData:
+class PersonData(Loadable):
     legal_types = ["Testtype"]
 
     def __init__(self, max_health: int, type: str, deck: list = []):

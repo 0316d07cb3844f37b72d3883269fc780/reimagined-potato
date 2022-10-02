@@ -183,11 +183,11 @@ class ListItemWidget(Widget):
     def __init__(self, master, widget_list):
         self.widget_list = widget_list
         self.main_frame = tkinter.Frame(master, relief="sunken")
-        self.main_frame.pack()
+        self.main_frame.pack(side=tkinter.TOP)
         self.top_row_frame = tkinter.Frame(self.main_frame)
         self.widget_frame = tkinter.Frame(self.main_frame)
-        self.top_row_frame.pack()
-        self.widget_frame.pack()
+        self.top_row_frame.pack(side=tkinter.TOP)
+        self.widget_frame.pack(side=tkinter.TOP)
         self.index = None
         self.contained_widget = None
         for command, text in [(self.add_item, "Add item above"), (self.move_up, "Move Up"),
@@ -391,14 +391,14 @@ class EditorState:
             self.root_window = tkinter.Tk()
             main_frame = tkinter.Frame(self.root_window)
             main_frame.pack(fill="both", expand=1)
-            my_canvas = tkinter.Canvas(main_frame)
-            my_canvas.pack(side="left", fill="both", expand=1)
-            my_scrollbar = tkinter.Scrollbar(main_frame, orient="vertical", command=my_canvas.yview)
+            self.my_canvas = tkinter.Canvas(main_frame, confine=False)
+            self.my_canvas.pack(side="left", fill="both", expand=1)
+            my_scrollbar = tkinter.Scrollbar(main_frame, orient="vertical", command=self.my_canvas.yview)
             my_scrollbar.pack(side="right", fill="y")
-            my_canvas.configure(yscrollcommand=my_scrollbar.set)
-            my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
-            self.root = tkinter.Frame(my_canvas)
-            my_canvas.create_window((0, 0), window=self.root, anchor="nw")
+            self.my_canvas.configure(yscrollcommand=my_scrollbar.set)
+            self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
+            self.root = tkinter.Frame(self.my_canvas)
+            self.my_canvas.create_window((0, 0), window=self.root, anchor="nw")
         else:
             self.root = super_editor_frame
         if mode_restriction is None:
@@ -455,6 +455,8 @@ class EditorState:
         for tag, attribute_type in attributes_by_mode[self.mode].items():
             initial_value = dict_of_tags_and_values.get(tag, "")
             self.widgets.append(widget_by_attribute_type[attribute_type](self.main_fields, tag, initial_value))
+        if hasattr(self, "my_canvas"):
+            self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all"))
 
     def open_file(self):
 

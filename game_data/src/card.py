@@ -4,6 +4,7 @@ Contains the underlying data of a Card inside a scene.
 
 from enum import Enum
 
+from game_data.src.loadable import Loadable
 from game_data.src.action import Speed
 from game_data.src.action_factory import Action_Factories, create_from_string, Action_Factory
 from game_data.src.getter_scene import getter
@@ -21,7 +22,7 @@ class TargetChecker(Enum):
         return self.value[0](target_list)
 
 
-class Card:
+class Card(Loadable):
     def __init__(self, card_type: str, name: str, action_factory: Action_Factory, speed: Speed,
                  target_checker: TargetChecker,
                  location):

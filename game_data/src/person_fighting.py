@@ -2,6 +2,7 @@
 A person as it is in the Fight_Scene.
 """
 
+from game_data.src.loadable import Loadable
 from game_data.src.action import Action
 from game_data.src.card_collection import Card_Collection, create_drawpile
 from game_data.src.getter_scene import getter
@@ -10,7 +11,7 @@ from utility.src.string_utils import create_tag, detag_repeated, detag_given_tag
 from game_logic.src.engine_event import EngineEvent
 
 
-class Person_Fighting():
+class Person_Fighting(Loadable):
     def __init__(self, base_person: PersonData):
         self.base_person = base_person
         self.actions = []

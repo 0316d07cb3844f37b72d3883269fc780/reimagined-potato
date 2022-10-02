@@ -4,6 +4,7 @@ An action that a person will perform at the end of the turn.
 
 from enum import Enum
 
+from game_data.src.loadable import Loadable
 from game_data.src.getter_scene import getter
 from utility.src.string_utils import create_tag, get_id_list, detag_given_tags, root_path
 
@@ -15,7 +16,7 @@ class Speed(Enum):
     Instant = 3
 
 
-class Action:
+class Action(Loadable):
     def __init__(self, name: str, performer, target_list: list, method: callable, speed: Speed, stability: int,
                  action_id: int):
         self.name = name

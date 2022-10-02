@@ -4,12 +4,13 @@ Contains a collection of cards. Meant to be derived from.
 
 import random
 
+from game_data.src.loadable import Loadable
 from game_data.src.card import create_card, Card
 from game_data.src.getter_scene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
 
 
-class Card_Collection():
+class Card_Collection(Loadable):
     def __init__(self, card_list: list):
         self.cards = {}
         for card in card_list:
