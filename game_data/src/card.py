@@ -6,7 +6,7 @@ from enum import Enum
 
 from game_data.src.loadable import Loadable
 from game_data.src.action import Speed
-from game_data.src.action_factory import Action_Factories, create_from_string, Action_Factory
+from game_data.src.action_factory import Action_Factories, Action_Factory
 from game_data.src.getter_scene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, root_path
 
@@ -68,7 +68,7 @@ class Card(Loadable):
                                                                                                    "speed",
                                                                                                    "target_checker",
                                                                                                    "location")
-        action_factory = create_from_string(action_factory)
+        action_factory = Action_Factory.create_from_string(action_factory)
         speed = Speed[speed]
         target_checker = getattr(TargetChecker, target_checker)
         if location_string == "":

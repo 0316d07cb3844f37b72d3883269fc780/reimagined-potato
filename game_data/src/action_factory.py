@@ -3,7 +3,7 @@ Attribute of a card responsible for generating actions when the card resolves.
 """
 
 from game_data.src.loadable import Loadable
-from game_data.src.action import create_tackle, create_brace
+from game_data.src.action import *
 from enum import Enum
 
 
@@ -40,7 +40,5 @@ class Action_Factories(Action_Factory, Enum):
 
     tackle_factory = (create_tackle, "Tackle_Factory")
     brace_factory = (create_brace, "Brace_Factory")
+    side_step_factory = (create_side_step, "Sidestep_Factory")
 
-
-def create_from_string(string : str) -> Action_Factory:
-    return Factories[string]

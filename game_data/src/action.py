@@ -4,8 +4,8 @@ An action that a person will perform at the end of the turn.
 
 from enum import Enum
 
-from game_data.src.loadable import Loadable
 from game_data.src.getter_scene import getter
+from game_data.src.loadable import Loadable
 from utility.src.string_utils import create_tag, get_id_list, detag_given_tags, root_path
 
 
@@ -56,6 +56,19 @@ class Action(Loadable):
 
     def resolve(self) -> None:
         self.method(self.performer, self.target_list)
+        self.performer.actions.remove(self)
+
+    def damage(self, damage_amount):
+        self.stability -= damage_amount
+        if self.stability <= 0:
+            self.get_destroyed()
+
+    def get_destroyed(self):
+        del self
+
+
+def create_stunned(stunned_guy) -> Action:
+    return Action("Stunned", stunned_guy, [], lambda: None, Speed.Regular, 3, 0)
 
 
 def tackle_method(_, tackled_list):
@@ -72,10 +85,90 @@ def brace_method(bracer, _):
 
 
 def create_brace(bracer, braced=None) -> Action:
-    return Action("Brace", bracer, [], brace_method, Speed.Instant, 3, 2)
+    return Action("Brace", bracer, [], brace_method, Speed.Instant, 5, 2)
+
+
+def side_step_method(stepper, stepped_action_list):
+    stepped_action = stepped_action_list[0]
+    stepped_action.target_list.remove(stepper)
+
+
+def create_side_step(stepper, to_be_stepped):
+    return Action("Sidestep", stepper, [to_be_stepped], side_step_method, Speed.Fast, 3, 3)
+
+
+def crushing_blow_method(crusher, to_be_crushed_person):
+    to_be_crushed_person[0].damage(10)
+
+
+def create_crushing_blow(crusher, crushed):
+    return Action("Crushing Blow", crusher, [crushed], crushing_blow_method, Speed.Regular, 5, 4)
+
+
+def tail_swipe_method(swiper, to_be_swiped_action):
+    to_be_swiped_action[0].get_destroyed()
+
+
+def create_tail_swipe(swiper, to_be_swiped_action):
+    return Action("Tail Swipe", swiper, [to_be_swiped_action], tail_swipe_method, Speed.Fast, 3, 5)
+
+
+def reckless_assault_method(assaulter, assaulted):
+    assaulter.damage(3)
+    assaulted[0].damage(12)
+
+
+def create_reckless_assault(assaulter, assaulted):
+    return Action("Reckless Assault", assaulter, [assaulted], reckless_assault_method, Speed.Regular, 5, 6)
+
+
+def bark_skin_blessing_method (they_who_blesses, blessed):
+    they_who_blesses.resist += 3
+    blessed[0].resist += 10
+
+
+def create_bark_skin_blessing(they_who_blesses, blessed):
+    return Action("Bark Skin Blessing", they_who_blesses, [blessed], bark_skin_blessing_method, Speed.Instant, 1, 7)
+
+
+def engulf_in_flames_method(they_who_engulf, engulfed):
+    for _ in range(5):
+        engulfed[0].damage(3)
+
+
+def create_engulf_in_flames(they_who_engulf, engulfed):
+    return Action("Engulf in Flames", they_who_engulf, [engulfed], engulf_in_flames_method, Speed.Channel, 4, 8)
+
+
+def sunshine_blessing_method(they_who_blesses, blessed_action):
+    blessed_action[0].stability += 10
+
+
+def create_sunshine_blessing(they_who_blesses, blessed_action):
+    return Action("Sunshine Blessing", they_who_blesses, [blessed_action], sunshine_blessing_method, Speed.Instant, 2, 9)
+
+
+def mind_blast_method(blaster, blasted):
+    blasted[0].damage(3)
+
+
+def create_mind_blast(blaster, blasted):
+    return Action("Mind Blast", blaster, [blasted], mind_blast_method, Speed.Instant, 1, 10)
+
 
 
 creator_by_id = {
+    0: create_stunned,
     1: create_tackle,
-    2: create_brace
+    2: create_brace,
+    3: create_side_step,
+    4: create_crushing_blow,
+    5: create_tail_swipe,
+    6: create_reckless_assault,
+    7: create_bark_skin_blessing,
+    8: create_engulf_in_flames,
+    9: create_sunshine_blessing,
+    10: create_mind_blast,
+
+
 }

@@ -1,0 +1,32 @@
+All the things that can possibly happen to game state:
+
+action gets destroyed
+action gets created
+action gets damaged
+action gets resolved
+action changes targets
+
+character gets damaged
+character dies
+character flees
+
+card gets played
+card gets drawn
+card gets discarded
+
+discardpile gets shuffeled into drawpile
+
+How to add a new card:
+
+Make action method
+Make action creator function
+Add creator function to creator by id dict
+Make action factory element of action factories enum
+Make the card
+
+Things people can do:
+
+play a card
+select targets
+pass the turn
+
