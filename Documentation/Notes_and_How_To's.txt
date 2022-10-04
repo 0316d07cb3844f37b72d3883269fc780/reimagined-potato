@@ -23,6 +23,7 @@ Make action creator function
 Add creator function to creator by id dict
 Make action factory element of action factories enum
 Make the card
+Add to cards by string dict
 
 Things people can do:
 

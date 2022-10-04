@@ -13,7 +13,7 @@ class CombatEngine:
         self.next_substeps=[]
 
     def engine_loop(self):
-        while true:
+        while True:
             pass
 
     def process_event(self,event):

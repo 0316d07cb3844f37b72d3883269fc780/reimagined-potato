@@ -46,6 +46,7 @@ class Card(Loadable):
         if not self.target_checker(target_list):
             raise IndexError
         self.action_factory(player, target_list)
+        self.move(player.discardpile)
 
     def __str__(self) -> str:
         my_string = create_tag("card_type", self.card_type)
@@ -88,7 +89,9 @@ class Card(Loadable):
 
 
 def create_card(cardname, location) -> Card:
-    return cards_by_string[cardname](location)
+    my_card = cards_by_string[cardname](location)
+    location.add_card(my_card)
+    return my_card
 
 
 def create_tackle(location) -> Card:
@@ -103,6 +106,6 @@ def create_brace(location) -> Card:
 
 
 cards_by_string = {
-    "Tackle": create_tackle,
+    "Tackle": lambda location: Card.load_from_file("resources/Cards/tackle.card"),
     "Brace": create_brace
 }

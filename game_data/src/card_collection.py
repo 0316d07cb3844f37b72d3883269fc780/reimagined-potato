@@ -65,9 +65,10 @@ class Card_Collection(Loadable):
         :param card: the card to remove.
         :return:
         """
-        self.card_order.remove(card.scene_id)
-        self.cards.pop(card.scene_id)
-        card.location = None
+        if card in self:
+            self.card_order.remove(card.scene_id)
+            self.cards.pop(card.scene_id)
+            card.location = None
 
     def add_card(self, card: Card):
         """
