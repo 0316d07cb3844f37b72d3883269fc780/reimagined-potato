@@ -13,7 +13,9 @@ from utility.src.string_utils import create_tag, detag_given_tags, root_path
 
 class TargetChecker(Enum):
     no_target = lambda targetlist: len(targetlist) == 0, "no_target"
-    single_target = lambda targetlist: len(targetlist) == 1, "single_target"
+    single_target_non_card = lambda targetlist: len(targetlist) == 1, "single_target_non_card"
+    single_target_person = lambda targetlist: len(targetlist) == 1, "single_target_person"
+    single_target_action_or_stance = lambda targetlist: len(targetlist) == 1, "single_target_action_or_stance"
 
     def __str__(self):
         return self.name
@@ -77,7 +79,7 @@ class Card(Loadable):
             location = getter[int(location_string)]
         result = Card(card_type, name, action_factory, speed, target_checker, location)
         scene_id, = detag_given_tags(string, "scene_id")
-        if scene_id != "":
+        if scene_id != "" and scene_id != "auto":
             getter[int(scene_id)] = result
         return result
 
@@ -90,7 +92,7 @@ def create_card(cardname, location) -> Card:
 
 
 def create_tackle(location) -> Card:
-    tackle = Card("Tackle", "Tackle", Action_Factories.tackle_factory, Speed.Fast, TargetChecker.single_target,
+    tackle = Card("Tackle", "Tackle", Action_Factories.tackle_factory, Speed.Fast, TargetChecker.single_target_non_card,
                   location)
     return tackle
 

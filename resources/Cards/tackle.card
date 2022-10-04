@@ -1,0 +1,1 @@
+<card_type>Tackle<\card_type><name>Tackle<\name><action_factory>Tackle_Factory<\action_factory><speed>Fast<\speed><target_checker>single_target_non_card<\target_checker><location><\location><scene_id>auto<\scene_id>

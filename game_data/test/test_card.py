@@ -13,6 +13,10 @@ class CardCase(unittest.TestCase):
     def test_target_checker(self):
         pass
 
+    def test_load_tackle(self):
+        my_card = Card.load_from_file("resources/Cards/tackle.card")
+        self.assertEqual(my_card.card_type, "Tackle")
+
 
 if __name__ == '__main__':
     unittest.main()

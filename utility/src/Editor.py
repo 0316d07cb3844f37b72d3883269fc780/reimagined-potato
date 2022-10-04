@@ -359,7 +359,7 @@ class StaticInvisibleWidget(Widget):
     def get_custom_constructor(cls, default_value: str):
         return lambda master, tag, value: StaticInvisibleWidget(master, tag, default_value)
 
-    def get_value_as_tags(self):
+    def value_as_tags(self):
         return create_tag(self.tag, self.value)
 
 
