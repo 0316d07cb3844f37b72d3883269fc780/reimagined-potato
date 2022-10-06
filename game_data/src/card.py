@@ -16,6 +16,7 @@ class TargetChecker(Enum):
     single_target_non_card = lambda targetlist: len(targetlist) == 1, "single_target_non_card"
     single_target_person = lambda targetlist: len(targetlist) == 1, "single_target_person"
     single_target_action_or_stance = lambda targetlist: len(targetlist) == 1, "single_target_action_or_stance"
+    all_enemies = lambda: None, "all_enemies"
 
     def __str__(self):
         return self.name

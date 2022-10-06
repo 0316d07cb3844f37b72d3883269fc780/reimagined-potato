@@ -131,9 +131,10 @@ def create_bark_skin_blessing(they_who_blesses, blessed):
     return Action("Bark Skin Blessing", they_who_blesses, [blessed], bark_skin_blessing_method, Speed.Instant, 1, 7)
 
 
-def engulf_in_flames_method(they_who_engulf, engulfed):
+def engulf_in_flames_method(they_who_engulf, engulfeds):
     for _ in range(5):
-        engulfed[0].damage(3)
+        for engulfed in engulfeds:
+            engulfed.damage(3)
 
 
 def create_engulf_in_flames(they_who_engulf, engulfed):
@@ -154,6 +155,10 @@ def mind_blast_method(blaster, blasted):
 
 def create_mind_blast(blaster, blasted):
     return Action("Mind Blast", blaster, [blasted], mind_blast_method, Speed.Instant, 1, 10)
+
+
+def inspiration_method(inspired, _):
+    inspired.draw_Card()
 
 
 
