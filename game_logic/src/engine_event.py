@@ -2,8 +2,8 @@ class EngineEvent:
     _Events = []
 
     @classmethod
-    def trigger_event(cls, event):
-        cls._Events += event
+    def trigger_event(cls, string: str, **kwargs):
+        cls._Events.append(str)
 
     @classmethod
     def get_and_flush_events(cls):
