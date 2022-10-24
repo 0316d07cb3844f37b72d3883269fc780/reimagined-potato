@@ -32,7 +32,7 @@ class Test_String_Utils(unittest.TestCase):
         my_other_tackle=Action.create_from_string(my_string)
         self.assertEqual(my_tackle.name,my_other_tackle.name)
         self.assertEqual(my_tackle.target_list,my_other_tackle.target_list)
-        self.assertEqual(my_tackle.action_id,my_other_tackle.action_id)
+        self.assertEqual(my_tackle.action_id, my_other_tackle.action_id)
 
 
 

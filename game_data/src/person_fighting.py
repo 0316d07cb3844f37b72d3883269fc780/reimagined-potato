@@ -2,13 +2,13 @@
 A person as it is in the Fight_Scene.
 """
 
-from game_data.src.loadable import Loadable
 from game_data.src.action import Action
 from game_data.src.card_collection import Card_Collection, create_drawpile
 from game_data.src.getter_scene import getter
+from game_data.src.loadable import Loadable
 from game_data.src.persondata import PersonData
-from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags, root_path
 from game_logic.src.engine_event import EngineEvent
+from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags, root_path
 
 
 class Person_Fighting(Loadable):
@@ -51,21 +51,21 @@ class Person_Fighting(Loadable):
         action_strings = detag_repeated(actions_string, "action")
         my_person_fighting.actions.append(
             [Action.create_from_string(action_string) for action_string in action_strings])
-        resist, turn_ended=detag_given_tags(string, "resist", "turn_ended")
-        if (resist, turn_ended)!= ("",""):
-            my_person_fighting.resist, my_person_fighting.turn_ended=int(resist), bool(turn_ended)
+        resist, turn_ended = detag_given_tags(string, "resist", "turn_ended")
+        if (resist, turn_ended) != ("", ""):
+            my_person_fighting.resist, my_person_fighting.turn_ended = int(resist), bool(turn_ended)
         drawpile_string, hand_string, discardpile_string = detag_given_tags(string, "drawpile", "hand", "discardpile")
         my_person_fighting.drawpile = Card_Collection.create_from_string(drawpile_string)
         my_person_fighting.hand = Card_Collection.create_from_string(hand_string)
         my_person_fighting.discardpile = Card_Collection.create_from_string(discardpile_string)
-        id_string,=detag_given_tags(string, "scene_id")
-        getter[int(id_string)]=my_person_fighting
+        id_string, = detag_given_tags(string, "scene_id")
+        getter[int(id_string)] = my_person_fighting
         return my_person_fighting
 
     @classmethod
     def load_from_file(cls, card_name: str):
 
-        with open("/../../resources/cards/"+card_name,'r') as file:
+        with open("/../../resources/cards/" + card_name, 'r') as file:
             return cls.create_from_string(file.read())
 
     def damage(self, damage):
@@ -73,9 +73,7 @@ class Person_Fighting(Loadable):
             self.base_person.damage(damage - self.resist)
             self.resist = 0
         else:
-            self.resist -= damage
-        EngineEvent.trigger_event("Damage")
-
+            self.resist -= max(damage, 0)
 
     def play_Card(self, card, target_list):
         """
@@ -88,7 +86,6 @@ class Person_Fighting(Loadable):
             raise IndexError("Card not in Hand can't be played.")
         card.resolve(self, target_list)
         card.move(self.discardpile)
-        EngineEvent.trigger_event("Play Card")
 
     def draw_Card(self):
         if len(self.drawpile) != 0:
@@ -97,13 +94,11 @@ class Person_Fighting(Loadable):
         elif len(self.discardpile) != 0:
             self.shuffle_discardpile_into_drawpile()
             self.draw_Card()
-        EngineEvent.trigger_event("Draw Card")
 
     def shuffle_discardpile_into_drawpile(self):
         for card in self.discardpile.get_all_cards():
             card.move(self.drawpile)
         self.drawpile.shuffle()
-        EngineEvent.trigger_event("Shuffle Cards")
 
     def get_health(self):
         return self.base_person.health
@@ -113,6 +108,3 @@ class Person_Fighting(Loadable):
 
     def die(self):
         pass
-
-
-

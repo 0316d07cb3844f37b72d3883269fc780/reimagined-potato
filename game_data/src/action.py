@@ -34,7 +34,7 @@ class Action(Loadable):
         my_string += create_tag("target_id_list", [target.scene_id for target in self.target_list])
         my_string += create_tag("speed", self.speed.name)
         my_string += create_tag("stability", self.stability)
-        my_string += create_tag("action_id", self.action_id)
+        my_string += create_tag("stance_id", self.action_id)
         return my_string
 
     @classmethod
@@ -44,7 +44,7 @@ class Action(Loadable):
             with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
-        tags = "name", "performer_id", "target_id_list", "stability", "action_id"
+        tags = "name", "performer_id", "target_id_list", "stability", "stance_id"
         name, performer_id, target_id_list, stability, action_id = detag_given_tags(string, *tags)
         target_id_list = get_id_list(target_id_list)
         performer_id = int(performer_id)
@@ -59,9 +59,7 @@ class Action(Loadable):
         self.performer.actions.remove(self)
 
     def damage(self, damage_amount):
-        self.stability -= damage_amount
-        if self.stability <= 0:
-            self.get_destroyed()
+        self.stability -= max(damage_amount, 0)
 
     def get_destroyed(self):
         del self

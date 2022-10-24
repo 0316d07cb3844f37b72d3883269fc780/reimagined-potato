@@ -10,12 +10,13 @@ from utility.src.string_utils import *
 class Stance(Loadable):
 
     def __init__(self, name: str, performer, target_list: list, method: callable, stability: int,
-                 action_id: int):
+                 stance_id: int):
         self.name = name
         self.performer = performer
         self.target_list = target_list
         self.stability = stability
-        self.action_id = action_id
+        self.count = 1
+        self.stance_id = stance_id
         performer.append_action(self)
 
 
@@ -23,8 +24,9 @@ class Stance(Loadable):
         my_string = create_tag("name", self.name)
         my_string += create_tag("performer_id", self.performer.scene_id)
         my_string += create_tag("target_id_list", [target.scene_id for target in self.target_list])
+        my_string += create_tag("count", self.count)
         my_string += create_tag("stability", self.stability)
-        my_string += create_tag("action_id", self.action_id)
+        my_string += create_tag("stance_id", self.stance_id)
         return my_string
 
 
@@ -35,21 +37,18 @@ class Stance(Loadable):
             with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
-        tags = "name", "performer_id", "target_id_list", "stability", "action_id"
-        name, performer_id, target_id_list, stability, action_id = detag_given_tags(string, *tags)
+        tags = "name", "performer_id", "target_id_list", "stability", "count", "stance_id"
+        name, performer_id, target_id_list, stability, count, stance_id = detag_given_tags(string, *tags)
         target_id_list = get_id_list(target_id_list)
         performer_id = int(performer_id)
-        action_id = int(action_id)
+        stance_id = int(stance_id)
         target_list = [getter[target_id] for target_id in target_id_list]
-        action = creator_by_id[action_id](getter[performer_id], target_list)
-        action.stability = stability
-        return action
-
+        stance = creator_by_id[stance_id](getter[performer_id], target_list)
+        stance.stability = stability
+        return stance
 
     def damage(self, damage_amount):
-        self.stability -= damage_amount
-        if self.stability <= 0:
-            self.get_destroyed()
+        self.stability -= max(damage_amount, 0)
 
     def get_destroyed(self):
         del self

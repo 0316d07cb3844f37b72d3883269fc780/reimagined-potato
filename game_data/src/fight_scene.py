@@ -6,6 +6,7 @@ from enum import Enum
 
 from game_data.src.loadable import Loadable
 from game_data.src.action import Action
+from game_data.src.stance import Stance
 from game_data.src.card import Card
 from game_data.src.person_fighting import Person_Fighting
 from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
@@ -18,7 +19,7 @@ class Side(Enum):
 
 class Fight_Scene(Loadable):
 
-    def __init__(self, allies: list, foes: list, actions: list = None):
+    def __init__(self, allies: list, foes: list, actions: list = None, stances: list = None):
         """
 
         :param allies:
@@ -29,10 +30,13 @@ class Fight_Scene(Loadable):
         self.foes = foes
         self._turn_side = Side.allies
         self.actions = actions
+        self.stances = stances
         self.card_in_resolution = None
         self.targets_being_selected_ids = []
         if actions is None:
             self.actions = []
+        if stances is None:
+            self.stances = []
 
     @property
     def current_side(self) -> str:
@@ -68,7 +72,9 @@ class Fight_Scene(Loadable):
                  + create_tag("foes", self.side_to_string(Side.foes))
         result += create_tag("turn_side", self._turn_side.name)
         action_strings = "\n".join([create_tag("action", str(action)) for action in self.actions])
+        stances_strings = "\n".join([create_tag("stance", str(stance)) for stance in self.stances])
         result += create_tag("actions", action_strings)
+        result += create_tag("stances", stances_strings)
         if self.card_in_resolution is None:
             card_in_resolution_string = ""
         else:
@@ -89,8 +95,11 @@ class Fight_Scene(Loadable):
         actions_string, = detag_given_tags(string, "actions")
         list_of_action_strings = detag_repeated(actions_string, "action")
         actions = [Action.create_from_string(string) for string in list_of_action_strings]
+        stances_string, = detag_given_tags(string, "stances")
+        list_of_stance_strings = detag_repeated(stances_string, "stance")
+        stances = [Stance.create_from_string(string) for string in list_of_stance_strings]
         scene = Fight_Scene(Fight_Scene.create_team_from_string(allies_string),
-                            Fight_Scene.create_team_from_string(foes_string), actions)
+                            Fight_Scene.create_team_from_string(foes_string), actions, stances)
         scene._turn_side = Side[detag_given_tags(string, "turn_side")[0]]
         card_in_resolution_string, targets_being_chosen_string = detag_given_tags(string, "card_in_resolution",
                                                                                   "targets_being_selected_ids")
