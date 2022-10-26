@@ -5,14 +5,13 @@ from select import select
 from game_logic.src.networking_constants import *
 
 
-class Server_Networker():
+class ServerNetworker:
     def __init__(self, HOST : str = '127.0.0.1'):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((HOST, PORT))
         self.server_socket.listen(5)
         (connection, address) = self.server_socket.accept()
-        self.local_connection, self.local_adress=connection,address
-
+        self.local_connection, self.local_adress = connection, address
 
     def send(self, message: str):
         message = message.encode(FORMAT)

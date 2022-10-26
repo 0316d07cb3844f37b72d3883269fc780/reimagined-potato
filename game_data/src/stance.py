@@ -9,7 +9,7 @@ from utility.src.string_utils import *
 
 class Stance(Loadable):
 
-    def __init__(self, name: str, performer, target_list: list, method: callable, stability: int,
+    def __init__(self, name: str, performer, target_list: list, stability: int,
                  stance_id: int):
         self.name = name
         self.performer = performer
@@ -43,8 +43,8 @@ class Stance(Loadable):
         performer_id = int(performer_id)
         stance_id = int(stance_id)
         target_list = [getter[target_id] for target_id in target_id_list]
-        stance = creator_by_id[stance_id](getter[performer_id], target_list)
-        stance.stability = stability
+        stance = Stance(name, getter[performer_id], target_list, stability, stance_id)
+        stance.count = count
         return stance
 
     def damage(self, damage_amount):
@@ -54,6 +54,6 @@ class Stance(Loadable):
         del self
 
 
-creator_by_id = {
+substitutors_by_id = {
 
 }

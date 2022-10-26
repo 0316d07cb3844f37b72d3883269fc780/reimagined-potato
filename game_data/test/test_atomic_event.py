@@ -1,5 +1,5 @@
 import unittest
-from game_logic.src.atomic_event import AtomicEvent, EventType
+from game_data.src.atomic_event import AtomicEvent, EventType
 
 
 class MyTestCase(unittest.TestCase):

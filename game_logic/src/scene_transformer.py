@@ -1,4 +1,4 @@
-from atomic_event import EventType as et
+from game_data.src.atomic_event import EventType as et
 
 def transform(getter, atomic_event):
     """

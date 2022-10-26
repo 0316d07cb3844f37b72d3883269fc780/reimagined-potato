@@ -1,10 +1,10 @@
-from game_logic.src.server_networker import Server_Networker
+from game_logic.src.servernetworker import ServerNetworker
 from game_logic.src.combatengine import CombatEngine, ClientEvent
 from game_logic.src.engine_event import EngineEvent
 
 
 def start_server():
-    networker = Server_Networker()
+    networker = ServerNetworker()
     engine = CombatEngine()
     server_loop(networker, engine)
 
