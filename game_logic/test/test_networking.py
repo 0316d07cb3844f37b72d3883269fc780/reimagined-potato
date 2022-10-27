@@ -11,38 +11,34 @@ class TestInits(unittest.TestCase):
     def test_sending_and_recieving(self):
         my_process = Process(target=server_thread)
         my_process.start()
-        time.sleep(0.01)
         client = Client_Networker()
         client.send("test")
         for _ in range(60):
             client.send("test")
-        time.sleep(0.01)
         string = client.receive()
         self.assertEqual(string, "test")
         empty = client.receive()
         self.assertEqual(empty, "")
+        my_process.join()
         client.close()
 
     def test_server_waits_for_client(self):
         my_process = Process(target=patient_server)
         my_process.start()
-        time.sleep(0.1)
         client = Client_Networker()
         client.send("test")
         string = client.receive()
-        time.sleep(0.1)
         self.assertEqual(string, "success")
-        time.sleep(0.1)
+        my_process.join()
         client.close()
 
     def test_client_doesnt_wait_to_recieve(self):
         my_process = Process(target=patient_server)
         my_process.start()
-        time.sleep(0.1)
         client = Client_Networker()
         client.receive()
         client.send("done")
-        time.sleep(0.01)
+        my_process.join()
         client.close()
 
 
