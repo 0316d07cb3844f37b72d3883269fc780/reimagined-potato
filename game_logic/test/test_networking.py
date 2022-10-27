@@ -28,7 +28,7 @@ class TestInits(unittest.TestCase):
         client = Client_Networker()
         client.send("test")
         string = client.receive()
-        self.assertEqual(string, "success")
+        self.assertEqual("success", string)
         my_process.join()
         client.close()
 

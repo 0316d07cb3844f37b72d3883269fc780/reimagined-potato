@@ -13,14 +13,19 @@ class ServerNetworker:
         self.connections = []
 
     def check_for_connection(self):
-        if select([self.server_socket], [], [], 0.005)[0]:
+        """
+        Checks if someone wants to connect, connects if possible, returns None otherwise.
+        :return: connection or None
+        """
+        if select([self.server_socket], [], [], 0.003)[0]:
             (connection, address) = self.server_socket.accept()
             self.connections.append(connection)
             return connection
         else:
             return None
 
-    def send(self, message: str, connection):
+    @staticmethod
+    def send(message: str, connection):
         message = message.encode(FORMAT)
         message_length = len(message)
         message_length = str(message_length).encode(FORMAT)
@@ -30,6 +35,7 @@ class ServerNetworker:
 
     def receive(self) -> tuple:
         """
+        Get *a* message.
         :return: A tuple of a sent message and the connection it is coming from.
         """
         ready_connections = select(self.connections, [], [])[0]

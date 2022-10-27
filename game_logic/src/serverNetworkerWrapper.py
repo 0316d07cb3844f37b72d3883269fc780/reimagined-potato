@@ -1,38 +1,63 @@
-from utility.src.string_utils import *
-from game_data.src.getter_scene import getter
 from game_data.src.fight_scene import Fight_Scene
+from game_data.src.getter_scene import getter
+from game_logic.src.servernetworker import ServerNetworker
+from utility.src.string_utils import *
 
 
 class ServerNetworkerWrapper:
-    def __init__(self, networker):
-        self.networker=networker
+    def __init__(self, networker: ServerNetworker):
+        self.networker = networker
         self.player_to_connection = {}
 
     def send_to_all_players(self, string):
+        outdated_connections = []
         for connection in self.player_to_connection.values():
-            self.networker.send(string, connection)
+            try:
+                self.networker.send(string, connection)
+            except ConnectionError:
+                for player, other_connection in self.player_to_connection.items():
+                    if connection == other_connection:
+                        outdated_connections.append(player)
+        for player in outdated_connections:
+            del self.player_to_connection[player]
 
     def get_all_messages(self):
         """
-        Returns a list of tuples of messages and the scene_id of their sender.
-        :return:
+        Returns ClientEvents
+        :return: List of ClientEvents
         """
-        pass
+        return self.__get_all_messages_internal()
+
+    def __get_all_messages_internal(self, subresult: list = None):
+        if subresult is None:
+            subresult = []
+        while self.networker.check_for_connection() is not None:
+            pass
+        string, connection = self.networker.receive()
+        if connection is not None:
+            my_event = ClientEvent(string)
+            if my_event.event_type == "Introduction":
+                self.player_to_connection[my_event.person_id] = connection
+            else:
+                subresult.append(my_event)
+            return self.__get_all_messages_internal(subresult=subresult)
+        return subresult
 
 
 class ClientEvent:
 
     def __init__(self, string):
-        type, = detag_given_tags(string, "type")
-        if type == "set_fightscene":
-            scene_string = detag_given_tags(string, "scene")
-            self.fight_scene = Fight_Scene.create_scene_from_string()
+        self.event_type = detag_given_tags(string, "type")
+        if self.event_type == "Introduction":
+            self.person_id, = detag_given_tags(string, "person_id")
+        if self.event_type == "set_fightscene":
+            scene_string, = detag_given_tags(string, "scene")
+            self.fight_scene = Fight_Scene.create_scene_from_string(scene_string)
         player_id, = detag_given_tags(string, "player_id")
         self.player = getter[int(player_id)]
-        if type == "END_TURN":
-            self.event_type = "END_TURN"
+        if self.event_type == "END_TURN":
             return
-        if type == "PLAY_CARD":
+        if self.event_type == "PLAY_CARD":
             card_id, target_id_list = detag_given_tags(string, "card_id", "target_id_list")
             self.event_type = "PLAY_CARD"
             self.card = getter[int(card_id)]
