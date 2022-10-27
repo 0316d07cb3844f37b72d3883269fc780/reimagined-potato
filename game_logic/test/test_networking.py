@@ -48,7 +48,10 @@ class TestInits(unittest.TestCase):
 
 def server_thread():
     server = ServerNetworker()
-    server.send("test")
+    connection = None
+    while connection is None:
+        connection = server.check_for_connection()
+    server.send("test", connection)
     time.sleep(0.01)
     server.receive()
     for _ in range(60):
@@ -58,16 +61,22 @@ def server_thread():
 
 def patient_server():
     server = ServerNetworker()
-    string = server.receive()
+    connection = None
+    while connection is None:
+        connection = server.check_for_connection()
+    string, _ = server.receive()
     if string == "test":
-        server.send("success")
+        server.send("success", connection)
     else:
-        server.send("failure")
+        server.send("failure", connection)
     server.close()
 
 
 def silent_server():
-    server = ServerNetworker
+    server = ServerNetworker()
+    connection = None
+    while connection is None:
+        connection = server.check_for_connection()
     server.receive()
     server.close()
 
