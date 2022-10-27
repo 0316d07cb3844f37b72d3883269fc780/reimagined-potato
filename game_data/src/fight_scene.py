@@ -42,6 +42,10 @@ class Fight_Scene(Loadable):
     def current_side(self) -> str:
         return getattr(self, self._turn_side.name)
 
+    @property
+    def all_people(self):
+        return self.allies+self.foes
+
     def change_turn(self) -> None:
         if self._turn_side == Side.allies:
             self._turn_side = Side.foes

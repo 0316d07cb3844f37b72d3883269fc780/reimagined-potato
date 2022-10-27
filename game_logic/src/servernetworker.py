@@ -13,13 +13,15 @@ class ServerNetworker:
         (connection, address) = self.server_socket.accept()
         self.local_connection, self.local_adress = connection, address
 
-    def send(self, message: str):
+    def send(self, message: str, connection=None):
         message = message.encode(FORMAT)
         message_length = len(message)
         message_length = str(message_length).encode(FORMAT)
         message_length += " ".encode(FORMAT) * (HEADER - len(message_length))
-        self.local_connection.sendall(message_length)
-        self.local_connection.sendall(message)
+        if connection is None:
+            connection=self.local_connection
+        connection.sendall(message_length)
+        connection.sendall(message)
 
     def receive(self) -> str:
         if bool(select([self.local_connection], [], [])[0]):

@@ -8,8 +8,9 @@ from game_data.src.atomic_event import *
 
 
 class CombatEngine:
-    def __init__(self, fight_scene=None):
+    def __init__(self, networker_wrapper, fight_scene=None):
         self.fight_scene = fight_scene
+        self.networker_wrapper = networker_wrapper
         self.next_task = None
         self.atomic_events_scheduled = []
         self.atomic_events_history = []
@@ -20,11 +21,11 @@ class CombatEngine:
                 next_event = self.get_next_atomic_event()
                 to_do = self.apply_replacements(next_event)
                 for event in to_do:
-                    transform(getter, event)
-                    self.check_state_based_actions()
-                self.atomic_events_history += to_do
+                    self.process_atomic_event(event)
                 self.atomic_events_scheduled += self.triggered_events(to_do)
             self.check_state_based_actions()
+            list_of_messages_and_senders = self.networker_wrapper.get_all_messsages
+
 
     def check_state_based_actions(self):
         state_based_to_do = []
@@ -72,23 +73,4 @@ class CombatEngine:
 
     def check_if_fight_over(self, todo):
         pass
-
-
-class ClientEvent:
-
-    def __init__(self, string):
-        type, = detag_given_tags(string, "type")
-        if type == "set_fightscene":
-            scene_string = detag_given_tags(string, "scene")
-            self.fight_scene = Fight_Scene.create_scene_from_string()
-        player_id, = detag_given_tags(string, "player_id")
-        self.player = getter[int(player_id)]
-        if type == "END_TURN":
-            self.event_type = "END_TURN"
-            return
-        if type == "PLAY_CARD":
-            card_id, target_id_list = detag_given_tags(string, "card_id", "target_id_list")
-            self.event_type = "PLAY_CARD"
-            self.card = getter[int(card_id)]
-            self.target_list = [getter[int(target_id)] for target_id in target_id_list]
 
