@@ -6,6 +6,7 @@ from game_logic.src.scene_transformer import transform
 from game_data.src.getter_scene import getter
 from game_data.src.atomic_event import *
 
+from itertools import chain
 
 class CombatEngine:
     def __init__(self, networker_wrapper, fight_scene=None):
@@ -24,14 +25,17 @@ class CombatEngine:
                     self.process_atomic_event(event)
                 self.atomic_events_scheduled += self.triggered_events(to_do)
             self.check_state_based_actions()
-            list_of_messages_and_senders = self.networker_wrapper.get_all_messsages
+            list_of_client_events = self.networker_wrapper.get_all_messsages()
+            for event in list_of_client_events:
+                self.process_client_event(event)
+
 
 
     def check_state_based_actions(self):
         state_based_to_do = []
 
         self.check_if_fight_over(state_based_to_do)
-        self.check_if_someone_died(state_based_to_do)
+        self.check_if_someone_died_from_damage(state_based_to_do)
         self.check_if_turn_over(state_based_to_do)
 
         state_based_to_do = sum([self.apply_replacements(atomic_event) for atomic_event in state_based_to_do])
@@ -68,8 +72,13 @@ class CombatEngine:
         if all([person.turn_ended for person in self.fight_scene.current_side]):
             todo.append(AtomicEvent(EventType.change_sides))
 
-    def check_if_someone_died(self, todo):
-        pass
+    def check_if_someone_died_from_damage(self, todo):
+        for person in self.fight_scene.all_people:
+            if person.health <= 0:
+                todo.append(EventSomethingDied(person.scene_id))
+        for damagable in chain (self.fight_scene.actions, self.fight_scene.stances):
+            if damagable.stability <= 0:
+                todo.append(EventSomethingDied(damagable.scene_id))
 
     def check_if_fight_over(self, todo):
         pass

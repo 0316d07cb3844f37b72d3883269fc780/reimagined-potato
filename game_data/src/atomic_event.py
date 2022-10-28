@@ -14,6 +14,8 @@ class EventType(Enum):
     draw_card = "Card Draw"
     destroy = "Destroy"
     discard = "Discard Card"
+    allies_won = "Allies Won"
+    foes_won = "Foes Won"
 
 
 class AtomicEvent:
@@ -45,3 +47,8 @@ class EventPlayCard(AtomicEvent):
                          Card_Scene_Id=card_scene_id,
                          Card_Player=player_scene_id,
                          Targets_Scene_Id=targets_scene_ids)
+
+
+class EventSomethingDied(AtomicEvent):
+    def __init__(self, who):
+        super().__init__(EventType.destroy, Scene_Id = who)
