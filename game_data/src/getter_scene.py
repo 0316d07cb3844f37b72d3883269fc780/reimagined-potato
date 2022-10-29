@@ -24,8 +24,12 @@ class Getter_Scene:
         object_to_set.scene_id = new_id
         self.all_objects[new_id] = object_to_set
 
-    def __getitem__(self, scene_id):
-        return self.all_objects[scene_id]
+    def __getitem__(self, key):
+        return self.all_objects[key]
+        if isinstance(key, int):
+            return self.all_objects[key]
+        else:
+            return [self[scene_id] for scene_id in key]
 
 
 getter = Getter_Scene()

@@ -8,6 +8,7 @@ from game_data.src.atomic_event import *
 
 from itertools import chain
 
+
 class CombatEngine:
     def __init__(self, networker_wrapper, fight_scene=None):
         self.fight_scene = fight_scene
@@ -28,8 +29,6 @@ class CombatEngine:
             list_of_client_events = self.networker_wrapper.get_all_messsages()
             for event in list_of_client_events:
                 self.process_client_event(event)
-
-
 
     def check_state_based_actions(self):
         state_based_to_do = []
@@ -56,14 +55,12 @@ class CombatEngine:
         return self.atomic_events_scheduled.pop(0)
 
     def process_atomic_event(self, event):
-        transform(getter, event)
+        transform(event, getter, self.fight_scene)
         self.atomic_events_history.append(event)
 
     def process_client_event(self, event):
 
         if event.event_type=="PLAY_CARD":
-            event.cards.resolve(event.player, event.target_list)
-            event.player.turn_ended = True
             return
         if event.event_type=="END_TURN":
             pass
