@@ -1,6 +1,6 @@
 import unittest
 
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 
 
 class MyGetterTest(unittest.TestCase):

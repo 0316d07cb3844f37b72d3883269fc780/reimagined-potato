@@ -3,7 +3,7 @@ A stance a person controls. It passively affects transitions in game state and c
 """
 
 from game_data.src.loadable import Loadable
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 from utility.src.string_utils import *
 
 

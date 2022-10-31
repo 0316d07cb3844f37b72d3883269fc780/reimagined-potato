@@ -6,7 +6,7 @@ import random
 
 from game_data.src.loadable import Loadable
 from game_data.src.card import create_card, Card
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
 
 

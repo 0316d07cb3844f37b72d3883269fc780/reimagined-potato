@@ -3,7 +3,7 @@ Runs all the computations.
 """
 from game_data.src.fight_scene import Fight_Scene
 from game_logic.src.scene_transformer import transform
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 from game_data.src.atomic_event import *
 
 from itertools import chain

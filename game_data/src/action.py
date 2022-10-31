@@ -4,7 +4,7 @@ An action that a person will perform at the end of the turn.
 
 from enum import Enum
 
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
 from utility.src.string_utils import create_tag, get_id_list, detag_given_tags, root_path
 

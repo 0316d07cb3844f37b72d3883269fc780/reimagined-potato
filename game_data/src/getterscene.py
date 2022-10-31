@@ -3,15 +3,15 @@ Gets all objects of a Scene by ID if possible.
 """
 
 
-class Getter_Scene:
+class GetterScene:
     last_id = 0
 
     def __init__(self):
         self.all_objects = {}
 
     def register(self, object_to_register):
-        scene_id = Getter_Scene.last_id
-        Getter_Scene.last_id += 1
+        scene_id = GetterScene.last_id
+        GetterScene.last_id += 1
         self.all_objects[scene_id] = object_to_register
         object_to_register.scene_id = scene_id
         return scene_id
@@ -31,4 +31,4 @@ class Getter_Scene:
             return [self[scene_id] for scene_id in key]
 
 
-getter = Getter_Scene()
+getter = GetterScene()

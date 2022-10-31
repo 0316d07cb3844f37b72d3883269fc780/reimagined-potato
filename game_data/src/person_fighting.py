@@ -4,7 +4,7 @@ A person as it is in the Fight_Scene.
 
 from game_data.src.action import Action
 from game_data.src.card_collection import Card_Collection, create_drawpile
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
 from game_data.src.persondata import PersonData
 from game_logic.src.engine_event import EngineEvent

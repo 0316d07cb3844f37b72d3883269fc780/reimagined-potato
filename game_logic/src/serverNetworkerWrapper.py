@@ -1,5 +1,5 @@
 from game_data.src.fight_scene import Fight_Scene
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 from game_logic.src.servernetworker import ServerNetworker
 from utility.src.string_utils import *
 

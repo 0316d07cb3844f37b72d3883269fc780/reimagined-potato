@@ -7,7 +7,7 @@ from enum import Enum
 from game_data.src.loadable import Loadable
 from game_data.src.action import Speed
 from game_data.src.action_factory import Action_Factories, Action_Factory
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, root_path
 
 

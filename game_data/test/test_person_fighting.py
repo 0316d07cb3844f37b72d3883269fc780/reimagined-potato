@@ -1,7 +1,7 @@
 import unittest
 
 from game_data.src.card import create_tackle
-from game_data.src.getter_scene import getter
+from game_data.src.getterscene import getter
 from game_data.src.person_fighting import Person_Fighting as Person
 from test_person_data import make_person as make_person_data
 
