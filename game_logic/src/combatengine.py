@@ -25,7 +25,9 @@ class CombatEngine:
                 for event in to_do:
                     self.process_atomic_event(event)
                 self.atomic_events_scheduled += self.triggered_events(to_do)
-            self.check_state_based_actions()
+                self.check_state_based_actions()
+                self.send_out_history()
+                continue
             list_of_client_events = self.networker_wrapper.get_all_messsages()
             for event in list_of_client_events:
                 self.process_client_event(event)
@@ -59,15 +61,25 @@ class CombatEngine:
         self.atomic_events_history.append(event)
 
     def process_client_event(self, event):
+        if event.event_type == "set_fightscene":
+            self.fight_scene = event.fight_scene
+        if event.event_type == "PLAY_CARD":
+            atomic_event = AtomicEvent(EventType.play_card, card=event.card, player=event.player, )
+        if event.event_type == "END_TURN":
+            atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player)
+        self.atomic_events_scheduled.append(atomic_event)
 
-        if event.event_type=="PLAY_CARD":
-            return
-        if event.event_type=="END_TURN":
-            pass
+    def send_out_history(self):
+        result = ""
+        for event in self.atomic_events_history:
+            result += create_tag("event", str(event))
+        self.networker_wrapper.send_to_all_players(result)
+        self.atomic_events_history.clear()
 
     def check_if_turn_over(self, todo):
         if all([person.turn_ended for person in self.fight_scene.current_side]):
             todo.append(AtomicEvent(EventType.change_sides))
+
 
     def check_if_someone_died_from_damage(self, todo):
         for person in self.fight_scene.all_people:

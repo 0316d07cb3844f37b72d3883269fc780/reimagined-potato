@@ -1,4 +1,5 @@
 from game_data.src.atomic_event import EventType as et
+from game_data.src.person_fighting import Person_Fighting
 
 def transform(atomic_event, getter,  scene):
     """
@@ -10,18 +11,22 @@ def transform(atomic_event, getter,  scene):
     event_type, attributes = atomic_event.event_type, atomic_event.attributes
     if event_type == et.play_card:
         getter[atomic_event.card].resolve(getter[atomic_event.player], getter[atomic_event.target_list])
-        atomic_event.player.turn_ended = True
+        getter[atomic_event.player.turn_ended] = True
     elif event_type == et.target:
-        pass
+        getter[atomic_event.action].targetlist.append(getter[atomic_event.targeted])
     elif event_type == et.untarget:
-        pass
+        getter[atomic_event.action].targetlist.remove(getter[atomic_event.targeted])
     elif event_type == et.pass_priority:
-        pass
+        getter[atomic_event.passer].turn_ended = True
     elif event_type == et.damage:
-        pass
+        getter[atomic_event.damaged].damage(getter[atomic_event].damage)
     elif event_type == et.draw_card:
-        pass
+        getter[atomic_event.drawer].draw_Card()
     elif event_type == et.destroy:
-        pass
+        destroyed = getter[atomic_event.destroyed]
+        if isinstance(destroyed, Person_Fighting):
+            destroyed.die()
+        else:
+            destroyed.get_destroyed()
     elif event_type == et.discard:
-        pass
+        getter[atomic_event.discarded_card].move(getter[atomic_event].discarder.discardpile)

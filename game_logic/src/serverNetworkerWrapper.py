@@ -59,6 +59,5 @@ class ClientEvent:
             return
         if self.event_type == "PLAY_CARD":
             card_id, target_id_list = detag_given_tags(string, "card_id", "target_id_list")
-            self.event_type = "PLAY_CARD"
             self.card = getter[int(card_id)]
             self.target_list = [getter[int(target_id)] for target_id in target_id_list]
