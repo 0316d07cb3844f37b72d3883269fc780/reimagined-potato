@@ -21,7 +21,7 @@ def transform(atomic_event, getter,  scene):
     elif event_type == et.damage:
         getter[atomic_event.damaged].damage(getter[atomic_event].damage)
     elif event_type == et.draw_card:
-        getter[atomic_event.drawer].draw_Card()
+        getter[atomic_event.drawer].draw_card()
     elif event_type == et.destroy:
         destroyed = getter[atomic_event.destroyed]
         if isinstance(destroyed, Person_Fighting):

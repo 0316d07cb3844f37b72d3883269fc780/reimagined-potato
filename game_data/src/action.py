@@ -156,7 +156,7 @@ def create_mind_blast(blaster, blasted):
 
 
 def inspiration_method(inspired, _):
-    inspired.draw_Card()
+    inspired.draw_card()
 
 
 

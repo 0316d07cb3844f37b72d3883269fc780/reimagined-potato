@@ -5,6 +5,7 @@ from game_data.src.fight_scene import Fight_Scene
 from game_logic.src.scene_transformer import transform
 from game_data.src.getterscene import getter
 from game_data.src.atomic_event import *
+from typing import Callable
 
 from itertools import chain
 
@@ -19,7 +20,7 @@ class CombatEngine:
 
     def engine_loop(self):
         while True:
-            if len(self.atomic_events_scheduled) is not 0:
+            if self.atomic_events_scheduled:
                 next_event = self.get_next_atomic_event()
                 to_do = self.apply_replacements(next_event)
                 for event in to_do:
@@ -34,15 +35,23 @@ class CombatEngine:
 
     def check_state_based_actions(self):
         state_based_to_do = []
+        work_was_done_flag =False
+        checks = [self.check_if_someone_died_from_damage,
+                self.check_if_turn_over,
+                self.check_if_fight_over]
 
-        self.check_if_fight_over(state_based_to_do)
-        self.check_if_someone_died_from_damage(state_based_to_do)
-        self.check_if_turn_over(state_based_to_do)
+        for check in checks:
+            assert isinstance(check, Callable)
+            check(state_based_to_do)
+            state_based_to_do = sum([self.apply_replacements(atomic_event) for atomic_event in state_based_to_do])
+            for event in state_based_to_do:
+                self.process_atomic_event(event)
+                self.atomic_events_scheduled.append(self.triggered_events([state_based_to_do]))
+            if state_based_to_do:
+                work_was_done_flag = True
+            state_based_to_do.clear()
 
-        state_based_to_do = sum([self.apply_replacements(atomic_event) for atomic_event in state_based_to_do])
-        for event in state_based_to_do:
-            self.process_atomic_event(event)
-        if len(state_based_to_do) > 0:
+        if work_was_done_flag:
             self.check_state_based_actions()
 
     @staticmethod
@@ -61,6 +70,7 @@ class CombatEngine:
         self.atomic_events_history.append(event)
 
     def process_client_event(self, event):
+        atomic_event=None
         if event.event_type == "set_fightscene":
             self.fight_scene = event.fight_scene
         if event.event_type == "PLAY_CARD":
@@ -78,7 +88,10 @@ class CombatEngine:
 
     def check_if_turn_over(self, todo):
         if all([person.turn_ended for person in self.fight_scene.current_side]):
-            todo.append(AtomicEvent(EventType.change_sides))
+            self.process_atomic_event(AtomicEvent(EventType.change_sides))
+            if not self.fight_scene.actions:
+                self.atomic_events_scheduled.append()
+
 
 
     def check_if_someone_died_from_damage(self, todo):

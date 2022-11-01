@@ -21,11 +21,11 @@ class Test_Person_Fighting(unittest.TestCase):
         my_card = my_person.drawpile.get_a_card()
         my_card.move(my_person.discardpile)
         for _ in range(9):
-            my_person.draw_Card()
+            my_person.draw_card()
         self.assertEqual(len(my_person.drawpile), 0)
         self.assertEqual(len(my_person.discardpile), 1)
         self.assertEqual(len(my_person.hand), 9)
-        my_person.draw_Card()
+        my_person.draw_card()
         self.assertEqual(len(my_person.drawpile), 0)
         self.assertEqual(len(my_person.discardpile), 0)
         self.assertEqual(len(my_person.hand), 10)
@@ -34,7 +34,7 @@ class Test_Person_Fighting(unittest.TestCase):
         tackler, tackled = make_person(), make_person()
         create_tackle(tackler.hand)
         my_tackle = tackler.hand.get_a_card()
-        tackler.play_Card(my_tackle, [tackled])
+        tackler.play_card(my_tackle, [tackled])
         self.assertEqual(len(tackler.actions), 1)
 
     def test_getting_person_by_id(self):

@@ -75,7 +75,7 @@ class Person_Fighting(Loadable):
         else:
             self.resist -= max(damage, 0)
 
-    def play_Card(self, card, target_list):
+    def play_card(self, card, target_list):
         """
         Plays a card from hand.
         :param card: The card to be played.
@@ -87,13 +87,13 @@ class Person_Fighting(Loadable):
         card.resolve(self, target_list)
         card.move(self.discardpile)
 
-    def draw_Card(self):
+    def draw_card(self):
         if len(self.drawpile) != 0:
             card = self.drawpile.get_a_card()
             card.move(self.hand)
         elif len(self.discardpile) != 0:
             self.shuffle_discardpile_into_drawpile()
-            self.draw_Card()
+            self.draw_card()
 
     def shuffle_discardpile_into_drawpile(self):
         for card in self.discardpile.get_all_cards():

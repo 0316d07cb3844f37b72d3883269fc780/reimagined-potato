@@ -10,15 +10,18 @@ from utility.src.string_utils import create_tag, detag_given_tags, detag_repeate
 class PersonData(Loadable):
     legal_types = ["Testtype"]
 
-    def __init__(self, max_health: int, type: str, deck: list = []):
+    def __init__(self, max_health: int, person_type: str, deck: list = None):
         self.max_health = self.health = max_health
-        self.deck = deck
+        if deck is None:
+            self.deck = []
+        else:
+            self.deck = deck
         self.scene_id = getter.register(self)
 
-        if type in PersonData.legal_types:
-            self.person_type = type
+        if person_type in PersonData.legal_types:
+            self.person_type = person_type
         else:
-            raise Exception("Illegal type")
+            raise Exception("Illegal person_type")
 
     def __str__(self):
         my_string = create_tag("max_health", self.max_health) + create_tag("health", self.health)
@@ -48,7 +51,7 @@ class PersonData(Loadable):
 
     def damage(self, damage: int):
         self.health -= damage
-        if (self.health <= 0):
+        if self.health <= 0:
             self.die()
 
     def die(self):
