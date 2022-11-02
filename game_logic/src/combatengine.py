@@ -25,7 +25,6 @@ class CombatEngine:
                 to_do = self.apply_replacements(next_event)
                 for event in to_do:
                     self.process_atomic_event(event)
-                self.atomic_events_scheduled += self.triggered_events(to_do)
                 self.check_state_based_actions()
                 self.send_out_history()
                 continue
@@ -35,10 +34,10 @@ class CombatEngine:
 
     def check_state_based_actions(self):
         state_based_to_do = []
-        work_was_done_flag =False
+        work_was_done_flag = False
         checks = [self.check_if_someone_died_from_damage,
-                self.check_if_turn_over,
-                self.check_if_fight_over]
+                  self.check_if_turn_over,
+                  self.check_if_fight_over]
 
         for check in checks:
             assert isinstance(check, Callable)
@@ -60,6 +59,13 @@ class CombatEngine:
 
     def triggered_events(self, list_of_events):
         result = []
+        for event, trigger in list_of_events, self.triggers:
+            result.extend(trigger(event))
+        return result
+
+    @property
+    def triggers(self):
+        result = [stance.triggers for stance in self.fight_scene.stances]
         return result
 
     def get_next_atomic_event(self):
@@ -67,10 +73,12 @@ class CombatEngine:
 
     def process_atomic_event(self, event):
         transform(event, getter, self.fight_scene)
+        triggered_events = self.triggered_events([event])
+        self.atomic_events_scheduled.extend(triggered_events)
         self.atomic_events_history.append(event)
 
     def process_client_event(self, event):
-        atomic_event=None
+        atomic_event = None
         if event.event_type == "set_fightscene":
             self.fight_scene = event.fight_scene
         if event.event_type == "PLAY_CARD":

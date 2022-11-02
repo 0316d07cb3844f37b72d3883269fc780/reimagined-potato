@@ -5,6 +5,7 @@ A stance a person controls. It passively affects transitions in game state and c
 from game_data.src.loadable import Loadable
 from game_data.src.getterscene import getter
 from utility.src.string_utils import *
+from game_data.src.stance_triggers import trigger_by_stance_id
 
 
 class Stance(Loadable):
@@ -52,6 +53,10 @@ class Stance(Loadable):
 
     def get_destroyed(self):
         del self
+
+    @property
+    def triggers(self):
+        return trigger_by_stance_id[self.stance_id]
 
 
 substitutors_by_id = {

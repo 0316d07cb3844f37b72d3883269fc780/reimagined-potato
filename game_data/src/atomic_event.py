@@ -6,6 +6,7 @@ class EventType(Enum):
     play_card = "Play Card"
     create_action = "Create Action"
     create_stance = "Create Stance"
+    resolve_action = "Resolve Action"
     target = "Target"
     untarget = "Untarget"
     pass_priority = "Pass Priority"
@@ -14,6 +15,7 @@ class EventType(Enum):
     draw_card = "Card Draw"
     destroy = "Destroy"
     discard = "Discard Card"
+    redraw_hands = "Redraw Hands"
     allies_won = "Allies Won"
     foes_won = "Foes Won"
 
