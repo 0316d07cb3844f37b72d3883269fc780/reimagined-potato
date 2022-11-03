@@ -7,7 +7,7 @@ from enum import Enum
 from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
 from utility.src.string_utils import create_tag, get_id_list, detag_given_tags, root_path
-
+from game_data.src.atomic_event import *
 
 class Speed(Enum):
     Channel = 0
@@ -55,7 +55,7 @@ class Action(Loadable):
         return action
 
     def resolve(self) -> None:
-        self.method(self.performer, *self.target_list)
+        self.method(self.performer.scene_id, *self.target_list)
         self.performer.actions.remove(self)
 
     def damage(self, damage_amount):
@@ -69,8 +69,8 @@ def create_stunned(stunned_guy) -> Action:
     return Action("Stunned", stunned_guy, [], lambda: None, Speed.Regular, 3, 0)
 
 
-def tackle_method(_, tackled_list):
-    tackled_list[0].damage(6)
+def tackle_method(_, *tackled):
+    return damage(tackled, 6)
 
 
 def create_tackle(tackler, tackled_list: list) -> Action:
@@ -79,24 +79,23 @@ def create_tackle(tackler, tackled_list: list) -> Action:
 
 
 def brace_method(bracer, _):
-    bracer.resist += 4
+    return add_resist(bracer, 5)
 
 
 def create_brace(bracer, braced=None) -> Action:
-    return Action("Brace", bracer, [], brace_method, Speed.Instant, 5, 2)
+    return Action("Brace", bracer, [], brace_method, Speed.Instant, 2, 2)
 
 
-def side_step_method(stepper, stepped_action_list):
-    stepped_action = stepped_action_list[0]
-    stepped_action.target_list.remove(stepper)
+def side_step_method(stepper, stepped_action):
+    return AtomicEvent(EventType.untarget, action=stepped_action, targeted=stepper)
 
 
 def create_side_step(stepper, to_be_stepped):
     return Action("Sidestep", stepper, [to_be_stepped], side_step_method, Speed.Fast, 3, 3)
 
 
-def crushing_blow_method(crusher, to_be_crushed_person):
-    to_be_crushed_person[0].damage(10)
+def crushing_blow_method(_, to_be_crushed_person):
+    return damage(to_be_crushed_person, 10)
 
 
 def create_crushing_blow(crusher, crushed):

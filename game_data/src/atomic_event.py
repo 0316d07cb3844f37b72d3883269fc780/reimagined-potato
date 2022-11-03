@@ -12,6 +12,7 @@ class EventType(Enum):
     pass_priority = "Pass Priority"
     change_sides = "Change Sides"
     damage = "Damage"
+    add_resist = "Add Resist"
     draw_card = "Card Draw"
     destroy = "Destroy"
     discard = "Discard Card"
@@ -54,3 +55,11 @@ class EventPlayCard(AtomicEvent):
 class EventSomethingDied(AtomicEvent):
     def __init__(self, who):
         super().__init__(EventType.destroy, Scene_Id = who)
+
+
+def damage(what, by_how_much):
+    return AtomicEvent(EventType.damage, damaged=what, damage= by_how_much)
+
+
+def add_resist(who, how_much):
+    return AtomicEvent(EventType.add_resist, beneficiary=who, resist=how_much)
