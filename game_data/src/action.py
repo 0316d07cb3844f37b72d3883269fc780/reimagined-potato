@@ -55,7 +55,7 @@ class Action(Loadable):
         return action
 
     def resolve(self) -> None:
-        self.method(self.performer, self.target_list)
+        self.method(self.performer, *self.target_list)
         self.performer.actions.remove(self)
 
     def damage(self, damage_amount):

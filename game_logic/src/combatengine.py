@@ -3,6 +3,7 @@ Runs all the computations.
 """
 from game_data.src.fight_scene import Fight_Scene
 from game_logic.src.scene_transformer import transform
+from game_logic.src.triggers_built_in import builtins
 from game_data.src.getterscene import getter
 from game_data.src.atomic_event import *
 from typing import Callable
@@ -60,7 +61,7 @@ class CombatEngine:
     def triggered_events(self, list_of_events):
         result = []
         for event, trigger in list_of_events, self.triggers:
-            result.extend(trigger(event))
+            result.extend(trigger(event, getter, self.fight_scene))
         return result
 
     @property
@@ -98,9 +99,14 @@ class CombatEngine:
         if all([person.turn_ended for person in self.fight_scene.current_side]):
             self.process_atomic_event(AtomicEvent(EventType.change_sides))
             if not self.fight_scene.actions:
-                self.atomic_events_scheduled.append()
-
-
+                self.atomic_events_scheduled.append(AtomicEvent(EventType.redraw_hands))
+            else:
+                for action in self.fight_scene.actions[::-1]:
+                    if any([action is fighter.actions[-1] for fighter in self.fight_scene.current_side]):
+                        break
+                    else:
+                        event = AtomicEvent(EventType.resolve_action, action=action.scene_id)
+                        self.atomic_events_scheduled.append(event)
 
     def check_if_someone_died_from_damage(self, todo):
         for person in self.fight_scene.all_people:
@@ -111,5 +117,6 @@ class CombatEngine:
                 todo.append(EventSomethingDied(damagable.scene_id))
 
     def check_if_fight_over(self, todo):
-        pass
+        if not self.fight_scene.foes:
+            todo.append(AtomicEvent(EventType.allies_won))
 
