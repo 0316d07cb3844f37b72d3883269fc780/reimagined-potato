@@ -2,12 +2,12 @@
 An action that a person will perform at the end of the turn.
 """
 
-from enum import Enum
+from itertools import product
 
+from game_data.src.atomic_event import *
 from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
-from utility.src.string_utils import create_tag, get_id_list, detag_given_tags, root_path
-from game_data.src.atomic_event import *
+
 
 class Speed(Enum):
     Channel = 0
@@ -70,7 +70,7 @@ def create_stunned(stunned_guy) -> Action:
 
 
 def tackle_method(_, *tackled):
-    return damage(tackled, 6)
+    return [damage(tackled, 6)]
 
 
 def create_tackle(tackler, tackled_list: list) -> Action:
@@ -79,7 +79,7 @@ def create_tackle(tackler, tackled_list: list) -> Action:
 
 
 def brace_method(bracer, _):
-    return add_resist(bracer, 5)
+    return [add_resist(bracer, 5)]
 
 
 def create_brace(bracer, braced=None) -> Action:
@@ -87,7 +87,7 @@ def create_brace(bracer, braced=None) -> Action:
 
 
 def side_step_method(stepper, stepped_action):
-    return AtomicEvent(EventType.untarget, action=stepped_action, targeted=stepper)
+    return [AtomicEvent(EventType.untarget, action=stepped_action, targeted=stepper)]
 
 
 def create_side_step(stepper, to_be_stepped):
@@ -95,15 +95,15 @@ def create_side_step(stepper, to_be_stepped):
 
 
 def crushing_blow_method(_, to_be_crushed_person):
-    return damage(to_be_crushed_person, 10)
+    return [damage(to_be_crushed_person, 10)]
 
 
 def create_crushing_blow(crusher, crushed):
     return Action("Crushing Blow", crusher, [crushed], crushing_blow_method, Speed.Regular, 5, 4)
 
 
-def tail_swipe_method(swiper, to_be_swiped_action):
-    to_be_swiped_action[0].get_destroyed()
+def tail_swipe_method(_, to_be_swiped_action):
+    return [destroy(to_be_swiped_action)]
 
 
 def create_tail_swipe(swiper, to_be_swiped_action):
@@ -111,17 +111,15 @@ def create_tail_swipe(swiper, to_be_swiped_action):
 
 
 def reckless_assault_method(assaulter, assaulted):
-    assaulter.damage(3)
-    assaulted[0].damage(12)
+    return [damage(assaulter, 3), damage(assaulted, 12)]
 
 
 def create_reckless_assault(assaulter, assaulted):
     return Action("Reckless Assault", assaulter, [assaulted], reckless_assault_method, Speed.Regular, 5, 6)
 
 
-def bark_skin_blessing_method (they_who_blesses, blessed):
-    they_who_blesses.resist += 3
-    blessed[0].resist += 10
+def bark_skin_blessing_method(they_who_blesses, blessed):
+    return add_resist(they_who_blesses, 3), add_resist(blessed, 10)
 
 
 def create_bark_skin_blessing(they_who_blesses, blessed):
@@ -129,9 +127,7 @@ def create_bark_skin_blessing(they_who_blesses, blessed):
 
 
 def engulf_in_flames_method(they_who_engulf, engulfeds):
-    for _ in range(5):
-        for engulfed in engulfeds:
-            engulfed.damage(3)
+    return [damage(engulfed, 3) for _, engulfed in product(range(5), engulfeds)]
 
 
 def create_engulf_in_flames(they_who_engulf, engulfed):
@@ -139,15 +135,16 @@ def create_engulf_in_flames(they_who_engulf, engulfed):
 
 
 def sunshine_blessing_method(they_who_blesses, blessed_action):
-    blessed_action[0].stability += 10
+    return add_stability(blessed_action, 10),
 
 
 def create_sunshine_blessing(they_who_blesses, blessed_action):
-    return Action("Sunshine Blessing", they_who_blesses, [blessed_action], sunshine_blessing_method, Speed.Instant, 2, 9)
+    return Action("Sunshine Blessing", they_who_blesses, [blessed_action], sunshine_blessing_method, Speed.Instant, 2,
+                  9)
 
 
 def mind_blast_method(blaster, blasted):
-    blasted[0].damage(3)
+    return damage(blasted, 3),
 
 
 def create_mind_blast(blaster, blasted):
@@ -155,8 +152,7 @@ def create_mind_blast(blaster, blasted):
 
 
 def inspiration_method(inspired, _):
-    inspired.draw_card()
-
+    return AtomicEvent(EventType.draw_card, drawer=inspired), *2
 
 
 creator_by_id = {
@@ -171,6 +167,5 @@ creator_by_id = {
     8: create_engulf_in_flames,
     9: create_sunshine_blessing,
     10: create_mind_blast,
-
 
 }

@@ -13,6 +13,7 @@ class EventType(Enum):
     change_sides = "Change Sides"
     damage = "Damage"
     add_resist = "Add Resist"
+    add_stability = "Add Stability"
     draw_card = "Card Draw"
     destroy = "Destroy"
     discard = "Discard Card"
@@ -63,3 +64,11 @@ def damage(what, by_how_much):
 
 def add_resist(who, how_much):
     return AtomicEvent(EventType.add_resist, beneficiary=who, resist=how_much)
+
+
+def add_stability(who, how_much):
+    return AtomicEvent(EventType.add_stability, beneficiary=who, resist=how_much)
+
+
+def destroy(who):
+    return AtomicEvent(EventType.destroy, destroyed=who)
