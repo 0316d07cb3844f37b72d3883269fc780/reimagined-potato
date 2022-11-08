@@ -5,14 +5,11 @@ import game_io
 from pygame.locals import *
 from game_io.button import Button
 from game_io.image_util import stack_vertical
-from game_logic.src.server import start_server
 from game_logic.src.client_networker import Client_Networker
 from game_io.client_event import ClientEvent
 
 
 def main():
-    # start server
-    start_server()
     # start pygame
     pygame.init()
     screen = pygame.display.set_mode((1800, 800))
@@ -54,6 +51,7 @@ def client_loop(allsprites, screen, background, networker):
 
     pygame.quit()
 
+
 def get_engine_events(networker : Client_Networker):
     event=networker.receive()
     result=[]
@@ -67,6 +65,7 @@ def handle_engine_events(events):
     for event in events:
         pass
 
+
 def button_test(allsprites):
     button_image = pygame.Surface([200, 40])
     button_image.fill([140, 140, 120])
@@ -77,7 +76,7 @@ def button_test(allsprites):
     button_images = [button_image, button_image.copy(), button_image.copy()]
     button_images[1].fill([120, 120, 105])
     button_images[2].fill([100, 100, 90])
-    my_Button = Button(button_text, button_images, button_rect, [lambda: print("beep booop")])
+    my_Button = Button(button_images, button_rect, button_text, [lambda: print("beep booop")])
     my_Button.add(allsprites)
 
 
@@ -95,4 +94,5 @@ def guy_test(allsprites):
     my_sprite.add(allsprites)
 
 
-main()
+if __name__ == "__main__":
+    main()
