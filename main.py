@@ -1,12 +1,9 @@
 import pygame
-import game_data
-import game_logic
-import game_io
 from pygame.locals import *
-from game_io.button import Button
-from game_io.image_util import stack_vertical
+from game_io.src.button import Button
+from game_io.src.image_util import stack_vertical
 from game_logic.src.client_networker import Client_Networker
-from game_io.client_event import ClientEvent
+from game_io.src.client_event import ClientEvent
 
 
 def main():
@@ -52,7 +49,7 @@ def client_loop(allsprites, screen, background, networker):
     pygame.quit()
 
 
-def get_engine_events(networker : Client_Networker):
+def get_engine_events(networker: Client_Networker):
     event=networker.receive()
     result=[]
     while event != "":

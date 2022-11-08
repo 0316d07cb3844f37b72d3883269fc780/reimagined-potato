@@ -1,4 +1,4 @@
-import game_io.person_io as person_io
+import game_io.src.person_io as person_io
 import game_data.src.persondata as person_data
 import pygame
 
@@ -9,7 +9,7 @@ def test(allsprites):
     except pygame.error as message:
         print("Cannot load: " + "resources/testguy.bmp")
         raise SystemExit(message)
-    person = person_io.Person_IO(person, [1000,400])
+    person = person_io.Person_IO(person, [1000, 400])
     person.add(allsprites)
 
 

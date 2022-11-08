@@ -6,8 +6,9 @@ import pygame
 from pygame.constants import RLEACCEL
 from pygame.sprite import Sprite
 
-from game_io.image_util import stack_vertical
+from game_io.src.image_util import stack_vertical
 from game_data.src.person_fighting import Person_Fighting
+from utility.src.string_utils import root_path
 
 
 class Person_IO(Sprite):
@@ -20,7 +21,7 @@ class Person_IO(Sprite):
         """
         name, imagelocation = type_to_looks[person_fighting.base_person.person_type]
         try:
-            image = pygame.image.load(imagelocation)
+            image = pygame.image.load(root_path(imagelocation))
         except pygame.error as message:
             print("Cannot load: " + imagelocation)
             raise SystemExit(message)
