@@ -1,7 +1,7 @@
 import pygame as pg
 
 
-def test(sprite_maker):
+def test_sprite(sprite_maker):
     pg.init()
     clock = pg.time.Clock()
     screen = pg.display.set_mode((1280, 700), pg.SCALED)
@@ -24,3 +24,13 @@ def test(sprite_maker):
         allsprites.draw(screen)
 
         pg.display.flip()
+
+
+def test_surface(surface_maker):
+    def sprite_maker():
+        sprite = pg.sprite.Sprite()
+        sprite.image = surface_maker()
+        sprite.rect = sprite.image.get_rect()
+        return sprite
+
+    test_sprite(sprite_maker)
