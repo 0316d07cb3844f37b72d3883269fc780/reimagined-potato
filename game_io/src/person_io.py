@@ -37,7 +37,7 @@ class Person_IO(Sprite):
         text_name_render = font.render(text_name, 1, [1, 1, 1])
         text_health_render = font.render(text_health, 1, [1, 1, 1])
         text_resist_render = font.render(text_resist, 1, [1, 1, 1])
-        self.image = stack_vertical([image, text_name_render, text_health_render, text_resist_render])
+        self.image = stack_vertical(image, text_name_render, text_health_render, text_resist_render)
         self.rect = self.image.get_rect()
         self.rect.center = position
 

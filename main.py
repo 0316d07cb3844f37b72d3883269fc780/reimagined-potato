@@ -86,7 +86,7 @@ def guy_test(allsprites):
         raise SystemExit(message)
     image = image.convert()
     image.set_colorkey(image.get_at((0, 0)), RLEACCEL)
-    image = stack_vertical([image, image])
+    image = stack_vertical(image, image)
     my_sprite.image, my_sprite.rect = image, image.get_rect()
     my_sprite.add(allsprites)
 

@@ -9,6 +9,10 @@ class MyTestCase(unittest.TestCase):
         make_text = lambda: make_text_field(text, size=20)
         test_surface(make_text)
 
+    def test_make_image(self):
+        make_test_image= lambda : make_image("resources/Testguy.bmp")
+        test_surface(make_test_image)
+
 
 if __name__ == '__main__':
     unittest.main()
