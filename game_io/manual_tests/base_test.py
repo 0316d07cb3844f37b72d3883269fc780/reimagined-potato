@@ -4,7 +4,7 @@ import pygame as pg
 def test_sprite(sprite_maker):
     pg.init()
     clock = pg.time.Clock()
-    screen = pg.display.set_mode((1280, 700), pg.SCALED)
+    screen = pg.display.set_mode((1920, 1080), pg.FULLSCREEN)
     sprite = sprite_maker()
     sprite.rect.center = screen.get_rect().center
     allsprites = pg.sprite.RenderPlain((sprite,))

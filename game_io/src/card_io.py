@@ -1,20 +1,27 @@
 from pygame.sprite import Sprite
 
+from game_io.src.button import Button
 from game_data.src.card import Card
 from game_io.src.image_util import *
+from game_io.src.targetable_utils import *
 
 
-class CardIO(Sprite):
-    def __init__(self, card: Card):
-        super().__init__()
+class CardIO(Button):
+    def __init__(self, card: Card, center_position):
         self.card_data = card
-        self.image = make_card_image(card)
+        image = make_card_image(card)
         self.rect = self.image.get_rect()
+        self.rect.center = center_position
+        super().__init__(image_to_images_hovered_and_pressed(image), rect=self.rect)
 
 
 def make_card_image(card: Card):
     top_row = make_top_row(card.name, card.speed)
-    image = make_image(type_to_image_path[card.card_type])
+    if card.card_type in type_to_image:
+        image= type_to_image[card.card_type]
+    else:
+        image = make_image(type_to_image_path[card.card_type])
+        type_to_image[card.card_type] = image
     textfield = make_text_field(type_to_card_text[card.card_type])
     return stack_vertical(top_row, image, textfield)
 
@@ -29,6 +36,8 @@ type_to_image_path = {
     "Tackle": "",
     "Brace": ""
 }
+
+type_to_image = {}
 
 type_to_card_text = {
     "Tackle": "",
