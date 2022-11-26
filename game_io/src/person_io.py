@@ -6,7 +6,7 @@ import pygame
 from pygame.constants import RLEACCEL
 from pygame.sprite import Sprite
 
-from game_io.src.image_util import stack_vertical
+from game_io.src.image_util import stack_vertical, make_text_field
 from game_data.src.person_fighting import Person_Fighting
 from utility.src.string_utils import root_path
 
@@ -33,10 +33,9 @@ class Person_IO(Sprite):
         text_name = name
         text_health = "Health: " + str(person_fighting.base_person.health) + "/" + str(person_fighting.base_person.max_health)
         text_resist = "Resist: " + str(person_fighting.resist)
-        font = pygame.font.Font(None, 36)
-        text_name_render = font.render(text_name, 1, [1, 1, 1])
-        text_health_render = font.render(text_health, 1, [1, 1, 1])
-        text_resist_render = font.render(text_resist, 1, [1, 1, 1])
+        text_name_render = make_text_field(text_name)
+        text_health_render = make_text_field(text_health)
+        text_resist_render = make_text_field(text_resist)
         self.image = stack_vertical(image, text_name_render, text_health_render, text_resist_render)
         self.rect = self.image.get_rect()
         self.rect.center = position
