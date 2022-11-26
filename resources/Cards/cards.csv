@@ -1,2 +1,6 @@
 #name; #text; #imagepath
-;;
+tackle;Deal 6 damage to target.;
+brace;Gain 5 resist.;
+side_step;Avoid target action targeting you.;
+crushing_blow;Deal 10 damage to target person.;
+tail_swipe;Destroy target Stance or Action.;
