@@ -55,6 +55,10 @@ class Stance(Loadable):
         del self
 
     @property
+    def blueprint_id(self):
+        return self.stance_id
+
+    @property
     def triggers(self):
         return trigger_by_stance_id[self.stance_id]
 

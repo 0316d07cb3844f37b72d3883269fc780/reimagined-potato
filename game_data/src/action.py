@@ -54,6 +54,10 @@ class Action(Loadable):
         action.stability = stability
         return action
 
+    @property
+    def blueprint_id(self):
+        return self.action_id
+
     def resolve(self) -> None:
         self.method(self.performer.scene_id, *self.target_list)
         self.performer.actions.remove(self)

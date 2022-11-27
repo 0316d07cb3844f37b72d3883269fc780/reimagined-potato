@@ -37,6 +37,10 @@ class Person_Fighting(Loadable):
         my_string += create_tag("scene_id", self.scene_id)
         return my_string
 
+    @property
+    def blueprint_id(self):
+        return self.base_person.person_type
+
     @classmethod
     def create_from_string(cls, string: str):
         possible_filename = detag_given_tags("file")
