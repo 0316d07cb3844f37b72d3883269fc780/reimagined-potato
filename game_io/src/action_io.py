@@ -2,6 +2,7 @@ from game_data.src.action import Action
 from game_io.src.button import Button
 from game_io.src.image_util import *
 from game_io.src.targetable_utils import *
+from game_io.src.portrait_io import Portrait
 
 
 class ActionIO(Button):
@@ -17,7 +18,14 @@ def make_action_image(action):
     name_image = make_text_field(action.name)
     middle_row = make_middle_row(action.stability, action.speed)
     bottom_row = make_bottom_row(action)
-    return stack_vertical(name_image, middle_row, bottom_row)
+    result = stack_vertical(name_image, middle_row, bottom_row)
+    return stack_horizontal(make_left_main_part(action), result)
+
+
+def make_left_main_part(action):
+    performer_face = get_portrait(action.performer.scene_id)
+    action_image = get_action_image(action.action_id)
+    return stack_horizontal(performer_face, action_image)
 
 
 def make_middle_row(stability, speed):
@@ -27,22 +35,18 @@ def make_middle_row(stability, speed):
 
 
 def make_bottom_row(action):
-    performer_face = get_portrait(action.performer.scene_id)
-    action_image = get_action_image(action.action_id)
+
     target_faces = [get_portrait(scene_id) for scene_id in action.target_list]
-    return stack_horizontal(performer_face, action_image, *target_faces)
+    return stack_horizontal(*target_faces)
 
 
 def get_portrait(scene_id):
     if scene_id in portrait_by_id:
         return portrait_by_id[scene_id]
     else:
-        return make_image(portrait_path_by_id[scene_id])
+        portrait_by_id[scene_id] = Portrait(scene_id)
+        return portrait_by_id[scene_id]
 
-
-portrait_path_by_id = {
-
-}
 
 portrait_by_id = {}
 
