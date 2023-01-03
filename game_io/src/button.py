@@ -20,6 +20,9 @@ class Button (pygame.sprite.Sprite):
     A button that calls all functions on a list when pressed.
     """
 
+    # Ensures only one button can be interacted with with the mouse.
+    mouse_interacted_with_button = False
+
     def __init__(self, background_images, rect, text="", on_click=None):
         """
         Creates a button ready to be rendered and used.
@@ -60,6 +63,7 @@ class Button (pygame.sprite.Sprite):
             self.state = State.HOVERED
             self.image = self.background_images[1]
             self.update()
+            Button.mouse_interacted_with_button = True
 
     def update_hovered(self):
         if not self.rect.collidepoint(mouse.get_pos()):
@@ -70,12 +74,18 @@ class Button (pygame.sprite.Sprite):
                 [todo() for todo in self.on_click]
                 self.image=self.background_images[2]
                 self.state=State.PRESSED
+        Button.mouse_interacted_with_button = True
 
     def update_pressed(self):
         if not mouse.get_pressed()[0]:
             self.image = self.background_images[1]
             self.state = State.HOVERED
             self.update()
+        Button.mouse_interacted_with_button = True
+
+    @classmethod
+    def update_class(cls):
+        cls.mouse_interacted_with_button = False
 
     updater = {
         State.NEUTRAL: update_neutral,

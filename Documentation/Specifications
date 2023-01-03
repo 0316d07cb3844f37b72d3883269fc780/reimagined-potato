@@ -2,3 +2,15 @@ Card: 400x800, image 400x300, Textbox 400x400, Namebar 400x100
     mostly displayed halfsize
 
 Character: image:600x800
+    mostly displayed halfsize
+
+Screen Width 1920
+Screen Height 1080
+
+Screen divided as follows:
+
+Top 180 pixels for actions
+
+
+
+Bottom 300 pixels for displaying the Hand
