@@ -3,6 +3,7 @@ from game_data.src.fight_scene import Fight_Scene
 from pygame.sprite import RenderPlain
 import game_io.src.scene_constants as constants
 from game_io.src.action_io import ActionIO
+from game_io.src.card_io import CardIO
 
 
 def initialize_scene(scene: Fight_Scene, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
@@ -40,4 +41,10 @@ def initialize_stances(stances: list, scene_group: RenderPlain):
 
 
 def initialize_hand(hand, hand_group):
-    pass
+    last_right_edge = (0, constants.HAND_ROW_CENTER_HEIGHT)
+    for card in hand:
+        card_io = CardIO(card)
+        last_right_edge[0] += constants.CARD_WIDTH
+        card_io.rect.midright = last_right_edge
+        hand_group.add()
+

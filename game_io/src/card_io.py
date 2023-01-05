@@ -1,5 +1,3 @@
-from pygame.sprite import Sprite
-
 from game_io.src.button import Button
 from game_data.src.card import Card
 from game_io.src.image_util import *

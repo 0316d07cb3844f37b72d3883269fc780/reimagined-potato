@@ -6,14 +6,14 @@ from game_data.src.person_fighting import Person_Fighting as Person
 from game_data.test.test_person_data import make_person as make_person_data
 
 
-class Test_Person_Fighting(unittest.TestCase):
+class TestPersonFighting(unittest.TestCase):
     def test_damage(self):
-        my_Person = make_person()
-        health_before = my_Person.get_health()
-        my_Person.damage(4)
-        health_after = my_Person.get_health()
+        my_person = make_person()
+        health_before = my_person.get_health()
+        my_person.damage(4)
+        health_after = my_person.get_health()
         self.assertEqual(health_before - 4, health_after)
-        self.assertTrue(len(my_Person.drawpile) == 10)
+        self.assertTrue(len(my_person.drawpile) == 10)
 
     def test_drawing_cards(self):
         my_person = make_person()
@@ -43,10 +43,9 @@ class Test_Person_Fighting(unittest.TestCase):
         self.assertTrue(not getter[my_person.scene_id] == getter[another_person.scene_id])
 
     def test_stringing_and_destringing(self):
-        my_person=make_person()
-        remake=Person.create_from_string(str(my_person))
-        self.assertEqual(my_person.scene_id,remake.scene_id)
-
+        my_person = make_person()
+        remake = Person.create_from_string(str(my_person))
+        self.assertEqual(my_person.scene_id, remake.scene_id)
 
 
 if __name__ == '__main__':

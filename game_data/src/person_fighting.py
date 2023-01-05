@@ -3,6 +3,7 @@ A person as it is in the Fight_Scene.
 """
 
 from game_data.src.action import Action
+from game_data.src.stance import Stance
 from game_data.src.card_collection import Card_Collection, create_drawpile
 from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
@@ -15,6 +16,7 @@ class Person_Fighting(Loadable):
     def __init__(self, base_person: PersonData):
         self.base_person = base_person
         self.actions = []
+        self.stances = []
         self.resist = 0
         self.turn_ended = False
         "Create Cardcontainers."
@@ -29,6 +31,9 @@ class Person_Fighting(Loadable):
         actions_string = [str(action) for action in self.actions]
         tagged_list = [create_tag("action", string) for string in actions_string]
         my_string += create_tag("actions", ",".join(tagged_list))
+        stances_string = [str(stance) for stance in self.stances]
+        tagged_list = [create_tag("stance", string) for string in stances_string]
+        my_string += create_tag("stances", ",".join(tagged_list))
         my_string += create_tag("resist", self.resist)
         my_string += create_tag("turn_ended", self.turn_ended)
         my_string += create_tag("drawpile", str(self.drawpile))
@@ -55,6 +60,10 @@ class Person_Fighting(Loadable):
         action_strings = detag_repeated(actions_string, "action")
         my_person_fighting.actions.append(
             [Action.create_from_string(action_string) for action_string in action_strings])
+        stances_string, = detag_given_tags(string, "stances")
+        stance_strings = detag_repeated(stances_string, "stance")
+        my_person_fighting.stances.append(
+            [Stance.create_from_string(stance_string) for stance_string in stance_strings])
         resist, turn_ended = detag_given_tags(string, "resist", "turn_ended")
         if (resist, turn_ended) != ("", ""):
             my_person_fighting.resist, my_person_fighting.turn_ended = int(resist), bool(turn_ended)
