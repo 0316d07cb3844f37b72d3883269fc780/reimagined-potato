@@ -11,6 +11,18 @@ Screen divided as follows:
 
 Top 180 pixels for actions
 
+Middle 500 pixels for people and their stances.
+    Stances next to their Controllers
+    0 to 250 stances first person
+    250 to 450 first person
+    gap of 40
+    490 to 740 stances second person
+    740 to 940 second person
+    gap of 40
+    980 to 1180 third person
+    1180 to 1430 stances third person
+    gap of 40
+    1470 to 1670 fourth person
+    1670 to 1920 stances fourth person
 
-
-Bottom 300 pixels for displaying the Hand
+Bottom 400 pixels for displaying the Hand

@@ -2,11 +2,13 @@
 from game_data.src.fight_scene import Fight_Scene
 from pygame.sprite import RenderPlain
 import game_io.src.scene_constants as constants
+from game_io.src.action_io import ActionIO
 
 
-def initialize_scene(scene: Fight_Scene, scene_group: RenderPlain, hand_group: RenderPlain):
+def initialize_scene(scene: Fight_Scene, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
     """
     Creates all the necessary objects in the right places.
+    :param index_player: The character controlled by this client.
     :param scene: Data Objects to be rendered.
     :param scene_group: Group for actions at the top of the screen and people and stances in the middle.
     :param hand_group: Group for cards in hand, possibly overlaps with scene group.
@@ -15,11 +17,17 @@ def initialize_scene(scene: Fight_Scene, scene_group: RenderPlain, hand_group: R
     initialize_actions(scene.actions, scene_group)
     initialize_people(scene.allies, scene.foes, scene_group)
     initialize_stances(scene.stances, scene_group)
-    initialize_hand(hand_group)
+    initialize_hand(scene.allies[index_player].hand, hand_group)
 
 
 def initialize_actions(actions: list, scene_group: RenderPlain):
-    pass
+    last_edge_middle = (0, constants.ACTIONS_ROW_CENTER_HEIGHT)
+    for action in actions:
+        action_io = ActionIO(action)
+        action_widths = action_io.rect.width
+        last_edge_middle[0] += action_widths
+        action_io.rect.midright = last_edge_middle
+        scene_group.add(action_io)
 
 
 def initialize_people(allies: list, foes: list, scene_group: RenderPlain):

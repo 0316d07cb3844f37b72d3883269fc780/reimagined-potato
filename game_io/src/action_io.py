@@ -7,10 +7,12 @@ from game_io.src.portrait_io import Portrait
 
 class ActionIO(Button):
 
-    def __init__(self, action: Action):
+    def __init__(self, action: Action, position = None):
         self.action = action
         image = make_action_image(action)
         self.rect = image.get_rect()
+        if position is not None:
+            self.rect.center = position
         super().__init__(image_to_images_hovered_and_pressed(image), self.rect)
 
 

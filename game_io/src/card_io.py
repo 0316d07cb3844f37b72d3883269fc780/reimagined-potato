@@ -18,7 +18,7 @@ class CardIO(Button):
 def make_card_image(card: Card):
     top_row = make_top_row(card.name, card.speed)
     if card.card_type in type_to_image:
-        image= type_to_image[card.card_type]
+        image = type_to_image[card.card_type]
     else:
         image = make_image(type_to_image_path[card.card_type])
         type_to_image[card.card_type] = image
