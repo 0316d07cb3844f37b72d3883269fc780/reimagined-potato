@@ -5,11 +5,12 @@ from game_io.src.targetable_utils import *
 
 
 class CardIO(Button):
-    def __init__(self, card: Card, center_position):
+    def __init__(self, card: Card, center_position=None):
         self.card_data = card
         image = make_card_image(card)
         self.rect = self.image.get_rect()
-        self.rect.center = center_position
+        if center_position is not None:
+            self.rect.center = center_position
         super().__init__(image_to_images_hovered_and_pressed(image), rect=self.rect)
 
 

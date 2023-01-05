@@ -1,9 +1,11 @@
 """Add a sprite for every data object in a fight scene to a group of sprites and wire them up."""
-from game_data.src.fight_scene import Fight_Scene
+from game_data.src.fight_scene import Fight_Scene, Side
 from pygame.sprite import RenderPlain
 import game_io.src.scene_constants as constants
 from game_io.src.action_io import ActionIO
+from game_io.src.stance_io import StanceIO
 from game_io.src.card_io import CardIO
+from game_io.src.person_io import Person_IO
 
 
 def initialize_scene(scene: Fight_Scene, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
@@ -17,7 +19,6 @@ def initialize_scene(scene: Fight_Scene, index_player: int, scene_group: RenderP
     """
     initialize_actions(scene.actions, scene_group)
     initialize_people(scene.allies, scene.foes, scene_group)
-    initialize_stances(scene.stances, scene_group)
     initialize_hand(scene.allies[index_player].hand, hand_group)
 
 
@@ -32,10 +33,23 @@ def initialize_actions(actions: list, scene_group: RenderPlain):
 
 
 def initialize_people(allies: list, foes: list, scene_group: RenderPlain):
-    pass
+    for index, ally in enumerate(allies):
+        horizontal_position_person = calculate_horizontal_position_person(index, Side.allies)
+        horizontal_position_stance = horizontal_position_person - (constants.PERSON_WIDTHS+constants.STANCE_SPACE_WIDTHS)//2
+        ally_io = Person_IO(ally)
+        ally_io.rect.center = (horizontal_position_person, constants.PEOPLE_ROW_CENTER_HEIGHT)
+        scene_group.add(ally_io)
+        initialize_stances(ally.stances, horizontal_position_stance, scene_group)
+
+def calculate_horizontal_position_person(index_person, team: Side):
+    offset_from_center = (constants.GAP_PEOPLE + constants.PERSON_WIDTHS)//2
+    offset_from_center += index_person * (constants.GAP_PEOPLE + constants.PERSON_WIDTHS + constants.STANCE_SPACE_WIDTHS)
+    if team is Side.allies:
+        offset_from_center = -offset_from_center
+    return constants.PEOPLE_ROW_CENTER_WIDTH + offset_from_center
 
 
-def initialize_stances(stances: list, scene_group: RenderPlain):
+def initialize_stances(stances: list, horizontal_center: int, scene_group: RenderPlain):
     for stance in stances:
         pass
 

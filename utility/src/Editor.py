@@ -33,6 +33,7 @@ class AttributeType(Enum):
     team_internal = auto()
     team = auto()
     action_empty = auto()
+    stance_empty = auto()
     turn_side_allies = auto()
     empty = auto()
 
@@ -78,6 +79,7 @@ attributes_by_mode = {
     Mode.person_fighting: {
         "base_person": AttributeType.person_base,
         "actions": AttributeType.empty,
+        "stances": AttributeType.empty,
         "resist": AttributeType.string,
         "turn_ended": AttributeType.string,
         "drawpile": AttributeType.card_collection,
@@ -96,6 +98,7 @@ attributes_by_mode = {
         "foes": AttributeType.team,
         "turn_side": AttributeType.turn_side_allies,
         "actions": AttributeType.empty,
+        "stances": AttributeType.empty,
         "card_in_resolution": AttributeType.empty,
         "targets_being_selected_ids": AttributeType.empty,
     },
