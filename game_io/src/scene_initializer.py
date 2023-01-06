@@ -36,10 +36,17 @@ def initialize_people(allies: list, foes: list, scene_group: RenderPlain):
     for index, ally in enumerate(allies):
         horizontal_position_person = calculate_horizontal_position_person(index, Side.allies)
         horizontal_position_stance = horizontal_position_person - (constants.PERSON_WIDTHS+constants.STANCE_SPACE_WIDTHS)//2
-        ally_io = Person_IO(ally)
-        ally_io.rect.center = (horizontal_position_person, constants.PEOPLE_ROW_CENTER_HEIGHT)
+        ally_io = Person_IO(ally, (horizontal_position_person, constants.PEOPLE_ROW_CENTER_HEIGHT))
         scene_group.add(ally_io)
         initialize_stances(ally.stances, horizontal_position_stance, scene_group)
+
+    for index, foe in enumerate(foes):
+        horizontal_position_person = calculate_horizontal_position_person(index, Side.foes)
+        horizontal_position_stance = horizontal_position_person + (constants.PERSON_WIDTHS+constants.STANCE_SPACE_WIDTHS)//2
+        foe_io = Person_IO(foe, (horizontal_position_person, constants.PEOPLE_ROW_CENTER_HEIGHT))
+        scene_group.add(foe_io)
+        initialize_stances(foe.stances, horizontal_position_stance, scene_group)
+
 
 def calculate_horizontal_position_person(index_person, team: Side):
     offset_from_center = (constants.GAP_PEOPLE + constants.PERSON_WIDTHS)//2
@@ -50,8 +57,12 @@ def calculate_horizontal_position_person(index_person, team: Side):
 
 
 def initialize_stances(stances: list, horizontal_center: int, scene_group: RenderPlain):
+    last_edge_bottom = (horizontal_center, constants.PEOPLE_ROW_TOP)
     for stance in stances:
-        pass
+        stance_io = StanceIO(stance)
+        stance_io.rect.midtop = last_edge_bottom
+        last_edge_bottom = stance_io.rect.midbottom
+        scene_group.add(stance_io)
 
 
 def initialize_hand(hand, hand_group):
