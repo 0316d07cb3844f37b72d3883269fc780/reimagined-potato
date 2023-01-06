@@ -2,6 +2,7 @@ from game_io.src.button import Button
 from game_data.src.card import Card
 from game_io.src.image_util import *
 from game_io.src.targetable_utils import *
+from game_io.src.getter_io import getter
 
 
 class CardIO(Button):
@@ -11,6 +12,7 @@ class CardIO(Button):
         self.rect = self.image.get_rect()
         if center_position is not None:
             self.rect.center = center_position
+        getter[card.scene_id] = self
         super().__init__(image_to_images_hovered_and_pressed(image), rect=self.rect)
 
 

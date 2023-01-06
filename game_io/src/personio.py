@@ -9,9 +9,12 @@ from pygame.sprite import Sprite
 from game_io.src.image_util import stack_vertical, make_text_field
 from game_data.src.person_fighting import Person_Fighting
 from utility.src.string_utils import root_path
+from game_io.src.button import Button
+from game_io.src.targetable_utils import *
+from game_io.src.getter_io import getter
 
 
-class Person_IO(Sprite):
+class PersonIO(Button):
 
     def __init__(self, person_fighting: Person_Fighting, position):
         """
@@ -27,7 +30,6 @@ class Person_IO(Sprite):
             raise SystemExit(message)
         image = image.convert()
         image.set_colorkey(image.get_at((0, 0)), RLEACCEL)
-        Sprite.__init__(self)
         self.person_fighting = person_fighting
         self.name = name
         text_name = name
@@ -39,6 +41,10 @@ class Person_IO(Sprite):
         self.image = stack_vertical(image, text_name_render, text_health_render, text_resist_render)
         self.rect = self.image.get_rect()
         self.rect.center = position
+        getter[person_fighting.scene_id]=self
+        super().__init__(image_to_images_hovered_and_pressed(self.image), rect=self.rect)
+
+
 
 
 type_to_looks = {

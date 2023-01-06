@@ -5,7 +5,7 @@ import game_io.src.scene_constants as constants
 from game_io.src.action_io import ActionIO
 from game_io.src.stance_io import StanceIO
 from game_io.src.card_io import CardIO
-from game_io.src.person_io import Person_IO
+from game_io.src.personio import PersonIO
 
 
 def initialize_scene(scene: Fight_Scene, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
@@ -36,14 +36,14 @@ def initialize_people(allies: list, foes: list, scene_group: RenderPlain):
     for index, ally in enumerate(allies):
         horizontal_position_person = calculate_horizontal_position_person(index, Side.allies)
         horizontal_position_stance = horizontal_position_person - (constants.PERSON_WIDTHS+constants.STANCE_SPACE_WIDTHS)//2
-        ally_io = Person_IO(ally, (horizontal_position_person, constants.PEOPLE_ROW_CENTER_HEIGHT))
+        ally_io = PersonIO(ally, (horizontal_position_person, constants.PEOPLE_ROW_CENTER_HEIGHT))
         scene_group.add(ally_io)
         initialize_stances(ally.stances, horizontal_position_stance, scene_group)
 
     for index, foe in enumerate(foes):
         horizontal_position_person = calculate_horizontal_position_person(index, Side.foes)
         horizontal_position_stance = horizontal_position_person + (constants.PERSON_WIDTHS+constants.STANCE_SPACE_WIDTHS)//2
-        foe_io = Person_IO(foe, (horizontal_position_person, constants.PEOPLE_ROW_CENTER_HEIGHT))
+        foe_io = PersonIO(foe, (horizontal_position_person, constants.PEOPLE_ROW_CENTER_HEIGHT))
         scene_group.add(foe_io)
         initialize_stances(foe.stances, horizontal_position_stance, scene_group)
 

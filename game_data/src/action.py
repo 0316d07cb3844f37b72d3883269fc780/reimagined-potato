@@ -26,6 +26,7 @@ class Action(Loadable):
         self.speed = speed
         self.stability = stability
         self.action_id = action_id
+        self.scene_id = getter.register(self)
         performer.append_action(self)
 
     def __str__(self) -> str:
@@ -35,6 +36,7 @@ class Action(Loadable):
         my_string += create_tag("speed", self.speed.name)
         my_string += create_tag("stability", self.stability)
         my_string += create_tag("action_id", self.action_id)
+        my_string += create_tag("scene_id", self.scene_id)
         return my_string
 
     @classmethod
@@ -44,14 +46,15 @@ class Action(Loadable):
             with open(root_path(*possible_filename)) as file:
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
-        tags = "name", "performer_id", "target_id_list", "stability", "action_id"
-        name, performer_id, target_id_list, stability, action_id = detag_given_tags(string, *tags)
+        tags = "name", "performer_id", "target_id_list", "stability", "action_id", "scene_id"
+        name, performer_id, target_id_list, stability, action_id, scene_id = detag_given_tags(string, *tags)
         target_id_list = get_id_list(target_id_list)
         performer_id = int(performer_id)
         action_id = int(action_id)
         target_list = [getter[target_id] for target_id in target_id_list]
         action = creator_by_id[action_id](getter[performer_id], target_list)
         action.stability = stability
+        getter[int(scene_id)] = action
         return action
 
     @property
