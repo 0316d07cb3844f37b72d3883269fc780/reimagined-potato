@@ -6,7 +6,7 @@ from enum import Enum
 
 from game_data.src.loadable import Loadable
 from game_data.src.action import Speed
-from game_data.src.action_factory import Action_Factories, Action_Factory
+from game_data.src.action_factory import ActionFactories, Action_Factory
 from game_data.src.getterscene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, root_path
 
@@ -96,13 +96,13 @@ def create_card(cardname, location) -> Card:
 
 
 def create_tackle(location) -> Card:
-    tackle = Card("Tackle", "Tackle", Action_Factories.tackle_factory, Speed.Fast, TargetChecker.single_target_non_card,
+    tackle = Card("Tackle", "Tackle", ActionFactories.tackle_factory, Speed.Fast, TargetChecker.single_target_non_card,
                   location)
     return tackle
 
 
 def create_brace(location) -> Card:
-    brace = Card("Brace", "Brace", Action_Factories.brace_factory, Speed.Instant, TargetChecker.no_target, location)
+    brace = Card("Brace", "Brace", ActionFactories.brace_factory, Speed.Instant, TargetChecker.no_target, location)
     return brace
 
 

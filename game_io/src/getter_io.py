@@ -24,5 +24,8 @@ class GetterIO:
     def __getitem__(self, scene_id):
         return self.all_objects[scene_id]
 
+    def __contains__(self, item):
+        return item in self.all_objects
+
 
 getter = GetterIO()

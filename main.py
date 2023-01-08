@@ -27,7 +27,7 @@ def main():
     client_loop(allsprites, screen, combat_background, networker)
 
 
-def client_loop(allsprites, screen, background, networker):
+def client_loop(allsprites: pygame.sprite.RenderPlain, screen, background, networker):
     clock = pygame.time.Clock()
     running = True
     while running:

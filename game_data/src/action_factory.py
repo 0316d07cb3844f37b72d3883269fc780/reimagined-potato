@@ -32,7 +32,7 @@ class Action_Factory:
 Factories = {}
 
 
-class Action_Factories(Action_Factory, Enum):
+class ActionFactories(Action_Factory, Enum):
     def __new__(cls, method, name):
         obj = Action_Factory(method, name)
         obj._value_ = obj

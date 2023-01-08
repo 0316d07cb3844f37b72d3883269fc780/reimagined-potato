@@ -43,7 +43,10 @@ class Button (pygame.sprite.Sprite):
         self.background_images = background_images
         self.text = text
         self.image, self.rect = background_images[0], rect
-        self.on_click = on_click
+        if on_click is None:
+            self.on_click = []
+        else:
+            self.on_click = on_click
 
         # internal state
         self.state = State.NEUTRAL
@@ -72,8 +75,8 @@ class Button (pygame.sprite.Sprite):
         else:
             if mouse.get_pressed()[0]:
                 [todo() for todo in self.on_click]
-                self.image=self.background_images[2]
-                self.state=State.PRESSED
+                self.image = self.background_images[2]
+                self.state = State.PRESSED
         Button.mouse_interacted_with_button = True
 
     def update_pressed(self):

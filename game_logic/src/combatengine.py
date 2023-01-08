@@ -1,14 +1,12 @@
 """
 Runs all the computations.
 """
-from game_data.src.fight_scene import Fight_Scene
-from game_logic.src.scene_transformer import transform
-from game_logic.src.triggers_built_in import builtins
-from game_data.src.getterscene import getter
-from game_data.src.atomic_event import *
+from itertools import chain
 from typing import Callable
 
-from itertools import chain
+from game_data.src.atomic_event import *
+from game_data.src.getterscene import getter
+from game_logic.src.scene_transformer import transform
 
 
 class CombatEngine:
@@ -83,7 +81,8 @@ class CombatEngine:
         if event.event_type == "set_fightscene":
             self.fight_scene = event.fight_scene
         if event.event_type == "PLAY_CARD":
-            atomic_event = AtomicEvent(EventType.play_card, card=event.card, player=event.player, )
+            atomic_event = EventPlayCard(event.card.scene_id, event.player.scene_id,
+                                         [target.scene_id for target in event.target_list])
         if event.event_type == "END_TURN":
             atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player)
         self.atomic_events_scheduled.append(atomic_event)
@@ -112,11 +111,10 @@ class CombatEngine:
         for person in self.fight_scene.all_people:
             if person.health <= 0:
                 todo.append(EventSomethingDied(person.scene_id))
-        for damagable in chain (self.fight_scene.actions, self.fight_scene.stances):
+        for damagable in chain(self.fight_scene.actions, self.fight_scene.stances):
             if damagable.stability <= 0:
                 todo.append(EventSomethingDied(damagable.scene_id))
 
     def check_if_fight_over(self, todo):
         if not self.fight_scene.foes:
             todo.append(AtomicEvent(EventType.allies_won))
-
