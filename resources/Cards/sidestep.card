@@ -1,0 +1,7 @@
+<card_type>Sidestep<\card_type>
+<name>Sidestep<\name>
+<action_factory>Sidestep_Factory<\action_factory>
+<speed>Fast<\speed>
+<target_checker>single_target_action_or_stance<\target_checker>
+<location><\location>
+<scene_id>auto<\scene_id>

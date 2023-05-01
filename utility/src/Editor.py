@@ -476,7 +476,7 @@ class EditorState:
     def state_to_string(self) -> str:
         result = ""
         for child in self.widgets:
-            result += child.value_as_tags()
+            result += child.value_as_tags()+"\n"
         return result
 
     def new_file(self, my_mode: Mode) -> callable:
