@@ -4,7 +4,7 @@ Contains the Person class representing characters as game units. Contains attrib
 
 from game_data.src.loadable import Loadable
 from game_data.src.getterscene import getter
-from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
+from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, read_and_clean_file
 
 
 class PersonData(Loadable):
@@ -35,10 +35,9 @@ class PersonData(Loadable):
 
     @classmethod
     def create_from_string(cls, string: str):
-        possible_filename = detag_given_tags("file")
-        if len(possible_filename) == 1:
-            with open(root_path(*possible_filename)) as file:
-                file_contents = file.read()
+        possible_filename, = detag_given_tags(string, "file")
+        if possible_filename != "":
+            file_contents = read_and_clean_file(possible_filename)
             return cls.create_from_string(file_contents)
         max_health, health, scene_id, person_type = detag_given_tags(string, "max_health", "health", "scene_id",
                                                                      "person_type")

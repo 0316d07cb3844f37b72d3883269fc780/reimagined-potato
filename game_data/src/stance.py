@@ -42,7 +42,7 @@ class Stance(Loadable):
         name, performer_id, target_id_list, stability, count, stance_id, scene_id = detag_given_tags(string, *tags)
         target_id_list = get_id_list(target_id_list)
         performer_id = int(performer_id)
-        stance_id = int(stance_id)
+        stance_id = stance_id
         target_list = [getter[target_id] for target_id in target_id_list]
         stance = Stance(name, getter[performer_id], target_list, stability, stance_id)
         stance.count = count

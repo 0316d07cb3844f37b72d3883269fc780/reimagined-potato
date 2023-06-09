@@ -16,6 +16,8 @@ class Test_Testtype_Person(unittest.TestCase):
         self.assertEqual(remade.health,my_person.health)
         self.assertEqual(remade.deck, my_person.deck)
 
+    def test_from_file(self):
+        Person.create_from_string("<file>resources\\People\\Bases\\knight.base.person_base<\\file>")
 
 
 

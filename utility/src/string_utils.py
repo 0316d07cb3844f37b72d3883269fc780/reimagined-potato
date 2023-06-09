@@ -59,6 +59,10 @@ def list_tags_and_values(string: str) -> list:
 
 def _detag_given_tag(string: str, tag: str) -> tuple:
     tag_start, content_start = _find_tag_and_tag_end(string, tag)
+    if tag_start == -1:
+        result = ""
+        remainder = string
+        return result, remainder
     content_end, tag_end = _find_content_and_tag_end(string, tag)
     result = string[content_start + 1:content_end]
     result = result.replace("<!", "<")
@@ -123,3 +127,11 @@ def root_path(path: str) -> str:
     if path is None:
         return None
     return ROOT + path
+
+
+def read_and_clean_file(path: str) -> str:
+    with open(root_path(path)) as file:
+        file_contents = file.read()
+    int_tags = detag_repeated(file_contents, "int")
+    file_contents += "".join(int_tags)
+    return file_contents

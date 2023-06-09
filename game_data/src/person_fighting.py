@@ -121,3 +121,6 @@ class Person_Fighting(Loadable):
 
     def die(self):
         pass
+
+    def has_stance(self) -> bool:
+        pass
