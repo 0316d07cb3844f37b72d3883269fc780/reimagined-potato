@@ -162,6 +162,10 @@ def inspiration_method(inspired, _):
     return AtomicEvent(EventType.draw_card, drawer=inspired), *2
 
 
+def create_inspiration(inspired, _):
+    return Action("Inspiration", inspired, [], inspiration_method, Speed.Channel, 5, 11)
+
+
 creator_by_id = {
     0: create_stunned,
     1: create_tackle,
@@ -174,5 +178,6 @@ creator_by_id = {
     8: create_engulf_in_flames,
     9: create_sunshine_blessing,
     10: create_mind_blast,
+    11: create_inspiration,
 
 }

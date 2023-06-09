@@ -8,7 +8,7 @@ from enum import Enum
 
 
 class Action_Factory:
-    def __init__(self, factory_method, name : str):
+    def __init__(self, factory_method, name: str):
         self.factory_method = factory_method
         self.factory_name = name
         Factories[name] = self

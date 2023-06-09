@@ -108,5 +108,7 @@ def create_brace(location) -> Card:
 
 cards_by_string = {
     "Tackle": lambda location: Card.load_from_file("resources/Cards/tackle.card"),
-    "Brace": create_brace
+    "Brace": lambda location: Card.load_from_file("resources/Cards/brace.card"),
+    "Reckless Assault": lambda location: Card.load_from_file("resources/Cards/reckless_assault.card"),
+    "Crushing Blow": lambda location: Card.load_from_file("resources/Cards/crushing_blow.card"),
 }

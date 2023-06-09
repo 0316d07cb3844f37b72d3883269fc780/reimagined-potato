@@ -1,0 +1,14 @@
+<int><!max_health>20<!\max_health><\int>
+<int><!health>20<!\health><\int>
+<deck><!card>Tackle<!\card>
+<!card>Tackle<!\card>
+<!card>Tackle<!\card>
+<!card>Tackle<!\card>
+<!card>Tackle<!\card>
+<!card>Crushing Blow<!\card>
+<!card>Brace<!\card>
+<!card>Brace<!\card>
+<!card>Brace<!\card>
+<!card>Brace<!\card><\deck>
+<scene_id>Auto<\scene_id>
+<person_type>Knight<\person_type>
