@@ -20,7 +20,7 @@ def _find_next_tag_and_tag_end(string: str) -> tuple:
     if string[tag_start+1]=="\\" :
         return _find_next_tag_and_tag_end(string[tag_start+1:])
     end = string.find(">")
-    return string[1:end], end
+    return string[tag_start+1:end], end
 
 
 def _find_content_and_tag_end(string: str, tag: str) -> tuple:
@@ -49,8 +49,10 @@ def _detag(string: str) -> tuple:
 def list_tags_and_values(string: str) -> list:
     to_detag = string
     result = []
-    while (len(to_detag)!=0):
+    while len(to_detag)!=0:
         tag, opening_end = _find_next_tag_and_tag_end(to_detag)
+        if tag == '':
+            break
         content_end, closing_end = _find_content_and_tag_end(to_detag, tag)
         result += [(tag, str(to_detag[opening_end + 1:content_end]),)]
         to_detag = str(to_detag[closing_end + 1:])
