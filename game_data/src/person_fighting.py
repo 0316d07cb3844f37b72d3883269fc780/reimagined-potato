@@ -122,5 +122,5 @@ class Person_Fighting(Loadable):
     def die(self):
         pass
 
-    def has_stance(self) -> bool:
-        pass
+    def has_stance(self, stance_id: str) -> bool:
+        return stance_id in [stance.stance_id for stance in self.stances]

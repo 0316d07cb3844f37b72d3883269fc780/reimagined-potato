@@ -19,7 +19,7 @@ class Stance(Loadable):
         self.count = 1
         self.stance_id = stance_id
         self.scene_id = getter.register(self)
-        performer.append_action(self)
+        performer.stances.add(self)
 
     def __str__(self):
         my_string = create_tag("name", self.name)
@@ -50,7 +50,17 @@ class Stance(Loadable):
         return stance
 
     def damage(self, damage_amount):
-        self.stability -= max(damage_amount, 0)
+        spillover = min(0, self.stability-damage_amount)
+        self.stability += spillover - damage_amount
+        if self.stability == 0:
+            self.reduce_count()
+        if spillover != 0:
+            self.damage(spillover)
+
+    def reduce_count(self):
+        self.count -= 1
+        if self.count == 0:
+            self.get_destroyed()
 
     def get_destroyed(self):
         del self
