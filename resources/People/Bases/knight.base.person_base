@@ -1,5 +1,5 @@
-<int><!max_health>20<!\max_health><\int>
-<int><!health>20<!\health><\int>
+<max_health>20<\max_health>
+<health>20<\health>
 <deck><!card>Tackle<!\card>
 <!card>Tackle<!\card>
 <!card>Tackle<!\card>

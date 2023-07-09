@@ -17,7 +17,8 @@ class GetterIO:
         return scene_id
 
     def __setitem__(self, new_id, object_to_register):
-        del (self.all_objects[object_to_register.scene_id])
+        if hasattr(object_to_register, "scene_id"):
+            del (self.all_objects[object_to_register.scene_id])
         object_to_register.scene_id = new_id
         self.all_objects[new_id] = object_to_register
 

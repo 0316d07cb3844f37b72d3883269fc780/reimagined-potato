@@ -48,5 +48,6 @@ class PersonIO(Button):
 
 
 type_to_looks = {
-    "Testtype": ("Testbert", "resources/testguy.bmp")
+    "Testtype": ("Testbert", "resources/testguy.bmp"),
+    "Knight": ("Knight", "resources/People/Full_Art/Knight.png")
 }

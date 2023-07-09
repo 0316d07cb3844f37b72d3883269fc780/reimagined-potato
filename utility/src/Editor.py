@@ -145,6 +145,9 @@ class StringAttributeWidget(Widget):
 
 class IntAttributeWidget(Widget):
     def __init__(self, master, tag, value):
+        if tag == "int":
+            reduce_bangs = value.replace("<!", "<")
+            tag, value = list_tags_and_values(reduce_bangs)[0]
         self.tag = tag
         attribute_frame = tkinter.Frame(master)
         attribute_label = tkinter.Label(attribute_frame, text=tag)
@@ -156,8 +159,9 @@ class IntAttributeWidget(Widget):
         self.attribute_type = "int"
 
     def value_as_tags(self):
-        inner_part = create_tag(self.tag, self.attribute_value.get())
-        return create_tag("int", inner_part)
+        return create_tag(self.tag, self.attribute_value.get())
+        #inner_part = create_tag(self.tag, self.attribute_value.get())
+        #return create_tag("int", inner_part)
 
     def test_entry_legal(self):
         return self.attribute_value.get().isnumeric()
