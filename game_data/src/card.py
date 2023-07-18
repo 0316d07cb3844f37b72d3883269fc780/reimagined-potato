@@ -8,7 +8,7 @@ from game_data.src.loadable import Loadable
 from game_data.src.action import Speed
 from game_data.src.action_factory import ActionFactories, Action_Factory
 from game_data.src.getterscene import getter
-from utility.src.string_utils import create_tag, detag_given_tags, root_path
+from utility.src.string_utils import create_tag, detag_given_tags, root_path, read_and_clean_file
 
 
 class TargetChecker(Enum):
@@ -61,10 +61,9 @@ class Card(Loadable):
 
     @classmethod
     def create_from_string(cls, string: str):
-        possible_filename = detag_given_tags("file")
-        if len(possible_filename) == 1:
-            with open(root_path(*possible_filename)) as file:
-                file_contents = file.read()
+        possible_filename, = detag_given_tags(string, "file")
+        if possible_filename != "":
+            file_contents = read_and_clean_file(possible_filename)
             return cls.create_from_string(file_contents)
         card_type, name, action_factory, speed, target_checker, location_string = detag_given_tags(string, "card_type",
                                                                                                    "name",

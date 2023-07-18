@@ -8,6 +8,7 @@ import pygame.freetype
 
 from utility.src.string_utils import root_path
 
+pygame.freetype.init()
 font_path = root_path("resources/Fonts/NotoSerif-Regular.ttf")
 font_path_bold = root_path("resources/Fonts/NotoSerif-Bold.ttf")
 font_path_italic = root_path("resources/Fonts/OpenSans-Italic-VariableFont_wdth,wght.ttf")
@@ -70,7 +71,7 @@ def make_text_field(text: str, size=36, rect=None):
     text_render = stack_vertical(*renders, offset=2)
     if rect is None:
         return text_render
-    result = pygame.Surface(rect)
+    result = pygame.Surface(rect.size)
     text_render.get_rect().center = rect.center
     result.blit(text_render, text_render.get_rect())
     return result
