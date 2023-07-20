@@ -1,12 +1,12 @@
 #name; #text; #imagepath
-tackle;Deal 6 damage to target.;
-brace;Gain 5 resist.;
-side_step;Avoid target action targeting you.;
-crushing_blow;Deal 10 damage to target person.;
-tail_swipe;Destroy target Stance or Action.;
-reckless_assault;Deal 12 damage to any target and 3 to yourself.;
+Tackle;Deal 6 damage to target.;
+Brace;Gain 5 resist.;
+Side_step;Avoid target action targeting you.;
+Crushing_blow;Deal 10 damage to target person.;
+Tail_swipe;Destroy target Stance or Action.;
+Reckless_assault;Deal 12 damage to any target and 3 to yourself.;
 bark_skin_blessing;Add 3 resist to yourself and target person.;
-engulf_in_flames;Do 3 damage to 5 targets.;
-sunshine_blessing;Add 10 stability to target action or stance.;
-mind_blast;Deal 3 damage to target.;
-inspiration;Draw 2 cards.;
+Engulf_in_flames;Do 3 damage to 5 targets.;
+Sunshine_blessing;Add 10 stability to target action or stance.;
+Mind_blast;Deal 3 damage to target.;
+Inspiration;Draw 2 cards.;
