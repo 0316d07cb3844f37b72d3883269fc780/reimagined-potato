@@ -1,19 +1,21 @@
-from game_io.src.button import Button
+import csv
+
 from game_data.src.card import Card
+from game_io.src.button import Button
+from game_io.src.getter_io import getter
 from game_io.src.image_util import *
 from game_io.src.targetable_utils import *
-from game_io.src.getter_io import getter
 
 
 class CardIO(Button):
     def __init__(self, card: Card, center_position=None):
         self.card_data = card
-        image = make_card_image(card)
+        self.image = make_card_image(card)
         self.rect = self.image.get_rect()
         if center_position is not None:
             self.rect.center = center_position
         getter[card.scene_id] = self
-        super().__init__(image_to_images_hovered_and_pressed(image), rect=self.rect)
+        super().__init__(image_to_images_hovered_and_pressed(self.image), rect=self.rect)
 
 
 def make_card_image(card: Card):
@@ -33,15 +35,19 @@ def make_top_row(name, speed):
     return stack_horizontal(name_render, speed_render)
 
 
-type_to_image_path = {
-    "Tackle": "",
-    "Brace": ""
-}
+type_to_image_path = {}
+type_to_card_text = {}
 
-type_to_card_text = {
-    "Tackle": "",
-    "Brace": ""
-}
+with open(root_path("resources/Cards/cards.csv")) as cardfile:
+    csvreader = csv.reader(cardfile, delimiter=";")
+    next(csvreader)
+    for row in csvreader:
+        card_type = row[0]
+        card_text = row[1]
+        card_image_path = row[2]
+        type_to_image_path[card_type] = "resources/Cards/art/"+card_image_path
+        type_to_card_text[card_type] = card_text
 
-#Only populated at runtime
+
+# Only populated at runtime
 type_to_image = {}
