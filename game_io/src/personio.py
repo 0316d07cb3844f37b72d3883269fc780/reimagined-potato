@@ -4,6 +4,7 @@ Contains a Person as rendered on screen.
 
 import pygame
 from pygame.constants import RLEACCEL
+from pygame.transform import scale
 from pygame.sprite import Sprite
 
 from game_io.src.image_util import stack_vertical, make_text_field
@@ -30,6 +31,8 @@ class PersonIO(Button):
             raise SystemExit(message)
         image = image.convert()
         image.set_colorkey(image.get_at((0, 0)), RLEACCEL)
+        half_size = [i//2 for i in image.get_size()]
+        image = scale(image, half_size)
         self.person_fighting = person_fighting
         self.name = name
         text_name = name
