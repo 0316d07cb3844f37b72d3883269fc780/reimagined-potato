@@ -5,6 +5,7 @@ Contains utility functions for building images to display.
 import pygame
 from pygame import RLEACCEL
 import pygame.freetype
+from pygame.transform import scale
 
 from utility.src.string_utils import root_path
 
@@ -50,7 +51,7 @@ def stack_horizontal(*images, offset=0):
     middle = height / 2
     for image in images:
         rect = image.get_rect()
-        rect.midright = [right_end, middle]
+        rect.midleft = [right_end, middle]
         composite.blit(image, rect)
         right_end += image.get_width()+offset
     return composite
@@ -86,3 +87,8 @@ def make_image(path: str):
     image = image.convert()
     image.set_colorkey(image.get_at((0, 0)), RLEACCEL)
     return image
+
+
+def scaled_by_half(image):
+    half_size = [i // 2 for i in image.get_size()]
+    return scale(image, half_size)

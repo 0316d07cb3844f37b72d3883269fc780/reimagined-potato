@@ -1,6 +1,6 @@
 import csv
 
-from pygame.transform import scale
+from pygame import rect
 from game_data.src.card import Card
 from game_io.src.button import Button
 from game_io.src.getter_io import getter
@@ -25,11 +25,11 @@ def make_card_image(card: Card):
         image = type_to_image[card.card_type]
     else:
         image = make_image(type_to_image_path[card.card_type])
-        half_size = [i//2 for i in image.get_size()]
-        image = scale(image, half_size)
         type_to_image[card.card_type] = image
     textfield = make_text_field(type_to_card_text[card.card_type])
-    return stack_vertical(top_row, image, textfield)
+    background = make_image("resources/Cards/art/card_background.png")
+    background.blit(stack_vertical(top_row, image, textfield),(0,0))
+    return scaled_by_half(background)
 
 
 def make_top_row(name, speed):
