@@ -27,8 +27,8 @@ def make_card_image(card: Card):
         image = make_image(type_to_image_path[card.card_type])
         type_to_image[card.card_type] = image
     textfield = make_text_field(type_to_card_text[card.card_type])
-    background = make_image("resources/Cards/art/card_background.png")
-    background.blit(stack_vertical(top_row, image, textfield),(0,0))
+    background = make_image("resources/Cards/art/card_background.png", opaque=True)
+    background.blit(stack_vertical(top_row, image, textfield), (0, 0))
     return scaled_by_half(background)
 
 

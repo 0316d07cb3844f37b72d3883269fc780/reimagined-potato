@@ -57,7 +57,7 @@ def stack_horizontal(*images, offset=0):
     return composite
 
 
-def make_text_field(text: str, size=36, rect=None):
+def make_text_field(text: str, size=36, bgcolor=[240,240,240], rect=None):
     """
     Return a surface with the given text on it
     :param text: The text to display.
@@ -68,7 +68,7 @@ def make_text_field(text: str, size=36, rect=None):
     lines = text.splitlines()
     font = pygame.freetype.Font(font_path, size)
 
-    renders = [font.render(line, fgcolor=[0, 0, 0], bgcolor=[240, 240, 240], style=pygame.freetype.STYLE_NORMAL)[0] for line in lines]
+    renders = [font.render(line, fgcolor=[0, 0, 0], bgcolor=bgcolor, style=pygame.freetype.STYLE_NORMAL)[0] for line in lines]
     text_render = stack_vertical(*renders, offset=2)
     if rect is None:
         return text_render
@@ -78,14 +78,15 @@ def make_text_field(text: str, size=36, rect=None):
     return result
 
 
-def make_image(path: str):
+def make_image(path: str, opaque: bool = False):
     try:
         image = pygame.image.load(root_path(path))
     except pygame.error as message:
         print("Cannot load: " + path)
         raise SystemExit(message)
     image = image.convert()
-    image.set_colorkey(image.get_at((0, 0)), RLEACCEL)
+    if not opaque:
+        image.set_colorkey(image.get_at((0, 0)), RLEACCEL)
     return image
 
 
