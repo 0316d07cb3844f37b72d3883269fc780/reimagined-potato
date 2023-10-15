@@ -466,6 +466,7 @@ class EditorState:
         for tag, attribute_type in attributes_by_mode[self.mode].items():
             initial_value = dict_of_tags_and_values.get(tag, "")
             self.widgets.append(widget_by_attribute_type[attribute_type](self.main_fields, tag, initial_value))
+        self.root.update()
         if hasattr(self, "my_canvas"):
             self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all"))
 
