@@ -5,7 +5,6 @@ from enum import Enum
 from enum import auto as auto
 from os import path
 
-from global_variables import ROOT
 from utility.src.string_utils import *
 
 
@@ -160,8 +159,8 @@ class IntAttributeWidget(Widget):
 
     def value_as_tags(self):
         return create_tag(self.tag, self.attribute_value.get())
-        #inner_part = create_tag(self.tag, self.attribute_value.get())
-        #return create_tag("int", inner_part)
+        # inner_part = create_tag(self.tag, self.attribute_value.get())
+        # return create_tag("int", inner_part)
 
     def test_entry_legal(self):
         return self.attribute_value.get().isnumeric()
@@ -293,17 +292,20 @@ class ListOfFilesAttributeWidget(Widget):
         if value == "":
             self.list_of_filenames = []
             self.list_items = [ListItemWidget(self.files_frame, self)]
-            self.list_of_file_widgets = [FileAttributeWidget(self.list_items[0].widget_frame, self.elements_tag, "")]
+            self.list_of_file_widgets = [FileAttributeWidget(self.list_items[0].widget_frame, self.elements_tag, "",
+                                                             restriction=file_type_restriction)]
             self.list_items[0].contained_widget = self.list_of_file_widgets[0]
         else:
             self.list_of_filenames = [detag_given_tags(tagged_entry, "file")[0] for tagged_entry in value.split(",")]
             self.list_items = [ListItemWidget(self.files_frame, self) for _ in self.list_of_filenames]
-            self.list_of_file_widgets = [FileAttributeWidget(list_item.widget_frame, self.elements_tag, name) for
-                                         list_item, name in
-                                         zip(self.list_items, self.list_of_filenames)]
+            self.list_of_file_widgets = [
+                FileAttributeWidget(list_item.widget_frame, self.elements_tag, name, restriction=file_type_restriction)
+                for
+                list_item, name in
+                zip(self.list_items, self.list_of_filenames)]
             for list_item, file_widget in zip(self.list_items, self.list_of_file_widgets):
                 list_item.contained_widget = file_widget
-        self.files_frame.pack(side=tkinter.TOP,)
+        self.files_frame.pack(side=tkinter.TOP, )
         self.repack()
         self.bottom_row = tkinter.Frame(self.main_frame)
         self.main_frame.pack()
@@ -345,7 +347,7 @@ class ListOfFilesAttributeWidget(Widget):
         for child in self.files_frame.winfo_children():
             child.pack_forget()
         for list_item in self.list_items:
-            list_item.main_frame.pack(side=tkinter.TOP,)
+            list_item.main_frame.pack(side=tkinter.TOP, )
 
     def set_indices(self):
         for i, list_item in enumerate(self.list_items):
@@ -403,8 +405,10 @@ class EditorState:
             my_scrollbar = tkinter.Scrollbar(main_frame, orient="vertical", command=self.my_canvas.yview)
             my_scrollbar.pack(side="right", fill="y")
             self.my_canvas.configure(yscrollcommand=my_scrollbar.set)
-            self.my_canvas.bind('<Configure>', lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
+            self.my_canvas.bind('<Configure> <Button-1>',
+                                lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
             self.root = tkinter.Frame(self.my_canvas)
+            self.root.bindtags(("all",))
             self.my_canvas.create_window((0, 0), window=self.root, anchor="nw")
         else:
             self.root = super_editor_frame
@@ -480,7 +484,7 @@ class EditorState:
     def state_to_string(self) -> str:
         result = ""
         for child in self.widgets:
-            result += child.value_as_tags()+"\n"
+            result += child.value_as_tags() + "\n"
         return result
 
     def new_file(self, my_mode: Mode) -> callable:
