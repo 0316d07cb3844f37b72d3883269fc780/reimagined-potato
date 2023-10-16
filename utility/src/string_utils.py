@@ -137,3 +137,9 @@ def read_and_clean_file(path: str) -> str:
     int_tags = detag_repeated(file_contents, "int")
     file_contents += "".join(int_tags)
     return file_contents
+
+
+def write_string_to_file(to_be_written: str, path: str):
+    with open(root_path(path), "a") as file:
+        file.write(to_be_written)
+
