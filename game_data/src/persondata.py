@@ -8,7 +8,7 @@ from utility.src.string_utils import create_tag, detag_given_tags, detag_repeate
 
 
 class PersonData(Loadable):
-    legal_types = ["Testtype", "Knight"]
+    legal_types = ["Testtype", "Knight", "Dog"]
 
     def __init__(self, max_health: int, person_type: str, deck: list = None):
         self.max_health = self.health = max_health
