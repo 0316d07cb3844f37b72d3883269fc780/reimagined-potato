@@ -54,7 +54,8 @@ def list_tags_and_values(string: str) -> list:
         if tag == '':
             break
         content_end, closing_end = _find_content_and_tag_end(to_detag, tag)
-        result += [(tag, str(to_detag[opening_end + 1:content_end]),)]
+        content = str(to_detag[opening_end + 1:content_end])
+        result += [(tag, content.replace("<!", "<"))]
         to_detag = str(to_detag[closing_end + 1:])
     return result
 

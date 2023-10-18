@@ -11,7 +11,7 @@ from utility.src.string_utils import *
 class Mode(Enum):
     card = auto()
     card_collection = auto()
-    person_base = auto()
+    base_person = auto()
     person_fighting = auto()
     team = auto()
     scene = auto()
@@ -26,7 +26,7 @@ class AttributeType(Enum):
     cards = auto()
     card_collection = auto()
     location = auto()
-    person_base = auto()
+    base_person = auto()
     people = auto()
     deck = auto()
     team_internal = auto()
@@ -40,7 +40,7 @@ class AttributeType(Enum):
 file_extension_by_mode = {
     Mode.card: ".card",
     Mode.card_collection: ".collection",
-    Mode.person_base: ".person_base",
+    Mode.base_person: ".base_person",
     Mode.person_fighting: ".person_fighting",
     Mode.team: ".team",
     Mode.scene: ".scene",
@@ -67,7 +67,7 @@ attributes_by_mode = {
         "scene_id": AttributeType.string,
     },
 
-    Mode.person_base: {
+    Mode.base_person: {
         "max_health": AttributeType.int,
         "health": AttributeType.int,
         "deck": AttributeType.deck,
@@ -76,7 +76,7 @@ attributes_by_mode = {
     },
 
     Mode.person_fighting: {
-        "base_person": AttributeType.person_base,
+        "base_person": AttributeType.base_person,
         "actions": AttributeType.empty,
         "stances": AttributeType.empty,
         "resist": AttributeType.string,
@@ -106,7 +106,7 @@ attributes_by_mode = {
 
 file_types = (("Card File", "*.card"),
               ("Collection File", "*.collection"),
-              ("Person Base File", "*.person_base"),
+              ("Person Base File", "*.base_person"),
               ("Person Fighting File", "*.person_fighting"),
               ("Team File", "*.team"),
               ("Scene File", "*.scene")
@@ -382,7 +382,7 @@ widget_by_attribute_type = {
     AttributeType.location: StaticInvisibleWidget.get_custom_constructor(""),
     AttributeType.deck: DeckAttributeWidget,
     AttributeType.single_file: FileAttributeWidget,
-    AttributeType.person_base: FileAttributeWidget.get_custom_constructor(Mode.person_base),
+    AttributeType.base_person: FileAttributeWidget.get_custom_constructor(Mode.base_person),
     AttributeType.team_internal: ListOfFilesAttributeWidget.get_custom_constructor(Mode.person_fighting, "fighter"),
     AttributeType.team: FileAttributeWidget.get_custom_constructor(Mode.team),
     AttributeType.turn_side_allies: StaticInvisibleWidget.get_custom_constructor("allies"),

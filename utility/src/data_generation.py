@@ -30,7 +30,7 @@ def fightify_path(base_path):
 def create_fighting_for_all_bases():
     base_path = root_path("resources/People/Bases")
     base_files = [f for f in os.listdir(base_path) if os.path.isfile(os.path.join(base_path, f))]
-    base_files = [f for f in base_files if f[-11:] == "person_base"]
+    base_files = [f for f in base_files if f[-11:] == "base_person"]
     for file_path in base_files:
         create_person_fighting_from_person_base("resources/People/Bases/"+file_path)
 

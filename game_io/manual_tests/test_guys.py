@@ -11,7 +11,7 @@ class MyTestPerson(unittest.TestCase):
         test_sprite(my_guy_builder)
 
     def test_draw_guy_from_file(self):
-        base_guy = PersonData.create_from_string("<file>resources\\People\\Bases\\knight.person_base<\\file>")
+        base_guy = PersonData.create_from_string("<file>resources\\People\\Bases\\knight.base_person<\\file>")
         fighter = Person_Fighting(base_guy)
         file_guy_maker = lambda: PersonIO(fighter, (100, 100))
         test_sprite(file_guy_maker)
