@@ -123,6 +123,7 @@ def load_files(string: str) -> str:
 def unroot_path(path: str) -> str:
     if path is None:
         return None
+    path = path.replace("/", "\\")
     return path.replace(ROOT, "", 1)
 
 
