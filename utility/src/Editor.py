@@ -296,7 +296,7 @@ class ListOfFilesAttributeWidget(Widget):
                                                              restriction=file_type_restriction)]
             self.list_items[0].contained_widget = self.list_of_file_widgets[0]
         else:
-            self.list_of_filenames = [detag_given_tags(tagged_entry, "file")[0] for tagged_entry in value.split(",")]
+            self.list_of_filenames = value.split(",")
             self.list_items = [ListItemWidget(self.files_frame, self) for _ in self.list_of_filenames]
             self.list_of_file_widgets = [
                 FileAttributeWidget(list_item.widget_frame, self.elements_tag, name, restriction=file_type_restriction)
