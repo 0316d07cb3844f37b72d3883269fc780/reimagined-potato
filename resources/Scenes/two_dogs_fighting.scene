@@ -1,5 +1,5 @@
-<file>resources\Teams\solo_dog.team<\file>
-<file>resources\Teams\solo_dog.team<\file>
+<allies><!file>resources\Teams\solo_dog.team<!\file><\allies>
+<foes><!file>resources\Teams\solo_dog.team<!\file><\foes>
 <turn_side>allies<\turn_side>
 <actions><\actions>
 <stances><\stances>

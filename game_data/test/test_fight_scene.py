@@ -16,6 +16,7 @@ def make_game_state():
 
 
 class MyTestCase(unittest.TestCase):
+
     def test_make_game_state(self):
         make_game_state()
 
@@ -36,6 +37,9 @@ class MyTestCase(unittest.TestCase):
         my_state=make_game_state()
         my_string=str(my_state)
         Scene.create_scene_from_string(my_string)
+
+    def test_make_from_file(self):
+        Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
 
 
 if __name__ == '__main__':

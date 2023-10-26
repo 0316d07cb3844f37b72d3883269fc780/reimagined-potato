@@ -25,6 +25,11 @@ Make action factory element of action factories enum
 Make the card
 Add to cards by string dict
 
+How to add a new guy:
+
+Add the type to the legal types in person data
+Add the resource to personio's type_to_looks
+
 Things people can do:
 
 play a card

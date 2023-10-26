@@ -266,7 +266,7 @@ class FileAttributeWidget(Widget):
 
     def value_as_tags(self):
         value = self.value_editor.current_file_name
-        return create_tag("file", unroot_path(value))
+        return create_tag(self.tag, create_tag("file", unroot_path(value)))
 
     def update_tag_label(self):
         self.tag_label.configure(text=self.value_editor.current_file_name)

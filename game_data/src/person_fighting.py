@@ -9,7 +9,7 @@ from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
 from game_data.src.persondata import PersonData
 from game_logic.src.engine_event import EngineEvent
-from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags, root_path
+from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags, root_path, read_and_clean_file
 
 
 class Person_Fighting(Loadable):
@@ -48,10 +48,9 @@ class Person_Fighting(Loadable):
 
     @classmethod
     def create_from_string(cls, string: str):
-        possible_filename = detag_given_tags("file")
-        if len(possible_filename) == 1:
-            with open(root_path(*possible_filename)) as file:
-                file_contents = file.read()
+        possible_filename, = detag_given_tags(string, "file")
+        if possible_filename != "":
+            file_contents = read_and_clean_file(possible_filename)
             return cls.create_from_string(file_contents)
         base_person_string, = detag_given_tags(string, "base_person")
         base_person = PersonData.create_from_string(base_person_string)
@@ -72,7 +71,8 @@ class Person_Fighting(Loadable):
         my_person_fighting.hand = Card_Collection.create_from_string(hand_string)
         my_person_fighting.discardpile = Card_Collection.create_from_string(discardpile_string)
         id_string, = detag_given_tags(string, "scene_id")
-        getter[int(id_string)] = my_person_fighting
+        if id_string != "":
+            getter[int(id_string)] = my_person_fighting
         return my_person_fighting
 
     @classmethod

@@ -43,9 +43,9 @@ class Card_Collection(Loadable):
         cards_string, scene_id = detag_given_tags(string, "cards", "scene_id")
         card_strings = detag_repeated(cards_string, "card")
         card_list = [Card.create_from_string(my_string) for my_string in card_strings]
-        scene_id = int(scene_id)
         result = Card_Collection(card_list)
         if scene_id != "":
+            scene_id = int(scene_id)
             getter[scene_id] = result
         return result
 

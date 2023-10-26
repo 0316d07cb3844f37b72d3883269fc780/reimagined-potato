@@ -9,7 +9,7 @@ from game_data.src.action import Action
 from game_data.src.stance import Stance
 from game_data.src.card import Card
 from game_data.src.person_fighting import Person_Fighting
-from utility.src.string_utils import create_tag, detag_given_tags, detag_repeated, root_path
+from utility.src.string_utils import read_and_clean_file, create_tag, detag_given_tags, detag_repeated, root_path
 
 
 class Side(Enum):
@@ -62,10 +62,9 @@ class Fight_Scene(Loadable):
 
     @classmethod
     def create_team_from_string(cls, string: str) -> list:
-        possible_filename = detag_given_tags("file")
-        if len(possible_filename) == 1:
-            with open(root_path(*possible_filename)) as file:
-                file_contents = file.read()
+        possible_filename, = detag_given_tags(string, "file")
+        if possible_filename != "":
+            file_contents = read_and_clean_file(possible_filename)
             return cls.create_team_from_string(file_contents)
         string_of_fighters, = detag_given_tags(string, "team")
         fighter_strings = detag_repeated(string_of_fighters, "fighter")
@@ -90,10 +89,9 @@ class Fight_Scene(Loadable):
 
     @classmethod
     def create_scene_from_string(cls, string: str):
-        possible_filename = detag_given_tags("file")
-        if len(possible_filename) == 1:
-            with open(root_path(*possible_filename)) as file:
-                file_contents = file.read()
+        possible_filename, = detag_given_tags(string, "file")
+        if possible_filename != "":
+            file_contents = read_and_clean_file(possible_filename)
             return cls.create_scene_from_string(file_contents)
         allies_string, foes_string = detag_given_tags(string, "allies", "foes")
         actions_string, = detag_given_tags(string, "actions")

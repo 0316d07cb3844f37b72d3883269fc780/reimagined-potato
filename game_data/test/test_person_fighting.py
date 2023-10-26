@@ -47,6 +47,9 @@ class TestPersonFighting(unittest.TestCase):
         remake = Person.create_from_string(str(my_person))
         self.assertEqual(my_person.scene_id, remake.scene_id)
 
+    def test_from_file(self):
+        Person.create_from_string("<file>resources\\People\\Fighting\\knight.person_fighting<\\file>")
+
 
 if __name__ == '__main__':
     unittest.main()
