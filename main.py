@@ -5,55 +5,36 @@ from game_io.src.image_util import stack_vertical
 from game_logic.src.client_networker import Client_Networker
 from game_io.src.client_event import ClientEvent
 from game_io.src.scene_aranger import *
+from game_io.src.sprite_manager import SpriteManager
 
 
 def main():
     # start pygame
     pygame.init()
-    screen = pygame.display.set_mode((1800, 800))
-    # set up allsprites
-    allsprites = pygame.sprite.RenderPlain()
-    hand_sprites = pygame.sprite.RenderPlain()
-
-    # make combat_background
-    combat_background = pygame.Surface(screen.get_size())
-    combat_background = combat_background.convert()
-    combat_background.fill((240, 240, 240))
-    screen.blit(combat_background, (0, 0))
-
-    current_background = combat_background
-
+    sprite_manager = SpriteManager()
     networker = Client_Networker()
 
     scene = None
 
-    initialize_scene(scene, 0, allsprites, hand_sprites)
+    initialize_scene(scene, 0, sprite_manager.allsprites, sprite_manager.hand_sprites)
 
     # gameloop
-    client_loop(allsprites, hand_sprites, screen, combat_background, networker)
+    client_loop(sprite_manager, networker)
 
 
-def client_loop(allsprites: pygame.sprite.RenderPlain, hand_sprites, screen, background, networker):
+def client_loop(sprite_manager: SpriteManager, networker):
     clock = pygame.time.Clock()
     running = True
     while running:
-        engine_events = get_engine_events()
+        engine_events = get_engine_events(networker)
         clock.tick(60)
         handle_engine_events(engine_events)
-        # update game logic
-        allsprites.update()
-        hand_sprites.update()
-        # draw new screen
-        allsprites.clear(screen, background)
-        hand_sprites.clear(screen, background)
-        allsprites.draw(screen)
-        hand_sprites.draw(screen)
+        sprite_manager.do_frame()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
         for event in ClientEvent.get_and_flush_events():
             networker.send(event)
-        pygame.display.flip()
 
     pygame.quit()
 
