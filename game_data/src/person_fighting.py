@@ -57,12 +57,10 @@ class Person_Fighting(Loadable):
         my_person_fighting = Person_Fighting(base_person)
         actions_string, = detag_given_tags(string, "actions")
         action_strings = detag_repeated(actions_string, "action")
-        my_person_fighting.actions.append(
-            [Action.create_from_string(action_string) for action_string in action_strings])
+        my_person_fighting.actions += [Action.create_from_string(action_string) for action_string in action_strings]
         stances_string, = detag_given_tags(string, "stances")
         stance_strings = detag_repeated(stances_string, "stance")
-        my_person_fighting.stances.append(
-            [Stance.create_from_string(stance_string) for stance_string in stance_strings])
+        my_person_fighting.stances += [Stance.create_from_string(stance_string) for stance_string in stance_strings]
         resist, turn_ended = detag_given_tags(string, "resist", "turn_ended")
         if (resist, turn_ended) != ("", ""):
             my_person_fighting.resist, my_person_fighting.turn_ended = int(resist), bool(turn_ended)

@@ -14,10 +14,11 @@ class SpriteManager:
         combat_background = pygame.Surface(self.screen.get_size())
         self.combat_background = combat_background.convert()
         self.combat_background.fill((240, 240, 240))
-        self.screen.blit(combat_background, (0, 0))
+        self.screen.blit(self.combat_background, (0, 0))
 
     def do_frame(self):
         self.update_sprites()
+        self.draw_new_screen()
 
     def update_sprites(self):
         self.allsprites.update()
