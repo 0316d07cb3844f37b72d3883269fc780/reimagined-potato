@@ -3,35 +3,44 @@ from pygame.locals import *
 from game_io.src.button import Button
 from game_io.src.image_util import stack_vertical
 from game_logic.src.client_networker import Client_Networker
+from game_logic.src.servernetworker import ServerNetworker
+from game_logic.src.serverNetworkerWrapper import ServerNetworkerWrapper
+from game_logic.src.combatengine import CombatEngine
 from game_io.src.client_event import ClientEvent
 from game_io.src.scene_aranger import *
 from game_io.src.sprite_manager import SpriteManager
+from multiprocessing import Process, Event
 
 
 def main():
     # start pygame
     pygame.init()
     sprite_manager = SpriteManager()
-    networker = Client_Networker()
-
-    scene = None
+    scene = Fight_Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
+    engine_runs = Event()
+    engine_process = Process(target=engine_loop, args=(scene, engine_runs))
+    engine_process.start()
+    engine_runs.wait()
+    client_networker = Client_Networker()
 
     initialize_scene(scene, 0, sprite_manager.allsprites, sprite_manager.hand_sprites)
 
     # gameloop
-    client_loop(sprite_manager, networker)
+    client_loop(sprite_manager, client_networker, engine_process)
 
 
-def client_loop(sprite_manager: SpriteManager, networker):
+def client_loop(sprite_manager: SpriteManager, networker, engine_process):
     clock = pygame.time.Clock()
     running = True
     while running:
-        engine_events = get_engine_events(networker)
         clock.tick(60)
+        engine_events = get_engine_events(networker)
         handle_engine_events(engine_events)
         sprite_manager.do_frame()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                """TODO: Tell engine to stop"""
+                engine_process.wait()
                 running = False
         for event in ClientEvent.get_and_flush_events():
             networker.send(event)
@@ -67,18 +76,14 @@ def button_test(allsprites):
     my_Button.add(allsprites)
 
 
-def guy_test(allsprites):
-    my_sprite = pygame.sprite.Sprite()
-    try:
-        image = pygame.image.load("resources/Testguy.bmp")
-    except pygame.error as message:
-        print("Cannot load: " + "resources/testguy.bmp")
-        raise SystemExit(message)
-    image = image.convert()
-    image.set_colorkey(image.get_at((0, 0)), RLEACCEL)
-    image = stack_vertical(image, image)
-    my_sprite.image, my_sprite.rect = image, image.get_rect()
-    my_sprite.add(allsprites)
+def engine_loop(scene, engine_runs):
+    server_networker = ServerNetworker()
+    server_networke_wrapper = ServerNetworkerWrapper(server_networker)
+    combat_engine = CombatEngine(server_networke_wrapper, scene)
+    engine_runs.set()
+    combat_engine.engine_loop()
+
+
 
 
 if __name__ == "__main__":

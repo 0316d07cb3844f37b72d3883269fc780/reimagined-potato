@@ -5,7 +5,7 @@ import pygame
 
 class SpriteManager:
     def __init__(self):
-        self.screen = pygame.display.set_mode((1800, 800))
+        self.screen = pygame.display.set_mode((1920, 1080))
         # set up allsprites
         self.allsprites = pygame.sprite.RenderPlain()
         self.hand_sprites = pygame.sprite.RenderPlain()

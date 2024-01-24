@@ -21,6 +21,7 @@ def resolve_action(events, getter, _):
             result.extend(action.resolve())
     return result
 
+
 def allies_lost(events, _, fight_scene):
     result=[]
     for event in events:
@@ -28,10 +29,11 @@ def allies_lost(events, _, fight_scene):
             result.append(AE(ET.foes_won))
     return result
 
+
 builtins = [
 
     redraw,
     resolve_action,
-
+    allies_lost,
 
 ]
