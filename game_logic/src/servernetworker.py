@@ -33,12 +33,12 @@ class ServerNetworker:
         connection.sendall(message_length)
         connection.sendall(message)
 
-    def receive(self) -> tuple:
+    def receive(self, patient=True) -> tuple:
         """
         Get *a* message.
         :return: A tuple of a sent message and the connection it is coming from.
         """
-        ready_connections = select(self.connections, [], [])[0]
+        ready_connections = select(self.connections, [], [], 0 if not patient else None)[0]
         if ready_connections:
             connection = ready_connections.pop()
             datasize = connection.recv(HEADER)

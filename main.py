@@ -18,7 +18,7 @@ def main():
     sprite_manager = SpriteManager()
     scene = Fight_Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
     engine_runs = Event()
-    engine_process = Process(target=engine_loop, args=(scene, engine_runs))
+    engine_process = Process(target=engine_loop, args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", engine_runs))
     engine_process.start()
     engine_runs.wait()
     client_networker = Client_Networker()
@@ -39,8 +39,8 @@ def client_loop(sprite_manager: SpriteManager, networker, engine_process):
         sprite_manager.do_frame()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                """TODO: Tell engine to stop"""
-                engine_process.wait()
+                networker.stop_engine()
+                engine_process.join()
                 running = False
         for event in ClientEvent.get_and_flush_events():
             networker.send(event)
@@ -78,8 +78,8 @@ def button_test(allsprites):
 
 def engine_loop(scene, engine_runs):
     server_networker = ServerNetworker()
-    server_networke_wrapper = ServerNetworkerWrapper(server_networker)
-    combat_engine = CombatEngine(server_networke_wrapper, scene)
+    server_network_wrapper = ServerNetworkerWrapper(server_networker)
+    combat_engine = CombatEngine(server_network_wrapper, scene)
     engine_runs.set()
     combat_engine.engine_loop()
 

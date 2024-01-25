@@ -3,6 +3,7 @@ import socket
 from select import select
 
 from game_logic.src.networking_constants import *
+from utility.src.string_utils import create_tag
 
 
 class Client_Networker():
@@ -36,6 +37,11 @@ class Client_Networker():
 
     def close(self):
         self._socket.close()
+
+    def stop_engine(self):
+        end_message = create_tag("type", "END_ENGINE")
+        self.send(end_message)
+        print("message sent")
 
 
 if __name__ == "__main__":

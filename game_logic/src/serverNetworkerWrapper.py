@@ -33,9 +33,15 @@ class ServerNetworkerWrapper:
             subresult = []
         while self.networker.check_for_connection() is not None:
             pass
-        string, connection = self.networker.receive()
+
+        string, connection = self.networker.receive(not subresult)
+
         if connection is not None:
-            my_event = ClientEvent(string)
+            try:
+                my_event = ClientEvent(string)
+            except Exception as exception:
+                print("The string was: "+string)
+                raise exception
             if my_event.event_type == "Introduction":
                 self.player_to_connection[my_event.person_id] = connection
             else:
@@ -47,7 +53,9 @@ class ServerNetworkerWrapper:
 class ClientEvent:
 
     def __init__(self, string):
-        self.event_type = detag_given_tags(string, "type")
+        self.event_type, = detag_given_tags(string, "type")
+        if self.event_type == "END_ENGINE":
+            return
         if self.event_type == "Introduction":
             self.person_id, = detag_given_tags(string, "person_id")
         if self.event_type == "set_fightscene":

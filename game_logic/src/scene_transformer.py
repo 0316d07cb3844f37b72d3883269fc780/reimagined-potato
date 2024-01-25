@@ -1,8 +1,6 @@
 from game_data.src.atomic_event import EventType as et
 from game_data.src.person_fighting import Person_Fighting
 
-list.damage = lambda self, damage: [x.damage(damage) for x in self]
-
 
 def transform(atomic_event, getter, scene):
     """
@@ -29,7 +27,11 @@ def transform(atomic_event, getter, scene):
     elif event_type == et.change_sides:
         scene.change_turn()
     elif event_type == et.damage:
-        getter[atomic_event.damaged].damage(atomic_event.damage)
+        try:
+            for target in getter[atomic_event.damaged]:
+                target.damage(atomic_event.damage)
+        except TypeError:
+            getter[atomic_event.damaged].damage(atomic_event.damage)
     elif event_type == et.add_resist:
         getter[atomic_event.beneficiary].resist += atomic_event.resist
     elif event_type == et.draw_card:
@@ -42,6 +44,3 @@ def transform(atomic_event, getter, scene):
             destroyed.get_destroyed()
     elif event_type == et.discard:
         getter[atomic_event.discarded_card].move(getter[atomic_event.discarder].discardpile)
-
-
-del list.damage

@@ -16,9 +16,10 @@ class CombatEngine:
         self.next_task = None
         self.atomic_events_scheduled = []
         self.atomic_events_history = []
+        self.keep_running = True
 
     def engine_loop(self):
-        while True:
+        while self.keep_running:
             if self.atomic_events_scheduled:
                 next_event = self.get_next_atomic_event()
                 to_do = self.apply_replacements(next_event)
@@ -27,7 +28,7 @@ class CombatEngine:
                 self.check_state_based_actions()
                 self.send_out_history()
                 continue
-            list_of_client_events = self.networker_wrapper.get_all_messsages()
+            list_of_client_events = self.networker_wrapper.get_all_messages()
             for event in list_of_client_events:
                 self.process_client_event(event)
 
@@ -77,6 +78,7 @@ class CombatEngine:
         self.atomic_events_history.append(event)
 
     def process_client_event(self, event):
+        print("processing")
         atomic_event = None
         if event.event_type == "set_fightscene":
             self.fight_scene = event.fight_scene
@@ -85,6 +87,8 @@ class CombatEngine:
                                          [target.scene_id for target in event.target_list])
         if event.event_type == "END_TURN":
             atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player)
+        if event.event_type == "END_ENGINE":
+            self.keep_running = False
         self.atomic_events_scheduled.append(atomic_event)
 
     def send_out_history(self):
