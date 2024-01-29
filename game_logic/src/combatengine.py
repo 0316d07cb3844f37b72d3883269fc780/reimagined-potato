@@ -78,7 +78,6 @@ class CombatEngine:
         self.atomic_events_history.append(event)
 
     def process_client_event(self, event):
-        print("processing")
         atomic_event = None
         if event.event_type == "set_fightscene":
             self.fight_scene = event.fight_scene

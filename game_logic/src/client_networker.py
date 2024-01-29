@@ -41,7 +41,6 @@ class Client_Networker():
     def stop_engine(self):
         end_message = create_tag("type", "END_ENGINE")
         self.send(end_message)
-        print("message sent")
 
 
 if __name__ == "__main__":

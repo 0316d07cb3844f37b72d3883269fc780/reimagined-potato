@@ -9,6 +9,7 @@ from game_logic.src.combatengine import CombatEngine
 from game_io.src.client_event import ClientEvent
 from game_io.src.scene_aranger import *
 from game_io.src.sprite_manager import SpriteManager
+from utility.src.string_utils import create_tag
 from multiprocessing import Process, Event
 
 
@@ -62,28 +63,17 @@ def handle_engine_events(events):
         pass
 
 
-def button_test(allsprites):
-    button_image = pygame.Surface([200, 40])
-    button_image.fill([140, 140, 120])
-    button_image = button_image.convert()
-    button_rect = button_image.get_rect()
-    button_rect.center = [900, 500]
-    button_text = "Beep boop"
-    button_images = [button_image, button_image.copy(), button_image.copy()]
-    button_images[1].fill([120, 120, 105])
-    button_images[2].fill([100, 100, 90])
-    my_Button = Button(button_images, button_rect, button_text, [lambda: print("beep booop")])
-    my_Button.add(allsprites)
-
-
-def engine_loop(scene, engine_runs):
+def engine_loop(scene_string, engine_runs):
     server_networker = ServerNetworker()
     server_network_wrapper = ServerNetworkerWrapper(server_networker)
-    combat_engine = CombatEngine(server_network_wrapper, scene)
+    combat_engine = CombatEngine(server_network_wrapper, Fight_Scene.create_scene_from_string(scene_string))
     engine_runs.set()
     combat_engine.engine_loop()
 
 
+def let_engine_start_scene(networker):
+    start_message = create_tag("type", "START_SCENE")
+    networker.send(start_message)
 
 
 if __name__ == "__main__":

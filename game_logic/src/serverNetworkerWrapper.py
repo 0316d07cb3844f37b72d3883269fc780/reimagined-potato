@@ -40,7 +40,6 @@ class ServerNetworkerWrapper:
             try:
                 my_event = ClientEvent(string)
             except Exception as exception:
-                print("The string was: "+string)
                 raise exception
             if my_event.event_type == "Introduction":
                 self.player_to_connection[my_event.person_id] = connection
