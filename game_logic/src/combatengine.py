@@ -81,12 +81,14 @@ class CombatEngine:
         atomic_event = None
         if event.event_type == "set_fightscene":
             self.fight_scene = event.fight_scene
-        if event.event_type == "PLAY_CARD":
+        elif event.event_type == "START_SCENE":
+            atomic_event = AtomicEvent(EventType.redraw_hands)
+        elif event.event_type == "PLAY_CARD":
             atomic_event = EventPlayCard(event.card.scene_id, event.player.scene_id,
                                          [target.scene_id for target in event.target_list])
-        if event.event_type == "END_TURN":
+        elif event.event_type == "END_TURN":
             atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player)
-        if event.event_type == "END_ENGINE":
+        elif event.event_type == "END_ENGINE":
             self.keep_running = False
         self.atomic_events_scheduled.append(atomic_event)
 

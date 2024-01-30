@@ -53,7 +53,7 @@ class ClientEvent:
 
     def __init__(self, string):
         self.event_type, = detag_given_tags(string, "type")
-        if self.event_type == "END_ENGINE":
+        if self.event_type in ["END_ENGINE", "START_SCENE"]:
             return
         if self.event_type == "Introduction":
             self.person_id, = detag_given_tags(string, "person_id")

@@ -11,6 +11,7 @@ from game_io.src.scene_aranger import *
 from game_io.src.sprite_manager import SpriteManager
 from utility.src.string_utils import create_tag
 from multiprocessing import Process, Event
+from utility.src.string_utils import create_tag
 
 
 def main():
@@ -25,6 +26,7 @@ def main():
     client_networker = Client_Networker()
 
     initialize_scene(scene, 0, sprite_manager.allsprites, sprite_manager.hand_sprites)
+    client_networker.send(create_tag("type", "START_SCENE"))
 
     # gameloop
     client_loop(sprite_manager, client_networker, engine_process)
