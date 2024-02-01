@@ -2,6 +2,9 @@ import pygame
 from pygame.locals import *
 from game_io.src.button import Button
 from game_io.src.image_util import stack_vertical
+from game_data.src.atomic_event import AtomicEvent
+from game_data.src.getterscene import getter
+from game_logic.src.scene_transformer import transform
 from game_logic.src.client_networker import Client_Networker
 from game_logic.src.servernetworker import ServerNetworker
 from game_logic.src.serverNetworkerWrapper import ServerNetworkerWrapper
@@ -9,7 +12,7 @@ from game_logic.src.combatengine import CombatEngine
 from game_io.src.client_event import ClientEvent
 from game_io.src.scene_aranger import *
 from game_io.src.sprite_manager import SpriteManager
-from utility.src.string_utils import create_tag
+from utility.src.string_utils import create_tag, detag_repeated
 from multiprocessing import Process, Event
 from utility.src.string_utils import create_tag
 
@@ -29,16 +32,16 @@ def main():
     client_networker.send(create_tag("type", "START_SCENE"))
 
     # gameloop
-    client_loop(sprite_manager, client_networker, engine_process)
+    client_loop(sprite_manager, client_networker, engine_process, scene)
 
 
-def client_loop(sprite_manager: SpriteManager, networker, engine_process):
+def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene):
     clock = pygame.time.Clock()
     running = True
     while running:
         clock.tick(60)
         engine_events = get_engine_events(networker)
-        handle_engine_events(engine_events)
+        handle_engine_events(engine_events, scene)
         sprite_manager.do_frame()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,17 +55,19 @@ def client_loop(sprite_manager: SpriteManager, networker, engine_process):
 
 
 def get_engine_events(networker: Client_Networker):
-    event = networker.receive()
+    events = networker.receive()
     result = []
-    while event != "":
-        result += event
-        event = networker.receive()
+    while events != "":
+        result += detag_repeated(events, "event")
+        events = networker.receive()
+    result = [AtomicEvent(event) for event in result]
     return result
 
 
-def handle_engine_events(events):
+def handle_engine_events(events, scene):
     for event in events:
-        pass
+        transform(event, getter, scene)
+        render_event(scene, event)
 
 
 def engine_loop(scene_string, engine_runs):

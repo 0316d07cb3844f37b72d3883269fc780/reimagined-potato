@@ -96,6 +96,10 @@ def initialize_hand(hand, hand_group):
         hand_group.add()
 
 
+def render_event(scene: Fight_Scene, event):
+    pass
+
+
 def make_or_fetch_card_io(card):
     if card.scene_id in getter:
         return getter[card.scene_id]
