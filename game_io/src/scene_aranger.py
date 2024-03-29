@@ -1,5 +1,6 @@
 """Add a sprite for every data object in a fight scene to a group of sprites and wire them up."""
 from game_data.src.fight_scene import Fight_Scene, Side
+from game_data.src.atomic_event import EventType as et
 from pygame.sprite import RenderPlain
 import game_io.src.scene_constants as constants
 from game_io.src.action_io import ActionIO
@@ -96,8 +97,49 @@ def initialize_hand(hand, hand_group):
         hand_group.add()
 
 
-def render_event(scene: Fight_Scene, event):
-    pass
+def get_right_edge_of_actions_bar(scene: Fight_Scene):
+    if scene.actions:
+        last_action = scene.actions[-1]
+        action_io = getter[last_action.scene_id]
+        return action_io.rect.midright
+    else:
+        return 0, constants.ACTIONS_ROW_CENTER_HEIGHT
+
+
+def render_event(scene: Fight_Scene, event, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
+    event_type, attributes = event.event_type, event.attributes
+    player = scene.allies[index_player]
+    if event_type == et.play_card:
+        card = make_or_fetch_card_io(event.card)
+        if event.card in player.hand:
+            hand_group.remove(card)
+        initialize_actions(scene.actions, scene_group)
+    elif event_type == et.create_action:
+        pass
+    elif event_type == et.create_stance:
+        pass
+    elif event_type == et.target:
+        getter[event.action].update_image()
+    elif event_type == et.untarget:
+        getter[event.action].update_image()
+    elif event_type == et.pass_priority:
+        pass
+    elif event_type == et.change_sides:
+        pass
+    elif event_type == et.damage:
+        pass
+    elif event_type == et.add_resist:
+        pass
+    elif event_type == et.draw_card:
+        pass
+    elif event_type == et.destroy:
+        pass
+    elif event_type == et.discard:
+        pass
+    elif event_type == et.resolve_action:
+        pass
+
+    
 
 
 def make_or_fetch_card_io(card):

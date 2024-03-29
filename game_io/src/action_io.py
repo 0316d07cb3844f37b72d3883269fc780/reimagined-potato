@@ -17,6 +17,10 @@ class ActionIO(Button):
         getter[action.scene_id] = self
         super().__init__(image_to_images_hovered_and_pressed(image), self.rect)
 
+    def update_image(self):
+        image = make_action_image(self.action)
+        self.image = image
+
 
 def make_action_image(action):
     name_image = make_text_field(action.name)

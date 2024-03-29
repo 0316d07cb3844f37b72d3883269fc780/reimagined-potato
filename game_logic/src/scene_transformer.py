@@ -44,3 +44,7 @@ def transform(atomic_event, getter, scene):
             destroyed.get_destroyed()
     elif event_type == et.discard:
         getter[atomic_event.discarded_card].move(getter[atomic_event.discarder].discardpile)
+    elif event_type == et.resolve_action:
+        action = getter[atomic_event.action]
+        action.resolve()
+        del action
