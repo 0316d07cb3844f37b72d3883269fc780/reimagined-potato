@@ -1,6 +1,5 @@
 import csv
 
-from pygame import rect
 from game_data.src.card import Card
 from game_io.src.button import Button
 from game_io.src.getter_io import getter
@@ -17,6 +16,10 @@ class CardIO(Button):
             self.rect.center = center_position
         getter[card.scene_id] = self
         super().__init__(image_to_images_hovered_and_pressed(self.image), rect=self.rect)
+
+    def redraw_self(self):
+        self.image = make_card_image(self.card_data)
+        self.background_images = image_to_images_hovered_and_pressed(self.image)
 
 
 def make_card_image(card: Card):
@@ -48,9 +51,8 @@ with open(root_path("resources/Cards/cards.csv")) as cardfile:
         card_type = row[0]
         card_text = row[1]
         card_image_path = row[2]
-        type_to_image_path[card_type] = "resources/Cards/art/"+card_image_path
+        type_to_image_path[card_type] = "resources/Cards/art/" + card_image_path
         type_to_card_text[card_type] = card_text
-
 
 # Only populated at runtime
 type_to_image = {}

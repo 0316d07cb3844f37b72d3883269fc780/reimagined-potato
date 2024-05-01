@@ -35,6 +35,16 @@ class Portrait(_Portrait):
         super().__init__(name,image, underlying_type, scene_id)
 
 
+def get_portrait(scene_id):
+    if scene_id in portrait_by_id:
+        return portrait_by_id[scene_id]
+    else:
+        portrait_by_id[scene_id] = Portrait(scene_id)
+        return portrait_by_id[scene_id]
+
+
+portrait_by_id = {}
+
 name_dict_by_underlying_type = {
     "Action": {
 

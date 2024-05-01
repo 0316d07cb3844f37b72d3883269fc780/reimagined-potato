@@ -2,7 +2,7 @@ from game_data.src.action import Action
 from game_io.src.button import Button
 from game_io.src.image_util import *
 from game_io.src.targetable_utils import *
-from game_io.src.portrait_io import Portrait
+from game_io.src.portrait_io import get_portrait
 from game_io.src.getter_io import getter
 
 
@@ -17,9 +17,10 @@ class ActionIO(Button):
         getter[action.scene_id] = self
         super().__init__(image_to_images_hovered_and_pressed(image), self.rect)
 
-    def update_image(self):
+    def redraw_self(self):
         image = make_action_image(self.action)
         self.image = image
+        self.background_images = image_to_images_hovered_and_pressed(self.image)
 
 
 def make_action_image(action):
@@ -48,15 +49,7 @@ def make_bottom_row(action):
     return stack_horizontal(*target_faces)
 
 
-def get_portrait(scene_id):
-    if scene_id in portrait_by_id:
-        return portrait_by_id[scene_id]
-    else:
-        portrait_by_id[scene_id] = Portrait(scene_id)
-        return portrait_by_id[scene_id]
 
-
-portrait_by_id = {}
 
 
 def get_action_image(action_id):

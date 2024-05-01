@@ -127,7 +127,8 @@ def render_event(scene: Fight_Scene, event, index_player: int, scene_group: Rend
     elif event_type == et.change_sides:
         pass
     elif event_type == et.damage:
-        pass
+        for target in getter[event.damaged]:
+            pass
     elif event_type == et.add_resist:
         pass
     elif event_type == et.draw_card:

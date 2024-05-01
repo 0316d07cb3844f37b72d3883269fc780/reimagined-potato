@@ -24,6 +24,20 @@ class PersonIO(Button):
         :param position: Where to render the center of the person
         """
         name, imagelocation = type_to_looks[person_fighting.base_person.person_type]
+        self.person_fighting = person_fighting
+        self.name = name
+        self.image = self.make_image(person_fighting)
+        self.rect = self.image.get_rect()
+        self.rect.center = position
+        getter[person_fighting.scene_id]=self
+        super().__init__(image_to_images_hovered_and_pressed(self.image), rect=self.rect)
+
+    def redraw_self(self):
+        pass
+
+    @staticmethod
+    def make_image(person):
+        name, imagelocation = type_to_looks[person.base_person.person_type]
         try:
             image = pygame.image.load(root_path(imagelocation))
         except pygame.error as message:
@@ -31,21 +45,17 @@ class PersonIO(Button):
             raise SystemExit(message)
         image = image.convert()
         image.set_colorkey(image.get_at((0, 0)), RLEACCEL)
-        half_size = [i//2 for i in image.get_size()]
+        half_size = [i // 2 for i in image.get_size()]
         image = scale(image, half_size)
-        self.person_fighting = person_fighting
-        self.name = name
         text_name = name
-        text_health = "Health: " + str(person_fighting.base_person.health) + "/" + str(person_fighting.base_person.max_health)
-        text_resist = "Resist: " + str(person_fighting.resist)
+        text_health = "Health: " + str(person.base_person.health) + "/" + str(
+            person.base_person.max_health)
+        text_resist = "Resist: " + str(person.resist)
         text_name_render = make_text_field(text_name)
         text_health_render = make_text_field(text_health)
         text_resist_render = make_text_field(text_resist)
-        self.image = stack_vertical(image, text_name_render, text_health_render, text_resist_render)
-        self.rect = self.image.get_rect()
-        self.rect.center = position
-        getter[person_fighting.scene_id]=self
-        super().__init__(image_to_images_hovered_and_pressed(self.image), rect=self.rect)
+        return stack_vertical(image, text_name_render, text_health_render, text_resist_render)
+
 
 
 
