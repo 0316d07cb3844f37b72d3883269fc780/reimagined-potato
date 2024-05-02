@@ -30,6 +30,8 @@ class AtomicEvent:
         :param kwargs: only ever use strings
         """
         self.event_type = event_type
+        for name, value in kwargs.items():
+            self.__setattr__(name, value)
         self.attributes = kwargs
 
     def __str__(self):

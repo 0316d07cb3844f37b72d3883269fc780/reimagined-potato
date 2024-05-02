@@ -27,21 +27,22 @@ def main():
     engine_process.start()
     engine_runs.wait()
     client_networker = Client_Networker()
+    index_player = 0
 
-    initialize_scene(scene, 0, sprite_manager.allsprites, sprite_manager.hand_sprites)
+    initialize_scene(scene, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
     client_networker.send(create_tag("type", "START_SCENE"))
 
     # gameloop
-    client_loop(sprite_manager, client_networker, engine_process, scene)
+    client_loop(sprite_manager, client_networker, engine_process, scene, index_player)
 
 
-def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene):
+def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene, index_player):
     clock = pygame.time.Clock()
     running = True
     while running:
         clock.tick(60)
         engine_events = get_engine_events(networker)
-        handle_engine_events(engine_events, scene)
+        handle_engine_events(engine_events, scene, index_player, sprite_manager)
         sprite_manager.do_frame()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -64,10 +65,11 @@ def get_engine_events(networker: Client_Networker):
     return result
 
 
-def handle_engine_events(events, scene):
+def handle_engine_events(events, scene, index_player, sprite_manager):
     for event in events:
+        render_event_pre(scene, event, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
         transform(event, getter, scene)
-        render_event(scene, event)
+        render_event_post(scene, event, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
 
 
 def engine_loop(scene_string, engine_runs):

@@ -1,12 +1,13 @@
 """
 Runs all the computations.
 """
-from itertools import chain
+from itertools import chain, product
 from typing import Callable
 
 from game_data.src.atomic_event import *
 from game_data.src.getterscene import getter
 from game_logic.src.scene_transformer import transform
+from game_logic.src.triggers_built_in import builtins as builtin_triggers
 
 
 class CombatEngine:
@@ -20,17 +21,29 @@ class CombatEngine:
 
     def engine_loop(self):
         while self.keep_running:
-            if self.atomic_events_scheduled:
-                next_event = self.get_next_atomic_event()
-                to_do = self.apply_replacements(next_event)
-                for event in to_do:
-                    self.process_atomic_event(event)
-                self.check_state_based_actions()
-                self.send_out_history()
-                continue
+            self.clear_out_atomic_events()
             list_of_client_events = self.networker_wrapper.get_all_messages()
             for event in list_of_client_events:
                 self.process_client_event(event)
+
+    def clear_out_atomic_events(self):
+        """
+        Simulate the game state forward until client input is necessary.
+        """
+        if self.atomic_events_scheduled:
+            next_event = self.get_next_atomic_event()
+            to_do = self.apply_replacements(next_event)
+            for event in to_do:
+                self.process_atomic_event(event)
+            self.check_state_based_actions()
+            self.send_out_history()
+            self.clear_out_atomic_events()
+
+    def process_atomic_event(self, event):
+        transform(event, getter, self.fight_scene)
+        triggered_events = self.triggered_events([event])
+        self.atomic_events_scheduled.extend(triggered_events)
+        self.atomic_events_history.append(event)
 
     def check_state_based_actions(self):
         state_based_to_do = []
@@ -42,13 +55,12 @@ class CombatEngine:
         for check in checks:
             assert isinstance(check, Callable)
             check(state_based_to_do)
-            state_based_to_do = sum([self.apply_replacements(atomic_event) for atomic_event in state_based_to_do])
+            state_based_to_do = chain(*[self.apply_replacements(atomic_event) for atomic_event in state_based_to_do])
             for event in state_based_to_do:
                 self.process_atomic_event(event)
                 self.atomic_events_scheduled.append(self.triggered_events([state_based_to_do]))
-            if state_based_to_do:
                 work_was_done_flag = True
-            state_based_to_do.clear()
+            state_based_to_do = []
 
         if work_was_done_flag:
             self.check_state_based_actions()
@@ -59,23 +71,18 @@ class CombatEngine:
 
     def triggered_events(self, list_of_events):
         result = []
-        for event, trigger in list_of_events, self.triggers:
+        for event, trigger in product(list_of_events, self.triggers):
             result.extend(trigger(event, getter, self.fight_scene))
         return result
 
     @property
     def triggers(self):
         result = [stance.triggers for stance in self.fight_scene.stances]
+        result += builtin_triggers
         return result
 
     def get_next_atomic_event(self):
         return self.atomic_events_scheduled.pop(0)
-
-    def process_atomic_event(self, event):
-        transform(event, getter, self.fight_scene)
-        triggered_events = self.triggered_events([event])
-        self.atomic_events_scheduled.extend(triggered_events)
-        self.atomic_events_history.append(event)
 
     def process_client_event(self, event):
         atomic_event = None
@@ -114,7 +121,7 @@ class CombatEngine:
 
     def check_if_someone_died_from_damage(self, todo):
         for person in self.fight_scene.all_people:
-            if person.health <= 0:
+            if person.get_health() <= 0:
                 todo.append(EventSomethingDied(person.scene_id))
         for damagable in chain(self.fight_scene.actions, self.fight_scene.stances):
             if damagable.stability <= 0:

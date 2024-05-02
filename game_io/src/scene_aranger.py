@@ -1,13 +1,16 @@
 """Add a sprite for every data object in a fight scene to a group of sprites and wire them up."""
+from game_data.src.card import Card
 from game_data.src.fight_scene import Fight_Scene, Side
 from game_data.src.atomic_event import EventType as et
 from pygame.sprite import RenderPlain
 import game_io.src.scene_constants as constants
+from game_data.src.person_fighting import Person_Fighting
 from game_io.src.action_io import ActionIO
 from game_io.src.stance_io import StanceIO
 from game_io.src.card_io import CardIO
 from game_io.src.personio import PersonIO
 from game_io.src.getter_io import getter
+from game_data.src.getterscene import getter as getter_scene
 from game_io.src.client_event_builder import builder
 
 
@@ -106,15 +109,11 @@ def get_right_edge_of_actions_bar(scene: Fight_Scene):
         return 0, constants.ACTIONS_ROW_CENTER_HEIGHT
 
 
-def render_event(scene: Fight_Scene, event, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
+def render_event_pre(scene: Fight_Scene, event, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
     event_type, attributes = event.event_type, event.attributes
     player = scene.allies[index_player]
-    if event_type == et.play_card:
-        card = make_or_fetch_card_io(event.card)
-        if event.card in player.hand:
-            hand_group.remove(card)
-        initialize_actions(scene.actions, scene_group)
-    elif event_type == et.create_action:
+
+    if event_type == et.create_action:
         pass
     elif event_type == et.create_stance:
         pass
@@ -126,19 +125,43 @@ def render_event(scene: Fight_Scene, event, index_player: int, scene_group: Rend
         pass
     elif event_type == et.change_sides:
         pass
+    elif event_type == et.add_resist:
+        event.beneficiary.redraw_self()
+    elif event_type == et.destroy:
+        destroyed = getter_scene(event.destroyed)
+        if isinstance(destroyed, Person_Fighting):
+            for dependend in destroyed.actions + destroyed.stances:
+                dependend_io = getter[dependend.scene_id]
+                scene_group.remove(dependend_io)
+                del dependend_io
+        scene_group.remove(getter[event.destroyed])
+        del getter[event.destroyed]
+    elif event_type == et.discard:
+        player = scene.allies[index_player]
+        if event.discarder == player.scene_id:
+            hand_group.remove(event.discarded_card)
+            initialize_hand(player.hand, hand_group)
+    elif event_type == et.resolve_action:
+        action = event.action
+        scene_group.remove(action)
+        del action
+
+
+def render_event_post(scene: Fight_Scene, event, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
+    event_type, attributes = event.event_type, event.attributes
+    player = scene.allies[index_player]
+    if event_type == et.play_card:
+        card = make_or_fetch_card_io(event.card)
+        if event.card in player.hand:
+            hand_group.remove(card)
+        initialize_actions(scene.actions, scene_group)
     elif event_type == et.damage:
         for target in getter[event.damaged]:
-            pass
-    elif event_type == et.add_resist:
-        pass
+            target.redraw_self()
     elif event_type == et.draw_card:
-        pass
-    elif event_type == et.destroy:
-        pass
-    elif event_type == et.discard:
-        pass
-    elif event_type == et.resolve_action:
-        pass
+        if event.drawer == scene.allies[index_player].scene_id:
+            initialize_hand(scene.allies[index_player].hand, hand_group)
+
 
     
 
