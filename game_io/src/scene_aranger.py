@@ -29,7 +29,7 @@ def initialize_scene(scene: Fight_Scene, index_player: int, scene_group: RenderP
 
 
 def initialize_actions(actions: list, scene_group: RenderPlain):
-    last_edge_middle = (0, constants.ACTIONS_ROW_CENTER_HEIGHT)
+    last_edge_middle = [0, constants.ACTIONS_ROW_CENTER_HEIGHT]
     for action in actions:
         action_io = make_or_fetch_action_io(action)
         action_widths = action_io.rect.width
@@ -92,12 +92,12 @@ def make_or_fetch_stance_io(stance):
 
 
 def initialize_hand(hand, hand_group):
-    last_right_edge = (0, constants.HAND_ROW_CENTER_HEIGHT)
+    last_right_edge = [constants.CARD_WIDTH, constants.HAND_ROW_CENTER_HEIGHT]
     for card in hand:
         card_io = make_or_fetch_card_io(card)
         last_right_edge[0] += constants.CARD_WIDTH
         card_io.rect.midright = last_right_edge
-        hand_group.add()
+        hand_group.add(card_io)
 
 
 def get_right_edge_of_actions_bar(scene: Fight_Scene):

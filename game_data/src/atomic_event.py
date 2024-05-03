@@ -1,4 +1,5 @@
 from enum import Enum
+
 from utility.src.string_utils import *
 
 
@@ -26,8 +27,8 @@ class AtomicEvent:
     def __init__(self, event_type: EventType, **kwargs):
         """
         Describes a minimal transition from one legal fight scene state to another.
-        :param event_type: The type of event
-        :param kwargs: only ever use strings
+        param event_type: The type of event
+        param kwargs: only ever use strings
         """
         self.event_type = event_type
         for name, value in kwargs.items():
@@ -57,11 +58,11 @@ class EventPlayCard(AtomicEvent):
 
 class EventSomethingDied(AtomicEvent):
     def __init__(self, who):
-        super().__init__(EventType.destroy, Scene_Id = who)
+        super().__init__(EventType.destroy, destroyed=who)
 
 
 def damage(what, by_how_much):
-    return AtomicEvent(EventType.damage, damaged=what, damage= by_how_much)
+    return AtomicEvent(EventType.damage, damaged=what, damage=by_how_much)
 
 
 def add_resist(who, how_much):

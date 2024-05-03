@@ -20,4 +20,26 @@
 <!!card><!!!card_type>Brace<!!!\card_type><!!!name>Brace<!!!\name><!!!action_factory>Brace_Factory<!!!\action_factory><!!!speed>Instant<!!!\speed><!!!target_checker>no_target<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id><!!!\scene_id><!!\card><!\cards>
 <!scene_id><!\scene_id><\drawpile><hand><!cards><!\cards>
 <!scene_id><!\scene_id><\hand><discardpile><!cards><!\cards>
-<!scene_id><!\scene_id><\discardpile><scene_id><\scene_id>
+<!scene_id><!\scene_id><\discardpile><scene_id><\scene_id><base_person><!max_health>20<!\max_health><!health>20<!\health><!deck>
+<!!card>Tackle<!!\card>
+<!!card>Tackle<!!\card>
+<!!card>Tackle<!!\card>
+<!!card>Tackle<!!\card>
+<!!card>Tackle<!!\card>
+<!!card>Crushing Blow<!!\card>
+<!!card>Brace<!!\card>
+<!!card>Brace<!!\card>
+<!!card>Brace<!!\card>
+<!!card>Brace<!!\card><!\deck><!scene_id>Auto<!\scene_id><!person_type>Knight<!\person_type><\base_person><actions><\actions><stances><\stances><resist>0<\resist><turn_ended>False<\turn_ended><drawpile><!cards><!!card><!!!card_type>Tackle<!!!\card_type><!!!name>Tackle<!!!\name><!!!action_factory>Tackle_Factory<!!!\action_factory><!!!speed>Fast<!!!\speed><!!!target_checker>single_target_non_card<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Tackle<!!!\card_type><!!!name>Tackle<!!!\name><!!!action_factory>Tackle_Factory<!!!\action_factory><!!!speed>Fast<!!!\speed><!!!target_checker>single_target_non_card<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Tackle<!!!\card_type><!!!name>Tackle<!!!\name><!!!action_factory>Tackle_Factory<!!!\action_factory><!!!speed>Fast<!!!\speed><!!!target_checker>single_target_non_card<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Tackle<!!!\card_type><!!!name>Tackle<!!!\name><!!!action_factory>Tackle_Factory<!!!\action_factory><!!!speed>Fast<!!!\speed><!!!target_checker>single_target_non_card<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Tackle<!!!\card_type><!!!name>Tackle<!!!\name><!!!action_factory>Tackle_Factory<!!!\action_factory><!!!speed>Fast<!!!\speed><!!!target_checker>single_target_non_card<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Crushing_Blow<!!!\card_type><!!!name>Crushing_Blow<!!!\name><!!!action_factory>Crushing_Blow_Factory<!!!\action_factory><!!!speed>Regular<!!!\speed><!!!target_checker>single_target_person<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Brace<!!!\card_type><!!!name>Brace<!!!\name><!!!action_factory>Brace_Factory<!!!\action_factory><!!!speed>Instant<!!!\speed><!!!target_checker>no_target<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Brace<!!!\card_type><!!!name>Brace<!!!\name><!!!action_factory>Brace_Factory<!!!\action_factory><!!!speed>Instant<!!!\speed><!!!target_checker>no_target<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Brace<!!!\card_type><!!!name>Brace<!!!\name><!!!action_factory>Brace_Factory<!!!\action_factory><!!!speed>Instant<!!!\speed><!!!target_checker>no_target<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card>
+<!!card><!!!card_type>Brace<!!!\card_type><!!!name>Brace<!!!\name><!!!action_factory>Brace_Factory<!!!\action_factory><!!!speed>Instant<!!!\speed><!!!target_checker>no_target<!!!\target_checker><!!!location>12<!!!\location><!!!scene_id>auto<!!!\scene_id><!!\card><!\cards>
+<!scene_id>auto<!\scene_id><\drawpile><hand><!cards><!\cards>
+<!scene_id>auto<!\scene_id><\hand><discardpile><!cards><!\cards>
+<!scene_id>auto<!\scene_id><\discardpile><scene_id>auto<\scene_id>

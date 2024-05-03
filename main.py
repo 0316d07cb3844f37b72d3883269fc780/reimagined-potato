@@ -1,20 +1,20 @@
+from multiprocessing import Process, Event
+
 import pygame
-from pygame.locals import *
-from game_io.src.button import Button
-from game_io.src.image_util import stack_vertical
+
+from game_data.src.fight_scene import Fight_Scene
 from game_data.src.atomic_event import AtomicEvent
 from game_data.src.getterscene import getter
-from game_logic.src.scene_transformer import transform
-from game_logic.src.client_networker import Client_Networker
-from game_logic.src.servernetworker import ServerNetworker
-from game_logic.src.serverNetworkerWrapper import ServerNetworkerWrapper
-from game_logic.src.combatengine import CombatEngine
 from game_io.src.client_event import ClientEvent
-from game_io.src.scene_aranger import *
+from game_io.src.scene_aranger import render_event_pre, render_event_post, initialize_scene
 from game_io.src.sprite_manager import SpriteManager
-from utility.src.string_utils import create_tag, detag_repeated
-from multiprocessing import Process, Event
+from game_logic.src.client_networker import Client_Networker
+from game_logic.src.combatengine import CombatEngine
+from game_logic.src.scene_transformer import transform
+from game_logic.src.serverNetworkerWrapper import ServerNetworkerWrapper
+from game_logic.src.servernetworker import ServerNetworker
 from utility.src.string_utils import create_tag
+from utility.src.string_utils import detag_repeated
 
 
 def main():
@@ -23,13 +23,15 @@ def main():
     sprite_manager = SpriteManager()
     scene = Fight_Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
     engine_runs = Event()
-    engine_process = Process(target=engine_loop, args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", engine_runs))
+    engine_process = Process(target=engine_loop,
+                             args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", engine_runs))
     engine_process.start()
     engine_runs.wait()
     client_networker = Client_Networker()
     index_player = 0
 
     initialize_scene(scene, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
+    client_networker.introduce_self(index_player)
     client_networker.send(create_tag("type", "START_SCENE"))
 
     # gameloop
@@ -61,7 +63,7 @@ def get_engine_events(networker: Client_Networker):
     while events != "":
         result += detag_repeated(events, "event")
         events = networker.receive()
-    result = [AtomicEvent(event) for event in result]
+    result = [AtomicEvent.create_from_string(event) for event in result]
     return result
 
 

@@ -6,11 +6,11 @@ from game_logic.src.networking_constants import *
 from utility.src.string_utils import create_tag
 
 
-class Client_Networker():
+class Client_Networker:
     _socket: socket
 
     def __init__(self, HOST : str = '127.0.0.1', Socket=None):
-        if Socket == None:
+        if Socket is None:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.connect((HOST, PORT))
 
@@ -41,6 +41,16 @@ class Client_Networker():
     def stop_engine(self):
         end_message = create_tag("type", "END_ENGINE")
         self.send(end_message)
+
+    def introduce_self(self, index: int):
+        """
+        Introduce self to the engine, so you get sent messages
+
+        :param index: Index of the player in Allies in the scene.
+        """
+        message = create_tag("type", "Introduction")
+        message += create_tag("person_id", index)
+        self.send(message)
 
 
 if __name__ == "__main__":

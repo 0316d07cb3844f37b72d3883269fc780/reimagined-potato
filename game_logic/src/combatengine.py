@@ -49,8 +49,8 @@ class CombatEngine:
         state_based_to_do = []
         work_was_done_flag = False
         checks = [self.check_if_someone_died_from_damage,
-                  self.check_if_turn_over,
-                  self.check_if_fight_over]
+                  self.check_if_fight_over,
+                  self.check_if_turn_over]
 
         for check in checks:
             assert isinstance(check, Callable)
@@ -114,10 +114,10 @@ class CombatEngine:
             else:
                 for action in self.fight_scene.actions[::-1]:
                     if any([action is fighter.actions[-1] for fighter in self.fight_scene.current_side]):
-                        break
-                    else:
                         event = AtomicEvent(EventType.resolve_action, action=action.scene_id)
                         self.atomic_events_scheduled.append(event)
+                    else:
+                        break
 
     def check_if_someone_died_from_damage(self, todo):
         for person in self.fight_scene.all_people:

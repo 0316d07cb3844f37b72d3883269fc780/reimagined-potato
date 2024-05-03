@@ -53,15 +53,19 @@ class ClientEvent:
 
     def __init__(self, string):
         self.event_type, = detag_given_tags(string, "type")
-        if self.event_type in ["END_ENGINE", "END_TURN", "START_SCENE"]:
+        if self.event_type in ["END_ENGINE", "START_SCENE"]:
             return
         if self.event_type == "Introduction":
-            self.person_id, = detag_given_tags(string, "person_id")
+            self.person_id = int(*detag_given_tags(string, "person_id"))
+            return
         if self.event_type == "set_fightscene":
             scene_string, = detag_given_tags(string, "scene")
             self.fight_scene = Fight_Scene.create_scene_from_string(scene_string)
+            return
         player_id, = detag_given_tags(string, "player_id")
         self.player = getter[int(player_id)]
+        if self.event_type == "END_TURN":
+            pass
         if self.event_type == "PLAY_CARD":
             card_id, target_id_list = detag_given_tags(string, "card_id", "target_id_list")
             self.card = getter[int(card_id)]

@@ -3,13 +3,12 @@ A person as it is in the Fight_Scene.
 """
 
 from game_data.src.action import Action
-from game_data.src.stance import Stance
 from game_data.src.card_collection import Card_Collection, create_drawpile
 from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
 from game_data.src.persondata import PersonData
-from game_logic.src.engine_event import EngineEvent
-from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags, root_path, read_and_clean_file
+from game_data.src.stance import Stance
+from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags, read_and_clean_file
 
 
 class Person_Fighting(Loadable):
@@ -63,7 +62,7 @@ class Person_Fighting(Loadable):
         my_person_fighting.stances += [Stance.create_from_string(stance_string) for stance_string in stance_strings]
         resist, turn_ended = detag_given_tags(string, "resist", "turn_ended")
         if (resist, turn_ended) != ("", ""):
-            my_person_fighting.resist, my_person_fighting.turn_ended = int(resist), bool(turn_ended)
+            my_person_fighting.resist, my_person_fighting.turn_ended = int(resist), turn_ended == "True"
         drawpile_string, hand_string, discardpile_string = detag_given_tags(string, "drawpile", "hand", "discardpile")
         my_person_fighting.drawpile = Card_Collection.create_from_string(drawpile_string)
         my_person_fighting.hand = Card_Collection.create_from_string(hand_string)
