@@ -8,7 +8,8 @@ def redraw(event, _, fight_scene):
         for fighter in fight_scene.all_people:
             for card in fighter.hand:
                 result.append(AE(ET.discard, discarded_card=card.scene_id, discarder=fighter.scene_id))
-            result.append(AE(ET.draw_card, drawer=fighter.scene_id))
+
+            result += [(AE(ET.draw_card, drawer=fighter.scene_id)) for _ in range(5)]
     return result
 
 

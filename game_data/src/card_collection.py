@@ -13,10 +13,12 @@ from utility.src.string_utils import create_tag, detag_given_tags, detag_repeate
 class Card_Collection(Loadable):
     def __init__(self, card_list: list):
         self.cards = {}
+        self.scene_id = getter.register(self)
         for card in card_list:
             self.cards[card.scene_id] = card
+            card.location=self
         self.card_order = [card.scene_id for card in card_list]
-        self.scene_id = getter.register(self)
+
 
     def __len__(self):
         return len(self.cards)

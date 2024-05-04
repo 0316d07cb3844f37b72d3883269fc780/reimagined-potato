@@ -75,8 +75,9 @@ def make_text_field(text: str, size=36, bgcolor=[240,240,240], rect=None):
         return text_render
     result = pygame.Surface(rect.size)
     result.fill(bgcolor)
-    text_render.get_rect().center = rect.center
-    result.blit(text_render, text_render.get_rect())
+    text_rect = text_render.get_rect()
+    text_rect.center = rect.center
+    result.blit(text_render, text_rect)
     result.set_colorkey(bgcolor)
     return result
 

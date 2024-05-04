@@ -36,8 +36,8 @@ def make_card_image(card: Card):
 
 
 def make_top_row(name, speed):
-    name_render = make_text_field(name, rect=pygame.Rect(0, 0, 300, 100))
-    speed_render = make_text_field(speed.name, rect=pygame.Rect(0, 0, 100, 100))
+    name_render = make_text_field(name, rect=pygame.Rect(0, 0, 280, 100))
+    speed_render = make_text_field(speed.name, rect=pygame.Rect(0, 0, 120, 100))
     return stack_horizontal(name_render, speed_render)
 
 
