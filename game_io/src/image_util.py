@@ -70,11 +70,14 @@ def make_text_field(text: str, size=36, bgcolor=[240,240,240], rect=None):
 
     renders = [font.render(line, fgcolor=[0, 0, 0], bgcolor=bgcolor, style=pygame.freetype.STYLE_NORMAL)[0] for line in lines]
     text_render = stack_vertical(*renders, offset=2)
+    text_render.set_colorkey(bgcolor)
     if rect is None:
         return text_render
     result = pygame.Surface(rect.size)
+    result.fill(bgcolor)
     text_render.get_rect().center = rect.center
     result.blit(text_render, text_render.get_rect())
+    result.set_colorkey(bgcolor)
     return result
 
 
