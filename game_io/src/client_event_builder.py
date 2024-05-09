@@ -1,3 +1,4 @@
+from game_data.src.getterscene import getter
 from game_io.src.client_event import ClientEvent
 from utility.src.string_utils import *
 
@@ -26,14 +27,17 @@ class ClientEventBuilder:
         self.card_to_play_id = card_id
 
     def add_target(self, target_id):
-        self.targets.append(target_id)
+        if self.card_to_play_id is not None:
+            self.targets.append(target_id)
 
     def finish_play_card(self):
-        event = create_tag("type", "PLAY_CARD")
-        event += create_tag("card_id", self.card_to_play_id)
-        event += create_tag("target_id_list", self.targets)
-        ClientEvent.trigger_event(event)
-        self.flush_state()
+        card = getter[self.card_to_play_id]
+        if card.target_checker(self.targets):
+            event = create_tag("type", "PLAY_CARD")
+            event += create_tag("card_id", self.card_to_play_id)
+            event += create_tag("target_id_list", self.targets)
+            ClientEvent.trigger_event(event)
+            self.flush_state()
 
     def register_card(self, card):
         def selecting_function():
@@ -42,7 +46,7 @@ class ClientEventBuilder:
 
     def register_targetable(self, targetable):
         def selecting_funtion():
-            self.targets.append(targetable.scene_id)
+            self.add_target(targetable)
         targetable.on_click.append(selecting_funtion)
 
 

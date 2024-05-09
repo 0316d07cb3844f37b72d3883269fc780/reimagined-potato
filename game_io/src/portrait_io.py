@@ -1,3 +1,6 @@
+import csv
+
+from game_io.src.card_io import type_to_image_path, type_to_card_text
 from game_io.src.image_util import *
 from game_data.src.getterscene import getter
 from game_data.src.action import Action
@@ -43,6 +46,8 @@ def get_portrait(scene_id):
         return portrait_by_id[scene_id]
 
 
+
+
 portrait_by_id = {}
 
 name_dict_by_underlying_type = {
@@ -71,6 +76,28 @@ image_dict_by_underlying_type = {
     "Person": {
 
     }
+
+
 }
+
+with open(root_path("resources/Actions/actions.csv")) as actions_file:
+    csvreader = csv.reader(actions_file, delimiter=";")
+    next(csvreader)
+    for row in csvreader:
+        name = row[0]
+        action_id = row[1]
+        action_portrait_path = row[3]
+        name_dict_by_underlying_type["Action"][action_id] = name
+        image_dict_by_underlying_type["Action"][action_id] = action_portrait_path
+
+with open(root_path("resources/People/people.csv")) as people_file:
+    csvreader = csv.reader(people_file, delimiter=";")
+    next(csvreader)
+    for row in csvreader:
+        Type = row[0]
+        image_path= row[1]
+        portrait_path = row[2]
+        name_dict_by_underlying_type["Person"][Type] = Type
+        image_dict_by_underlying_type["Person"][Type] = portrait_path
 
 

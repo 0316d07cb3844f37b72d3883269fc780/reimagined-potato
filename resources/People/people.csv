@@ -1,2 +1,4 @@
 type;image_file;portrait_file
-;;
+Testbert;resources/testguy.bmp;
+Knight;resources/People/Full_Art/Knight.png;
+Dog;resources/People/Full_Art/Dog.png;resources/People/portraits/dog_portrait.png

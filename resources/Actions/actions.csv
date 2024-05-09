@@ -1,2 +1,3 @@
-type;image_file;portrait_file
-;;
+Name;action_id;image_file;portrait_file
+Tackle;1;;resources/Actions/tackle_portrait.png
+Brace;2;;resources/Actions/brace_portrait.png

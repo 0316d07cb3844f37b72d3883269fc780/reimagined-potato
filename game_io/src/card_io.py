@@ -2,6 +2,7 @@ import csv
 
 from game_data.src.card import Card
 from game_io.src.button import Button
+from game_io.src.client_event_builder import builder
 from game_io.src.getter_io import getter
 from game_io.src.image_util import *
 from game_io.src.targetable_utils import *
@@ -15,7 +16,9 @@ class CardIO(Button):
         if center_position is not None:
             self.rect.center = center_position
         getter[card.scene_id] = self
+
         super().__init__(image_to_images_hovered_and_pressed(self.image), rect=self.rect)
+        builder.register_card(self)
 
     def redraw_self(self):
         self.image = make_card_image(self.card_data)
