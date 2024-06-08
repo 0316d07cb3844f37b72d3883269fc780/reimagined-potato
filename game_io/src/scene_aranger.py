@@ -152,7 +152,7 @@ def render_event_post(scene: Fight_Scene, event, index_player: int, scene_group:
     player = scene.allies[index_player]
     if event_type == et.play_card:
         card = make_or_fetch_card_io(event.card)
-        if event.card in player.hand:
+        if card in player.hand:
             hand_group.remove(card)
         initialize_actions(scene.actions, scene_group)
     elif event_type == et.damage:

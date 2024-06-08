@@ -8,6 +8,7 @@ from game_data.src.getterscene import getter
 from game_io.src.client_event import ClientEvent
 from game_io.src.scene_aranger import render_event_pre, render_event_post, initialize_scene
 from game_io.src.sprite_manager import SpriteManager
+from game_io.src.client_event_builder import builder
 from game_logic.src.client_networker import Client_Networker
 from game_logic.src.combatengine import CombatEngine
 from game_logic.src.scene_transformer import transform
@@ -29,6 +30,7 @@ def main():
     engine_runs.wait()
     client_networker = Client_Networker()
     index_player = 0
+    builder.player_id = index_player
 
     initialize_scene(scene, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
     client_networker.introduce_self(index_player)
@@ -51,6 +53,10 @@ def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene,
                 networker.stop_engine()
                 engine_process.join()
                 running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    builder.pass_priority()
+
         for event in ClientEvent.get_and_flush_events():
             networker.send(event)
 

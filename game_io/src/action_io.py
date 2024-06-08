@@ -4,6 +4,7 @@ from game_io.src.image_util import *
 from game_io.src.targetable_utils import *
 from game_io.src.portrait_io import get_portrait
 from game_io.src.getter_io import getter
+from game_io.src.client_event_builder import builder
 
 
 class ActionIO(Button):
@@ -16,6 +17,7 @@ class ActionIO(Button):
             self.rect.center = position
         getter[action.scene_id] = self
         super().__init__(image_to_images_hovered_and_pressed(image), self.rect)
+        builder.register_targetable(self)
 
     def redraw_self(self):
         image = make_action_image(self.action)

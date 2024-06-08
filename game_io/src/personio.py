@@ -13,6 +13,7 @@ from utility.src.string_utils import root_path
 from game_io.src.button import Button
 from game_io.src.targetable_utils import *
 from game_io.src.getter_io import getter
+from game_io.src.client_event_builder import builder
 
 
 class PersonIO(Button):
@@ -31,6 +32,7 @@ class PersonIO(Button):
         self.rect.center = position
         getter[person_fighting.scene_id]=self
         super().__init__(image_to_images_hovered_and_pressed(self.image), rect=self.rect)
+        builder.register_targetable(self)
 
     def redraw_self(self):
         pass

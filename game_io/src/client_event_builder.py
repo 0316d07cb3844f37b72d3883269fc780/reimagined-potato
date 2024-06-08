@@ -7,6 +7,7 @@ class ClientEventBuilder:
     def __init__(self):
         self.card_to_play_id = None
         self.targets = []
+        self.player_id = None
 
     def flush_state(self):
         self.card_to_play_id = None
@@ -19,7 +20,7 @@ class ClientEventBuilder:
             self.card_to_play_id = None
 
     def pass_turn(self):
-        ClientEvent.trigger_event(create_tag("type", "END_TURN"))
+        ClientEvent.trigger_event(create_tag("type", "END_TURN")+create_tag("player_id", self.player_id))
         self.flush_state()
 
     def select_card_to_play(self, card_id):
@@ -34,6 +35,7 @@ class ClientEventBuilder:
         card = getter[self.card_to_play_id]
         if card.target_checker(self.targets):
             event = create_tag("type", "PLAY_CARD")
+            event += create_tag("player_id", self.player_id)
             event += create_tag("card_id", self.card_to_play_id)
             event += create_tag("target_id_list", self.targets)
             ClientEvent.trigger_event(event)
@@ -48,6 +50,12 @@ class ClientEventBuilder:
         def selecting_funtion():
             self.add_target(targetable)
         targetable.on_click.append(selecting_funtion)
+
+    def pass_priority(self):
+        if self.card_to_play_id is None:
+            self.pass_turn()
+        else:
+            self.finish_play_card()
 
 
 builder = ClientEventBuilder()
