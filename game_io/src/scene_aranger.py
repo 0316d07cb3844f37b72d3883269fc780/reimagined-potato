@@ -94,7 +94,7 @@ def make_or_fetch_stance_io(stance):
 def initialize_hand(hand, hand_group):
     last_right_edge = [constants.CARD_WIDTH, constants.HAND_ROW_CENTER_HEIGHT]
     for card in hand:
-        card_io = make_or_fetch_card_io(card)
+        card_io = make_or_fetch_card_io(card.scene_id)
         last_right_edge[0] += constants.CARD_WIDTH
         card_io.rect.midright = last_right_edge
         hand_group.add(card_io)
@@ -149,24 +149,21 @@ def render_event_pre(scene: Fight_Scene, event, index_player: int, scene_group: 
 
 def render_event_post(scene: Fight_Scene, event, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
     event_type, attributes = event.event_type, event.attributes
-    player = scene.allies[index_player]
+    player_id = scene.allies[index_player].scene_id
     if event_type == et.play_card:
         card = make_or_fetch_card_io(event.card)
-        if card in player.hand:
+        if event.player == player_id:
             hand_group.remove(card)
         initialize_actions(scene.actions, scene_group)
     elif event_type == et.damage:
         for target in getter[event.damaged]:
             target.redraw_self()
     elif event_type == et.draw_card:
-        if event.drawer == scene.allies[index_player].scene_id:
+        if event.drawer == player_id:
             initialize_hand(scene.allies[index_player].hand, hand_group)
 
 
-    
-
-
-def make_or_fetch_card_io(card):
-    if card.scene_id in getter:
-        return getter[card.scene_id]
-    return CardIO(card)
+def make_or_fetch_card_io(card_id):
+    if card_id in getter:
+        return getter[card_id]
+    return CardIO(getter_scene[card_id])

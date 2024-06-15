@@ -3,6 +3,7 @@ import socket
 from select import select
 
 from game_logic.src.networking_constants import *
+from utility.src.logging_util import server_networker_logger
 
 
 class ServerNetworker:
@@ -26,12 +27,13 @@ class ServerNetworker:
 
     @staticmethod
     def send(message: str, connection):
-        message = message.encode(FORMAT)
-        message_length = len(message)
+        message_endcoded = message.encode(FORMAT)
+        message_length = len(message_endcoded)
         message_length = str(message_length).encode(FORMAT)
         message_length += " ".encode(FORMAT) * (HEADER - len(message_length))
         connection.sendall(message_length)
-        connection.sendall(message)
+        connection.sendall(message_endcoded)
+        server_networker_logger.info("Message sent:\n"+message)
 
     def receive(self, patient=True) -> tuple:
         """
@@ -49,6 +51,7 @@ class ServerNetworker:
                     data_recieved = connection.recv(datasize)
                     data += data_recieved
                     datasize -= len(data_recieved)
+                server_networker_logger.info("Message recieved:\n"+data.decode(FORMAT))
                 return data.decode(FORMAT), connection
         return "", None
 

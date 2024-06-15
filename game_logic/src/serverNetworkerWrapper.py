@@ -67,6 +67,7 @@ class ClientEvent:
         if self.event_type == "END_TURN":
             pass
         if self.event_type == "PLAY_CARD":
-            card_id, target_id_list = detag_given_tags(string, "card_id", "target_id_list")
+            card_id, target_id_list_string = detag_given_tags(string, "card_id", "target_id_list")
+            target_id_list = eval(target_id_list_string)
             self.card = getter[int(card_id)]
-            self.target_list = [getter[int(target_id)] for target_id in target_id_list]
+            self.target_list = [getter[target_id] for target_id in target_id_list]

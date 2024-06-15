@@ -3,7 +3,7 @@ class ClientEvent:
 
     @classmethod
     def trigger_event(cls, event):
-        cls._Events += event
+        cls._Events.append(event)
 
     @classmethod
     def get_and_flush_events(cls):

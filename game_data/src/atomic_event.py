@@ -51,9 +51,9 @@ class AtomicEvent:
 class EventPlayCard(AtomicEvent):
     def __init__(self, card_scene_id, player_scene_id, targets_scene_ids):
         super().__init__(EventType.play_card,
-                         Card_Scene_Id=card_scene_id,
-                         Card_Player=player_scene_id,
-                         Targets_Scene_Id=targets_scene_ids)
+                         card=card_scene_id,
+                         player=player_scene_id,
+                         target_list=targets_scene_ids)
 
 
 class EventSomethingDied(AtomicEvent):

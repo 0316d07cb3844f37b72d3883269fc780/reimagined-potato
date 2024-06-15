@@ -94,7 +94,7 @@ class CombatEngine:
             atomic_event = EventPlayCard(event.card.scene_id, event.player.scene_id,
                                          [target.scene_id for target in event.target_list])
         elif event.event_type == "END_TURN":
-            atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player)
+            atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player.scene_id)
         elif event.event_type == "END_ENGINE":
             self.keep_running = False
         self.atomic_events_scheduled.append(atomic_event)

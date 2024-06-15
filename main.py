@@ -30,7 +30,7 @@ def main():
     engine_runs.wait()
     client_networker = Client_Networker()
     index_player = 0
-    builder.player_id = index_player
+    builder.player_id = scene.allies[index_player].scene_id
 
     initialize_scene(scene, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
     client_networker.introduce_self(index_player)

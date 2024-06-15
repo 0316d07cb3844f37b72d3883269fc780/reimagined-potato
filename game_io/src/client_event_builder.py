@@ -48,7 +48,7 @@ class ClientEventBuilder:
 
     def register_targetable(self, targetable):
         def selecting_funtion():
-            self.add_target(targetable)
+            self.add_target(targetable.scene_id)
         targetable.on_click.append(selecting_funtion)
 
     def pass_priority(self):
