@@ -85,7 +85,7 @@ with open(root_path("resources/Actions/actions.csv")) as actions_file:
     next(csvreader)
     for row in csvreader:
         name = row[0]
-        action_id = row[1]
+        action_id = int(row[1])
         action_portrait_path = row[3]
         name_dict_by_underlying_type["Action"][action_id] = name
         image_dict_by_underlying_type["Action"][action_id] = action_portrait_path

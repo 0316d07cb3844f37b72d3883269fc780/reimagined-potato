@@ -113,7 +113,8 @@ class CombatEngine:
                 self.atomic_events_scheduled.append(AtomicEvent(EventType.redraw_hands))
             else:
                 for action in self.fight_scene.actions[::-1]:
-                    if any([action is fighter.actions[-1] for fighter in self.fight_scene.current_side]):
+                    if any([(action is fighter.actions[-1] if fighter.actions else False) for fighter in
+                            self.fight_scene.current_side]):
                         event = AtomicEvent(EventType.resolve_action, action=action.scene_id)
                         self.atomic_events_scheduled.append(event)
                     else:

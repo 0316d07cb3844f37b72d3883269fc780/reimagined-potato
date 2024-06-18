@@ -12,13 +12,20 @@ def create_person_fighting_from_person_base(path: str):
     person_fighting = Person_Fighting(base_person)
     person_fighting_string = str(person_fighting)
     person_fighting_string = scrub_scene_ids(person_fighting_string)
+    person_fighting_string = scrub_locations_of_cards(person_fighting_string)
     fighting_path = fightify_path(path)
     if not os.path.exists(fighting_path):
+        open(root_path(fighting_path), "w")
         write_string_to_file(person_fighting_string, fighting_path)
 
 
 def scrub_scene_ids(person_fighting_string):
     person_fighting_string = re.sub(r'scene_id>\d+<', 'scene_id>auto<', person_fighting_string)
+    return person_fighting_string
+
+
+def scrub_locations_of_cards(person_fighting_string):
+    person_fighting_string = re.sub(r'!location>\d+<', 'location><', person_fighting_string)
     return person_fighting_string
 
 

@@ -46,7 +46,7 @@ class Card_Collection(Loadable):
         card_strings = detag_repeated(cards_string, "card")
         card_list = [Card.create_from_string(my_string) for my_string in card_strings]
         result = Card_Collection(card_list)
-        if scene_id != "":
+        if scene_id not in ["", "auto"]:
             scene_id = int(scene_id)
             getter[scene_id] = result
         return result

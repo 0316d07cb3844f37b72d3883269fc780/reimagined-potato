@@ -10,6 +10,12 @@ from game_data.src.action_factory import ActionFactories, Action_Factory
 from game_data.src.getterscene import getter
 from utility.src.string_utils import create_tag, detag_given_tags, root_path, read_and_clean_file
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from game_data.src.fight_scene import Fight_Scene
+    from game_data.src.person_fighting import Person_Fighting
+
 
 class TargetChecker(Enum):
     no_target = lambda targetlist: len(targetlist) == 0, "no_target"
@@ -43,11 +49,13 @@ class Card(Loadable):
         self.location.remove_card(self)
         new_location.add_card(self)
 
-    def resolve(self, player, target_list):
+    def resolve(self, player, target_list, scene: 'Fight_Scene' = None):
         if not self.target_checker(target_list):
             raise IndexError
-        self.action_factory(player, target_list)
+        action = self.action_factory(player, target_list)
         self.move(player.discardpile)
+        if scene is not None:
+            scene.actions.append(action)
 
     def __str__(self) -> str:
         my_string = create_tag("card_type", self.card_type)

@@ -68,7 +68,7 @@ class Person_Fighting(Loadable):
         my_person_fighting.hand = Card_Collection.create_from_string(hand_string)
         my_person_fighting.discardpile = Card_Collection.create_from_string(discardpile_string)
         id_string, = detag_given_tags(string, "scene_id")
-        if id_string != "":
+        if id_string not in ["", "auto"]:
             getter[int(id_string)] = my_person_fighting
         return my_person_fighting
 
