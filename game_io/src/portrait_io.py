@@ -13,8 +13,9 @@ class _Portrait:
         self.scene_id = scene_id
         self.underlying_type = underlying_type
         name_render = make_text_field(name)
-        image_render = make_image(image_location)
-        self.image = stack_vertical(image_render, name_render)
+        image_render = make_image(image_location, opaque=True)
+        image_render.blit(name_render, (0, 140))
+        self.image = image_render
 
 
 class Portrait(_Portrait):
@@ -35,7 +36,7 @@ class Portrait(_Portrait):
             scene_id = data.scene_id
         else:
             scene_id = None
-        super().__init__(name,image, underlying_type, scene_id)
+        super().__init__(name, image, underlying_type, scene_id)
 
 
 def get_portrait(scene_id):

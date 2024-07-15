@@ -30,32 +30,27 @@ class ActionIO(Button):
 
 
 def make_action_image(action):
-    name_image = make_text_field(action.name)
-    middle_row = make_middle_row(action.stability, action.speed)
+    top_row = make_top_row(action)
     bottom_row = make_bottom_row(action)
-    result = stack_vertical(name_image, middle_row, bottom_row)
-    return stack_horizontal(make_left_main_part(action), result)
+    result = stack_vertical(top_row, bottom_row)
+    return stack_horizontal(get_portrait(action.scene_id).image, result)
 
 
-def make_left_main_part(action):
+def make_top_row(action):
     performer_face = get_portrait(action.performer.scene_id)
-    action_image = get_portrait(action.scene_id)
-    return stack_horizontal(performer_face.image, action_image.image)
-
-
-def make_middle_row(stability, speed):
-    stability_image = make_text_field("Stability: " + str(stability))
-    speed_image = make_text_field(speed.name)
-    return stack_horizontal(stability_image, speed_image)
+    performer_face = pygame.transform.scale(performer_face.image, (90, 75))
+    stability_image = make_text_field("Stability: " + str(action.stability), size=20)
+    speed_image = make_text_field(action.speed.name, size=20)
+    return stack_horizontal(performer_face, stack_vertical(speed_image, stability_image, offset=5))
 
 
 def make_bottom_row(action):
 
-    target_faces = [get_portrait(scene_id) for scene_id in action.target_list]
+    target_faces = [get_portrait(target.scene_id) for target in action.target_list]
     if target_faces:
-        return stack_horizontal(*target_faces)
+        return stack_horizontal(*[pygame.transform.scale(face.image, (75,90)) for face in target_faces])
     else:
-        return pygame.Surface((1, 180))
+        return pygame.Surface((1, 90))
 
 
 def get_action_image(action_id):

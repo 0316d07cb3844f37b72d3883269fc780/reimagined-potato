@@ -20,11 +20,17 @@ class CombatEngine:
         self.keep_running = True
 
     def engine_loop(self):
-        while self.keep_running:
+        def check_keep_running():
+            return self.keep_running
+        self.abstract_loop(check_keep_running)
+
+    def abstract_loop(self, running_checker):
+        while running_checker():
             self.clear_out_atomic_events()
             list_of_client_events = self.networker_wrapper.get_all_messages()
             for event in list_of_client_events:
                 self.process_client_event(event)
+
 
     def clear_out_atomic_events(self):
         """

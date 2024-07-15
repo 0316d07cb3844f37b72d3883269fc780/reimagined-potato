@@ -20,7 +20,7 @@ class Button (pygame.sprite.Sprite):
     A button that calls all functions on a list when pressed.
     """
 
-    # Ensures only one button can be interacted with with the mouse.
+    # Ensures only one button can be interacted with the mouse.
     mouse_interacted_with_button = False
 
     def __init__(self, background_images, rect, text="", on_click=None):

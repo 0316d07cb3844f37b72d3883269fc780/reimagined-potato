@@ -29,7 +29,7 @@ def initialize_scene(scene: Fight_Scene, index_player: int, scene_group: RenderP
 
 
 def initialize_actions(actions: list, scene_group: RenderPlain):
-    last_edge_middle = [0, constants.ACTIONS_ROW_CENTER_HEIGHT]
+    last_edge_middle = [200, 2 * constants.ACTIONS_ROW_CENTER_HEIGHT]
     for action in actions:
         action_io = make_or_fetch_action_io(action)
         action_widths = action_io.rect.width
@@ -42,7 +42,6 @@ def make_or_fetch_action_io(action):
     if action.scene_id in getter:
         return getter[action.scene_id]
     action = ActionIO(action)
-    builder.register_targetable(action)
     return action
 
 

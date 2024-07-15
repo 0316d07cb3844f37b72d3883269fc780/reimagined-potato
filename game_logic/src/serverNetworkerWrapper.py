@@ -49,6 +49,29 @@ class ServerNetworkerWrapper:
         return subresult
 
 
+class MockPassWrapper:
+    def __init__(self, engine):
+        self.server = engine
+        self.result = []
+
+    def send_to_all_players(self, string):
+        pass
+
+    def get_all_messages(self):
+        """
+        Returns ClientEvents
+        :return: List of ClientEvents
+        """
+        result = self.result
+        self.result = []
+        return result
+
+    def set_next_messages(self, messages):
+        self.result = messages
+
+
+
+
 class ClientEvent:
 
     def __init__(self, string):
@@ -71,3 +94,17 @@ class ClientEvent:
             target_id_list = eval(target_id_list_string)
             self.card = getter[int(card_id)]
             self.target_list = [getter[target_id] for target_id in target_id_list]
+
+    @classmethod
+    def create_end_turn(cls, player_id):
+        generating_string = create_tag("type", "END_TURN")
+        generating_string += create_tag("player_id", player_id)
+        return cls(generating_string)
+
+    @classmethod
+    def create_play_card(cls, player_id, card_id, target_id_list):
+        generating_string = create_tag("type", "PLAY_CARD")
+        generating_string += create_tag("player_id", player_id)
+        generating_string += create_tag("card_id", card_id)
+        generating_string += create_tag("target_id_list", target_id_list)
+        return cls(generating_string)
