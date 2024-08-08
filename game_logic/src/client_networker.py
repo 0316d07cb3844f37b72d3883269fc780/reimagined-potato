@@ -10,10 +10,11 @@ from utility.src.logging_util import client_networker_logger
 class Client_Networker:
     _socket: socket
 
-    def __init__(self, HOST : str = '127.0.0.1', Socket=None):
+    def __init__(self, HOST : str = '127.0.0.1', Socket=None, patient: bool = False):
         if Socket is None:
             self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._socket.connect((HOST, PORT))
+        self.patient = patient
 
     def send(self, message: str):
         client_networker_logger.info("Message sent:\n"+message)
@@ -25,7 +26,7 @@ class Client_Networker:
         self._socket.sendall(message)
 
     def receive(self) -> str:
-        if select([self._socket], [], [], 0.005)[0]:
+        if self.select():
             data_size = self._socket.recv(HEADER)
             if data_size:
                 data = "".encode(FORMAT)
@@ -37,6 +38,12 @@ class Client_Networker:
                 client_networker_logger.info("Message recieved:\n"+data.decode(FORMAT))
                 return data.decode(FORMAT)
         return ""
+
+    def select(self):
+        if self.patient:
+            return select([self._socket], [], [])[0]
+        else:
+            return select([self._socket], [], [], 0.005)[0]
 
     def close(self):
         self._socket.close()

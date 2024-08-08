@@ -96,15 +96,15 @@ class ClientEvent:
             self.target_list = [getter[target_id] for target_id in target_id_list]
 
     @classmethod
-    def create_end_turn(cls, player_id):
+    def create_end_turn_generating_string(cls, player_id: int):
         generating_string = create_tag("type", "END_TURN")
         generating_string += create_tag("player_id", player_id)
-        return cls(generating_string)
+        return generating_string
 
     @classmethod
-    def create_play_card(cls, player_id, card_id, target_id_list):
+    def create_play_card_generating_string(cls, player_id: int, card_id: int, target_id_list: int):
         generating_string = create_tag("type", "PLAY_CARD")
         generating_string += create_tag("player_id", player_id)
         generating_string += create_tag("card_id", card_id)
         generating_string += create_tag("target_id_list", target_id_list)
-        return cls(generating_string)
+        return generating_string

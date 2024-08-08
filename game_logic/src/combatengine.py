@@ -27,10 +27,11 @@ class CombatEngine:
     def abstract_loop(self, running_checker):
         while running_checker():
             self.clear_out_atomic_events()
+            if not running_checker():
+                break
             list_of_client_events = self.networker_wrapper.get_all_messages()
             for event in list_of_client_events:
                 self.process_client_event(event)
-
 
     def clear_out_atomic_events(self):
         """
@@ -137,3 +138,18 @@ class CombatEngine:
     def check_if_fight_over(self, todo):
         if not self.fight_scene.foes:
             todo.append(AtomicEvent(EventType.allies_won))
+
+    def simulate_until_stack_is_clear(self):
+        def check_if_stack_is_clear():
+            return not self.fight_scene.actions
+        self.abstract_loop(check_if_stack_is_clear())
+
+    def simulate_one_stack_resolution(self):
+        stack_size = len(self.fight_scene.actions)
+        if stack_size == 0:
+            return
+        top_action = self.fight_scene.actions[-1]
+
+        def check_if_one_action_got_resolved():
+            return self.fight_scene.actions[-1] is not top_action
+        self.abstract_loop(check_if_one_action_got_resolved())
