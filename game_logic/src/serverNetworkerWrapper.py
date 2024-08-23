@@ -62,7 +62,12 @@ class MockPassWrapper:
         Returns ClientEvents
         :return: List of ClientEvents
         """
-        result = self.result
+        if self.result:
+            result = [self.result]
+        else:
+            result = []
+            for person in self.server.scene.current_side:
+                result.append(ClientEvent.create_end_turn_generating_string(person.scene_id))
         self.result = []
         return result
 
@@ -70,13 +75,11 @@ class MockPassWrapper:
         self.result = messages
 
 
-
-
 class ClientEvent:
 
     def __init__(self, string):
         self.event_type, = detag_given_tags(string, "type")
-        if self.event_type in ["END_ENGINE", "START_SCENE"]:
+        if self.event_type in ["END_ENGINE", "START_SCENE", "ACCEPT_CONNECTION"]:
             return
         if self.event_type == "Introduction":
             self.person_id = int(*detag_given_tags(string, "person_id"))

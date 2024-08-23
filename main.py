@@ -2,20 +2,19 @@ from multiprocessing import Process, Event
 
 import pygame
 
+from ai.src.ai import ai_loop
 from game_data.src.fight_scene import Fight_Scene
-from game_data.src.atomic_event import AtomicEvent
 from game_data.src.getterscene import getter
 from game_io.src.client_event import ClientEvent
+from game_io.src.client_event_builder import builder
 from game_io.src.scene_aranger import render_event_pre, render_event_post, initialize_scene
 from game_io.src.sprite_manager import SpriteManager
-from game_io.src.client_event_builder import builder
-from game_logic.src.client_networker import Client_Networker
+from game_logic.src.client_networker import Client_Networker, get_engine_events
 from game_logic.src.combatengine import CombatEngine
 from game_logic.src.scene_transformer import transform
 from game_logic.src.serverNetworkerWrapper import ServerNetworkerWrapper
 from game_logic.src.servernetworker import ServerNetworker
 from utility.src.string_utils import create_tag
-from utility.src.string_utils import detag_repeated
 
 
 def main():
@@ -28,6 +27,9 @@ def main():
                              args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", engine_runs))
     engine_process.start()
     engine_runs.wait()
+    ai_process = Process(target=ai_loop,
+                         args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", scene.foes[0].scene_id))
+    ai_process.start()
     client_networker = Client_Networker()
     index_player = 0
     builder.player_id = scene.allies[index_player].scene_id
@@ -35,9 +37,11 @@ def main():
     initialize_scene(scene, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
     client_networker.introduce_self(index_player)
     client_networker.send(create_tag("type", "START_SCENE"))
+    client_networker.send(create_tag("type", "ACCEPT_CONNECTION"))
 
     # gameloop
     client_loop(sprite_manager, client_networker, engine_process, scene, index_player)
+    ai_process.terminate()
 
 
 def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene, index_player):
@@ -61,16 +65,6 @@ def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene,
             networker.send(event)
 
     pygame.quit()
-
-
-def get_engine_events(networker: Client_Networker):
-    events = networker.receive()
-    result = []
-    while events != "":
-        result += detag_repeated(events, "event")
-        events = networker.receive()
-    result = [AtomicEvent.create_from_string(event) for event in result]
-    return result
 
 
 def handle_engine_events(events, scene, index_player, sprite_manager):

@@ -26,6 +26,8 @@ def transform(atomic_event, getter, scene):
         getter[atomic_event.passer].turn_ended = True
     elif event_type == et.change_sides:
         scene.change_turn()
+        for person in scene.current_side:
+            person.turn_ended = False
     elif event_type == et.damage:
         try:
             for target in getter[atomic_event.damaged]:

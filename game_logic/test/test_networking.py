@@ -41,6 +41,9 @@ class TestInits(unittest.TestCase):
         my_process.join()
         client.close()
 
+    def test_two_clients(self):
+        pass
+
 
 def server_thread():
     server = ServerNetworker()

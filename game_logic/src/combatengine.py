@@ -102,9 +102,12 @@ class CombatEngine:
                                          [target.scene_id for target in event.target_list])
         elif event.event_type == "END_TURN":
             atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player.scene_id)
+        elif event.event_type == "ACCEPT_CONNECTION":
+            self.networker_wrapper.networker.check_for_connection()
         elif event.event_type == "END_ENGINE":
             self.keep_running = False
-        self.atomic_events_scheduled.append(atomic_event)
+        if atomic_event:
+            self.atomic_events_scheduled.append(atomic_event)
 
     def send_out_history(self):
         result = ""

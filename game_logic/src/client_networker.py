@@ -2,8 +2,9 @@ import socket
 
 from select import select
 
+from game_data.src.atomic_event import AtomicEvent
 from game_logic.src.networking_constants import *
-from utility.src.string_utils import create_tag
+from utility.src.string_utils import create_tag, detag_repeated
 from utility.src.logging_util import client_networker_logger
 
 
@@ -65,3 +66,13 @@ class Client_Networker:
 
 if __name__ == "__main__":
     pass
+
+
+def get_engine_events(networker: Client_Networker):
+    events = networker.receive()
+    result = []
+    while events != "":
+        result += detag_repeated(events, "event")
+        events = networker.receive()
+    result = [AtomicEvent.create_from_string(event) for event in result]
+    return result

@@ -39,7 +39,7 @@ class Fight_Scene(Loadable):
             self.stances = []
 
     @property
-    def current_side(self) -> str:
+    def current_side(self):
         return getattr(self, self._turn_side.name)
 
     @property

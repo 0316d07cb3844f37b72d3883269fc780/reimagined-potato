@@ -19,7 +19,6 @@ class Card_Collection(Loadable):
             card.location=self
         self.card_order = [card.scene_id for card in card_list]
 
-
     def __len__(self):
         return len(self.cards)
 
