@@ -26,8 +26,8 @@ class Client_Networker:
         self._socket.sendall(message_length)
         self._socket.sendall(message)
 
-    def receive(self) -> str:
-        if self.select():
+    def receive(self, impatient_mode: bool = False) -> str:
+        if self.select(impatient_mode):
             data_size = self._socket.recv(HEADER)
             if data_size:
                 data = "".encode(FORMAT)
@@ -40,8 +40,8 @@ class Client_Networker:
                 return data.decode(FORMAT)
         return ""
 
-    def select(self):
-        if self.patient:
+    def select(self, impatient_mode: bool = False):
+        if self.patient and not impatient_mode:
             return select([self._socket], [], [])[0]
         else:
             return select([self._socket], [], [], 0.005)[0]
@@ -55,13 +55,41 @@ class Client_Networker:
 
     def introduce_self(self, index: int):
         """
-        Introduce self to the engine, so you get sent messages
+        Introduce self to the engine, so you get sent recieved_messages
 
         :param index: Index of the player in Allies in the scene.
         """
         message = create_tag("type", "Introduction")
         message += create_tag("person_id", index)
         self.send(message)
+
+
+class MockNetworker(Client_Networker):
+    def __init__(self, messages: list = None, message_string: str = None, message_file: str = None):
+        if messages is not None:
+            self.recieved_messages = messages
+        elif message_string is not None:
+            self.recieved_messages = message_string.split("\n")
+        elif message_file is not None:
+            with open(message_file, "r") as file:
+                self.recieved_messages = file.read().split("\n")
+        else:
+            self.recieved_messages = []
+        self.sent_messages = []
+
+    def send(self, message: str):
+        self.sent_messages.append(message)
+
+    def receive(self, impatient_mode: bool = False):
+        if self.recieved_messages:
+            return self.recieved_messages.pop(0)
+        return ""
+
+    def close(self):
+        pass
+
+
+
 
 
 if __name__ == "__main__":
@@ -73,6 +101,6 @@ def get_engine_events(networker: Client_Networker):
     result = []
     while events != "":
         result += detag_repeated(events, "event")
-        events = networker.receive()
+        events = networker.receive(impatient_mode=True)
     result = [AtomicEvent.create_from_string(event) for event in result]
     return result

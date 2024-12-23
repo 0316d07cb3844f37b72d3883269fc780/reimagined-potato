@@ -85,7 +85,7 @@ def create_tackle(tackler, tackled_list: list) -> Action:
     return tackle
 
 
-def brace_method(bracer, _):
+def brace_method(bracer):
     return [add_resist(bracer, 5)]
 
 

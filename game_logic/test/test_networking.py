@@ -41,8 +41,23 @@ class TestInits(unittest.TestCase):
         my_process.join()
         client.close()
 
+    def test_patient_client(self):
+        my_process = Process(target=delayed_server)
+        my_process.start()
+        client = Client_Networker(patient=True)
+        string = client.receive()
+        self.assertEqual(string, "message")
+        my_process.join()
+        client.close()
+
     def test_two_clients(self):
-        pass
+        server_process = Process(target=server_thread_two_servers)
+        server_process.start()
+        client_process = Process(target=first_client_two_clients)
+        client_process.start()
+        second_client_two_clients(self)
+        server_process.join()
+        client_process.join()
 
 
 def server_thread():
@@ -78,6 +93,52 @@ def silent_server():
         connection = server.check_for_connection()
     server.receive()
     server.close()
+
+
+def delayed_server():
+    server = ServerNetworker()
+    connection = None
+    while connection is None:
+        connection = server.check_for_connection()
+    time.sleep(0.1)
+    server.send("message", connection)
+    server.close()
+
+
+def server_thread_two_servers():
+    server = ServerNetworker()
+    connection_1, connection_2 = None, None
+    while connection_1 is None:
+        connection_1 = server.check_for_connection()
+    while connection_2 is None:
+        connection_2 = server.check_for_connection()
+    time.sleep(0.01)
+    string, _ = server.receive()
+    if string == "first_string":
+        server.send("test", connection_1)
+        server.send("test", connection_2)
+    string, _ = server.receive()
+    if string == "done":
+        server.send("done", connection_1)
+    server.close()
+
+
+def first_client_two_clients():
+    time.sleep(0.01)
+    client = Client_Networker()
+    client.send("first_string")
+    while client.receive() != "done":
+        time.sleep(0.04)
+    client.close()
+
+
+def second_client_two_clients(self):
+    time.sleep(0.01)
+    second_client = Client_Networker(patient=True)
+    received_string = second_client.receive()
+    self.assertEqual(received_string, "test")
+    second_client.send("done")
+    second_client.close()
 
 
 if __name__ == '__main__':

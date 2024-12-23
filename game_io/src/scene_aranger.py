@@ -141,7 +141,7 @@ def render_event_pre(scene: Fight_Scene, event, index_player: int, scene_group: 
             hand_group.remove(event.discarded_card)
             initialize_hand(player.hand, hand_group)
     elif event_type == et.resolve_action:
-        action = event.action
+        action = getter[event.action]
         scene_group.remove(action)
         del action
 
