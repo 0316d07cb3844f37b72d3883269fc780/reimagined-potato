@@ -57,9 +57,8 @@ def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene,
                 networker.stop_engine()
                 engine_process.join()
                 running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    builder.pass_priority()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                builder.pass_priority()
 
         for event in ClientEvent.get_and_flush_events():
             networker.send(event)

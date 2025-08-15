@@ -16,6 +16,11 @@ class Side(Enum):
     allies = 0
     foes = 1
 
+    def other_side(self):
+        if self == Side.allies:
+            return Side.foes
+        return Side.allies
+
 
 class Fight_Scene(Loadable):
 
@@ -41,6 +46,10 @@ class Fight_Scene(Loadable):
     @property
     def current_side(self):
         return getattr(self, self._turn_side.name)
+
+    @property
+    def other_side(self):
+        return getattr(self, self._turn_side.other_side().name)
 
     @property
     def all_people(self):
@@ -103,6 +112,8 @@ class Fight_Scene(Loadable):
         scene = Fight_Scene(Fight_Scene.create_team_from_string(allies_string),
                             Fight_Scene.create_team_from_string(foes_string), actions, stances)
         scene._turn_side = Side[detag_given_tags(string, "turn_side")[0]]
+        for person in scene.other_side:
+            person.turn_ended = True
         card_in_resolution_string, targets_being_chosen_string = detag_given_tags(string, "card_in_resolution",
                                                                                   "targets_being_selected_ids")
         if card_in_resolution_string != "":

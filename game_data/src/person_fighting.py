@@ -8,10 +8,11 @@ from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
 from game_data.src.persondata import PersonData
 from game_data.src.stance import Stance
+from game_data.src.uinotifier import UINotifier
 from utility.src.string_utils import create_tag, detag_repeated, detag_given_tags, read_and_clean_file
 
 
-class Person_Fighting(Loadable):
+class Person_Fighting(Loadable, UINotifier):
     def __init__(self, base_person: PersonData):
         self.base_person = base_person
         self.actions = []

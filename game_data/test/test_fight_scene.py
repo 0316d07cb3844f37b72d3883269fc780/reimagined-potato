@@ -39,7 +39,11 @@ class MyTestCase(unittest.TestCase):
         Scene.create_scene_from_string(my_string)
 
     def test_make_from_file(self):
-        Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
+        my_scene = Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
+        ally_dog = my_scene.allies[0]
+        enemy_dog = my_scene.foes[0]
+        self.assertTrue(enemy_dog.turn_ended)
+        self.assertTrue(not ally_dog.turn_ended)
 
 
 if __name__ == '__main__':

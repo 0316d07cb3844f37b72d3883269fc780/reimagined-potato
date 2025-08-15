@@ -14,9 +14,10 @@ from game_io.src.button import Button
 from game_io.src.targetable_utils import *
 from game_io.src.getter_io import getter
 from game_io.src.client_event_builder import builder
+from game_io.src.data_notification_reciever import DataNotificationReciever
 
 
-class PersonIO(Button):
+class PersonIO(Button, DataNotificationReciever):
 
     def __init__(self, person_fighting: Person_Fighting, position):
         """
@@ -33,9 +34,10 @@ class PersonIO(Button):
         getter[person_fighting.scene_id]=self
         super().__init__(image_to_images_hovered_and_pressed(self.image), rect=self.rect)
         builder.register_targetable(self)
+        self.register_at_data_element(person_fighting)
 
     def redraw_self(self):
-        pass
+        self.image = self.make_image(self.person_fighting)
 
     @staticmethod
     def make_image(person):
