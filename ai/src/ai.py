@@ -97,7 +97,7 @@ class SceneCopier:
 
 def ai_loop(scene_string: str, scene_id_character: int):
     scene = Fight_Scene.create_scene_from_string(scene_string)
-    networker = Client_Networker(patient=True)
+    networker = Client_Networker(patient=True, log_recieve_seperately=True)
     networker.introduce_self(scene_id_character)
     targetfinder = TargetFinderSimple(scene)
     ai = Ai(scene, scene_id_character, targetfinder)

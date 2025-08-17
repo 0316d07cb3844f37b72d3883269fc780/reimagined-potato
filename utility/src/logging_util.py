@@ -26,6 +26,8 @@ clear_file("client_network_logs")
 client_networker_logger = make_logger("client_logger", "client_network_logs")
 clear_file("server_network_logs")
 server_networker_logger = make_logger("server_logger", "server_network_logs")
+clear_file("client_network_logs_recieve_only")
+client_networker_recieve_only_logger = make_logger("client_recieve_only_logger", "client_network_logs_recieve_only")
 
 def log_to_file(string: str):
     client_networker_logger.info(string)

@@ -1,0 +1,9 @@
+<message><!event><!!type>play_card<!!\type><!!attributes>{'card': 13, 'player': 10, 'target_list': []}<!!\attributes><!\event><!event><!!type>change_sides<!!\type><!!attributes>{}<!!\attributes><!\event><\message>
+<message><!event><!!type>pass_priority<!!\type><!!attributes>{'passer': 30}<!!\attributes><!\event><!event><!!type>change_sides<!!\type><!!attributes>{}<!!\attributes><!\event><\message>
+<message><!event><!!type>resolve_action<!!\type><!!attributes>{'action': 40}<!!\attributes><!\event><\message>
+<message><!event><!!type>pass_priority<!!\type><!!attributes>{'passer': 10}<!!\attributes><!\event><!event><!!type>change_sides<!!\type><!!attributes>{}<!!\attributes><!\event><\message>
+<message><!event><!!type>pass_priority<!!\type><!!attributes>{'passer': 30}<!!\attributes><!\event><!event><!!type>change_sides<!!\type><!!attributes>{}<!!\attributes><!\event><\message>
+<message><!event><!!type>pass_priority<!!\type><!!attributes>{'passer': 10}<!!\attributes><!\event><!event><!!type>change_sides<!!\type><!!attributes>{}<!!\attributes><!\event><\message>
+<message><!event><!!type>pass_priority<!!\type><!!attributes>{'passer': 30}<!!\attributes><!\event><!event><!!type>change_sides<!!\type><!!attributes>{}<!!\attributes><!\event><\message>
+<message><!event><!!type>pass_priority<!!\type><!!attributes>{'passer': 10}<!!\attributes><!\event><!event><!!type>change_sides<!!\type><!!attributes>{}<!!\attributes><!\event><\message>
+<message><!event><!!type>pass_priority<!!\type><!!attributes>{'passer': 30}<!!\attributes><!\event><!event><!!type>change_sides<!!\type><!!attributes>{}<!!\attributes><!\event><\message>
