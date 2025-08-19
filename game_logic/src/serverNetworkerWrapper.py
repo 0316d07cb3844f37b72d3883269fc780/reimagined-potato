@@ -74,6 +74,24 @@ class MockPassWrapper:
     def set_next_messages(self, messages):
         self.result = messages
 
+class MockCustomMessagesWrapper:
+    def __init__(self, messages=None):
+        if messages is None:
+            messages = []
+        self.ClientEvents = [ClientEvent(message) for message in messages]
+
+    def send_to_all_players(self, string):
+        pass
+
+    def get_all_messages(self):
+        """
+        Returns ClientEvents
+        :return: List of ClientEvents
+        """
+        if self.ClientEvents:
+            return [self.ClientEvents.pop(0)]
+        return []
+
 
 class ClientEvent:
 

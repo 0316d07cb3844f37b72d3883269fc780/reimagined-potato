@@ -4,6 +4,8 @@ from multiprocessing import Process
 
 from game_logic.src.client_networker import Client_Networker
 from game_logic.src.servernetworker import ServerNetworker
+from utility.src.string_utils import create_tag
+from utility.src.logging_util import clear_all_files
 
 
 class TestInits(unittest.TestCase):
@@ -59,6 +61,26 @@ class TestInits(unittest.TestCase):
         server_process.join()
         client_process.join()
 
+    def test_server_networker_mock(self):
+        clear_all_files()
+        server = ServerNetworker()
+        server.receive_logging = True
+        connection = None
+        client_process = Process(target=client_thread_logging)
+        client_process.start()
+        while connection is None:
+            connection = server.check_for_connection()
+        string, _ = server.receive()
+        server.close()
+        client_process.join()
+
+
+def client_thread_logging():
+    client = Client_Networker()
+    to_send_string = create_tag("type", "START_SCENE")
+    client.send(to_send_string)
+    client.close()
+
 
 def server_thread():
     server = ServerNetworker()
@@ -70,6 +92,16 @@ def server_thread():
     server.receive()
     for _ in range(60):
         server.receive()
+    server.close()
+
+
+def server_thread_logging():
+    server = ServerNetworker()
+    server.receive_logging = True
+    connection = None
+    while connection is None:
+        connection = server.check_for_connection()
+    server.receive()
     server.close()
 
 

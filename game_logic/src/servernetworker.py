@@ -3,7 +3,7 @@ import socket
 from select import select
 
 from game_logic.src.networking_constants import *
-from utility.src.logging_util import server_networker_logger
+from utility.src.logging_util import server_networker_logger, server_networker_recieve_only_logger
 
 
 class ServerNetworker:
@@ -12,6 +12,7 @@ class ServerNetworker:
         self.server_socket.bind((HOST, PORT))
         self.server_socket.listen(20)
         self.connections = []
+        self.receive_logging = False
 
     def check_for_connection(self):
         """
@@ -52,6 +53,8 @@ class ServerNetworker:
                     data += data_recieved
                     datasize -= len(data_recieved)
                 server_networker_logger.info("Message recieved:\n"+data.decode(FORMAT))
+                if self.receive_logging:
+                    server_networker_recieve_only_logger.info("<message>"+data.decode(FORMAT)+"<\\message>")
                 return data.decode(FORMAT), connection
         return "", None
 
