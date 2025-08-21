@@ -75,6 +75,7 @@ def handle_engine_events(events, scene, index_player, sprite_manager):
 
 def engine_loop(scene_string, engine_runs):
     server_networker = ServerNetworker()
+    server_networker.activate_logging()
     server_network_wrapper = ServerNetworkerWrapper(server_networker)
     combat_engine = CombatEngine(server_network_wrapper, Fight_Scene.create_scene_from_string(scene_string))
     engine_runs.set()

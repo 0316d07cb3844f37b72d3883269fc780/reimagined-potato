@@ -74,10 +74,14 @@ class MockPassWrapper:
     def set_next_messages(self, messages):
         self.result = messages
 
+
 class MockCustomMessagesWrapper:
-    def __init__(self, messages=None):
+    def __init__(self, messages=None, file_path=None):
         if messages is None:
             messages = []
+        if file_path is not None:
+            with open(root_path(file_path), "r") as file:
+                messages = detag_repeated(file.read(), "message")
         self.ClientEvents = [ClientEvent(message) for message in messages]
 
     def send_to_all_players(self, string):

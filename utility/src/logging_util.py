@@ -43,6 +43,11 @@ def clear_all_files():
     clear_file("server_network_logs_send_only")
 
 
+def clear_server_networker_logs():
+    clear_file("server_network_logs_recieve_only")
+    clear_file("server_network_logs_send_only")
+
+
 def main():
     clear_all_files()
 

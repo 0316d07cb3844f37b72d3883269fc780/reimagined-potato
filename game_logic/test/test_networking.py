@@ -4,7 +4,8 @@ from multiprocessing import Process
 
 from game_logic.src.client_networker import Client_Networker
 from game_logic.src.servernetworker import ServerNetworker
-from utility.src.string_utils import create_tag
+from game_logic.src.serverNetworkerWrapper import MockCustomMessagesWrapper, ClientEvent
+from utility.src.string_utils import create_tag, root_path
 from utility.src.logging_util import clear_all_files
 
 
@@ -62,9 +63,8 @@ class TestInits(unittest.TestCase):
         client_process.join()
 
     def test_server_networker_mock(self):
-        clear_all_files()
         server = ServerNetworker()
-        server.receive_logging = True
+        server.activate_logging()
         connection = None
         client_process = Process(target=client_thread_logging)
         client_process.start()
@@ -73,6 +73,11 @@ class TestInits(unittest.TestCase):
         string, _ = server.receive()
         server.close()
         client_process.join()
+        my_event = ClientEvent(string)
+        my_mocked = MockCustomMessagesWrapper(file_path="logs/server_network_logs_recieve_only")
+        mocked_event = my_mocked.get_all_messages()[0]
+        self.assertEqual(my_event.event_type, mocked_event.event_type)
+
 
 
 def client_thread_logging():

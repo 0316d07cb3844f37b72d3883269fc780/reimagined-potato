@@ -3,7 +3,7 @@ import socket
 from select import select
 
 from game_logic.src.networking_constants import *
-from utility.src.logging_util import server_networker_logger, server_networker_recieve_only_logger
+from utility.src.logging_util import server_networker_logger, server_networker_recieve_only_logger, clear_server_networker_logs
 
 
 class ServerNetworker:
@@ -62,3 +62,10 @@ class ServerNetworker:
         self.server_socket.close()
         for connection in self.connections:
             connection.close()
+
+    def activate_logging(self):
+        """
+        Activates logging for this networker.
+        """
+        clear_server_networker_logs()
+        self.receive_logging = True
