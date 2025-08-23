@@ -49,4 +49,4 @@ def transform(atomic_event, getter, scene):
     elif event_type == et.resolve_action:
         action = getter[atomic_event.action]
         action.resolve()
-        del action
+        scene.actions.remove(action)

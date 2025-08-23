@@ -4,6 +4,7 @@ import unittest
 from game_data.src.atomic_event import EventType
 from game_data.src.fight_scene import Fight_Scene
 from game_logic.src.combatengine import CombatEngine
+from game_logic.src.serverNetworkerWrapper import MockCustomMessagesWrapper
 
 
 class TestTheChecks(unittest.TestCase):

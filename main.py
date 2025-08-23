@@ -3,8 +3,10 @@ from multiprocessing import Process, Event
 import pygame
 
 from ai.src.ai import ai_loop
+from game_data.src.atomic_event import AtomicEvent
 from game_data.src.fight_scene import Fight_Scene
 from game_data.src.getterscene import getter
+from game_io.src.getter_io import getter as getter_io
 from game_io.src.client_event import ClientEvent
 from game_io.src.client_event_builder import builder
 from game_io.src.scene_aranger import render_event_pre, render_event_post, initialize_scene
@@ -59,6 +61,9 @@ def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene,
                 running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 builder.pass_priority()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                for action in scene.actions:
+                    print(action)
 
         for event in ClientEvent.get_and_flush_events():
             networker.send(event)
@@ -66,7 +71,7 @@ def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene,
     pygame.quit()
 
 
-def handle_engine_events(events, scene, index_player, sprite_manager):
+def handle_engine_events(events: list[AtomicEvent], scene, index_player, sprite_manager):
     for event in events:
         render_event_pre(scene, event, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
         transform(event, getter, scene)

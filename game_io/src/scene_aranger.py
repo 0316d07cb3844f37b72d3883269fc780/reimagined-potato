@@ -1,7 +1,7 @@
 """Add a sprite for every data object in a fight scene to a group of sprites and wire them up."""
 from game_data.src.card import Card
 from game_data.src.fight_scene import Fight_Scene, Side
-from game_data.src.atomic_event import EventType as et
+from game_data.src.atomic_event import EventType as et, AtomicEvent
 from pygame.sprite import RenderPlain
 import game_io.src.scene_constants as constants
 from game_data.src.person_fighting import Person_Fighting
@@ -38,7 +38,7 @@ def initialize_actions(actions: list, scene_group: RenderPlain):
         scene_group.add(action_io)
 
 
-def make_or_fetch_action_io(action):
+def make_or_fetch_action_io(action) -> ActionIO:
     if action.scene_id in getter:
         return getter[action.scene_id]
     action = ActionIO(action)
@@ -108,7 +108,7 @@ def get_right_edge_of_actions_bar(scene: Fight_Scene):
         return 0, constants.ACTIONS_ROW_CENTER_HEIGHT
 
 
-def render_event_pre(scene: Fight_Scene, event, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
+def render_event_pre(scene: Fight_Scene, event: AtomicEvent, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
     event_type, attributes = event.event_type, event.attributes
     player = scene.allies[index_player]
 
@@ -140,10 +140,7 @@ def render_event_pre(scene: Fight_Scene, event, index_player: int, scene_group: 
         if event.discarder == player.scene_id:
             hand_group.remove(event.discarded_card)
             initialize_hand(player.hand, hand_group)
-    elif event_type == et.resolve_action:
-        action = getter[event.action]
-        scene_group.remove(action)
-        del action
+
 
 
 def render_event_post(scene: Fight_Scene, event, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
@@ -160,6 +157,10 @@ def render_event_post(scene: Fight_Scene, event, index_player: int, scene_group:
     elif event_type == et.draw_card:
         if event.drawer == player_id:
             initialize_hand(scene.allies[index_player].hand, hand_group)
+    elif event_type == et.resolve_action:
+        action = getter[event.action]
+        scene_group.remove(action)
+        del action
 
 
 def make_or_fetch_card_io(card_id):
