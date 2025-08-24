@@ -34,19 +34,23 @@ class Ai:
     def find_best_move(self):
         possible_moves = self.find_legal_moves()
         chosen_move = possible_moves[0]
+        outcome_pre= self.evaluate_outcome()
         highest_outcome = self.evaluate_outcome_pass()
         emulator = CombatEngine(MockPassWrapper(None))
         for move in possible_moves[1:]:
-            with SceneCopier(self.scene) as scene_copier:
+            with SceneCopier.make_copier(scene) as scene_copier:
                 scene = scene_copier.make_scene()
+                scene_original = self.scene
+                self.scene = scene
                 emulator.fight_scene = scene
                 emulator.networker_wrapper.engine = emulator
                 emulator.networker_wrapper.set_next_messages([move])
                 emulator.simulate_until_stack_is_clear()
-                outcome = self.evaluate_outcome_post()
+                outcome = self.evaluate_outcome()-outcome_pre
                 if outcome > highest_outcome:
                     highest_outcome = outcome
                     chosen_move = move
+                self.scene = scene_original
         return chosen_move
 
     def evaluate_outcome_pass(self):
@@ -74,7 +78,7 @@ class Ai:
                     ClientEvent.create_play_card_generating_string(self.scene_id_character, card.scene_id, targets))
         return moves
 
-    def evaluate_outcome_post(self):
+    def evaluate_outcome(self):
         enemy_team_life_sum = sum([person.base_person.health + person.resist for person in self.enemy_team])
         own_team_life_sum = sum([person.base_person.health + person.resist for person in self.own_team])
         return own_team_life_sum - enemy_team_life_sum
@@ -93,6 +97,15 @@ class SceneCopier:
 
     def make_scene(self):
         return Fight_Scene.create_scene_from_string(str(self.scene))
+
+    @staticmethod
+    def make_copier(scene: Fight_Scene):
+        """
+        Creates a SceneCopier that copies the given scene.
+        :param scene: The scene to copy.
+        :return: A SceneCopier instance.
+        """
+        return SceneCopier(scene)
 
 
 def ai_loop(scene_string: str, scene_id_character: int):
