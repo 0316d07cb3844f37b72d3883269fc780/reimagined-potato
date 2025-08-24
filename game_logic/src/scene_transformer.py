@@ -50,3 +50,5 @@ def transform(atomic_event, getter, scene):
         action = getter[atomic_event.action]
         action.resolve()
         scene.actions.remove(action)
+    elif event_type == et.set_scene:
+        pass

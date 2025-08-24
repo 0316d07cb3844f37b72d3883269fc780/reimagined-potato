@@ -106,6 +106,8 @@ class CombatEngine:
             self.networker_wrapper.networker.check_for_connection()
         elif event.event_type == "END_ENGINE":
             self.keep_running = False
+        elif event.event_type == "Introduction":
+            self.networker_wrapper.send_to_player(create_tag("event", set_scene(str(self.fight_scene))), event.person_id)
         if atomic_event:
             self.atomic_events_scheduled.append(atomic_event)
 

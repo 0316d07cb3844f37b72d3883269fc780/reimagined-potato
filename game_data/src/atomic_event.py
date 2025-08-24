@@ -21,6 +21,7 @@ class EventType(Enum):
     redraw_hands = "Redraw Hands"
     allies_won = "Allies Won"
     foes_won = "Foes Won"
+    set_scene = "Set Scene"
 
 
 class AtomicEvent:
@@ -75,3 +76,7 @@ def add_stability(who, how_much):
 
 def destroy(who):
     return AtomicEvent(EventType.destroy, destroyed=who)
+
+
+def set_scene(scene):
+    return AtomicEvent(EventType.set_scene, scene_string=str(scene))

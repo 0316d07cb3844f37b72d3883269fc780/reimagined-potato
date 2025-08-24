@@ -21,6 +21,21 @@ class ServerNetworkerWrapper:
         for player in outdated_connections:
             del self.player_to_connection[player]
 
+    def send_to_player(self, string, player_id: int):
+        """
+        Sends a message to a specific player.
+        :param string: The message to send.
+        :param player_id: The ID of the player to send the message to.
+        """
+        connection = self.player_to_connection.get(player_id)
+        if connection is not None:
+            try:
+                self.networker.send(string, connection)
+            except ConnectionError:
+                self.player_to_connection.pop(player_id)
+        else:
+            raise ValueError(f"No connection found for player ID {player_id}")
+
     def get_all_messages(self):
         """
         Returns ClientEvents
@@ -43,8 +58,7 @@ class ServerNetworkerWrapper:
                 raise exception
             if my_event.event_type == "Introduction":
                 self.player_to_connection[my_event.person_id] = connection
-            else:
-                subresult.append(my_event)
+            subresult.append(my_event)
             return self.__get_all_messages_internal(subresult=subresult)
         return subresult
 

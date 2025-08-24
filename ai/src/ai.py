@@ -37,7 +37,7 @@ class Ai:
         highest_outcome = self.evaluate_outcome_pass()
         emulator = CombatEngine(MockPassWrapper(None))
         for move in possible_moves[1:]:
-            with lambda: SceneCopier(self.scene) as scene_copier:
+            with SceneCopier(self.scene) as scene_copier:
                 scene = scene_copier.make_scene()
                 emulator.fight_scene = scene
                 emulator.networker_wrapper.engine = emulator
@@ -106,6 +106,8 @@ def ai_loop(scene_string: str, scene_id_character: int):
     while running:
         events = get_engine_events(networker)
         for event in events:
+            if event.event_type == "set_scene":
+                scene = Fight_Scene.create_scene_from_string(event.fight_scene)
             transform(event, getter, scene)
         if not my_guy.turn_ended:
             networker.send(ai.find_best_move())
