@@ -9,7 +9,6 @@ class Test_Utils(unittest.TestCase):
         result = create_tag("my_tag", "value")
         self.assertEqual(result, "<my_tag>value<\\my_tag>")
 
-
     def test_get_id_list(self):
         my_id_list = [1, 10, 23, 100, 4]
         self.assertEqual(my_id_list, get_id_list(str(my_id_list)))
@@ -52,9 +51,8 @@ class Test_Utils(unittest.TestCase):
         expected_result = "testtext<tag>cool file content<!!tag>content<!!\\tag>\nline 2 <!tag><!tag>"
         self.assertEqual(expected_result,load_files(string))
 
-
-
-
+    def test_get_empty_id_list(self):
+        self.assertEqual([], get_id_list("[]"))
 
 
 if __name__ == '__main__':

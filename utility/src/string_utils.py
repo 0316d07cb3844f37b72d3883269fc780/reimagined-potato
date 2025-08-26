@@ -90,6 +90,8 @@ def detag_repeated(string: str, tag: str) -> list:
 
 
 def get_id_list(string: str) -> list:
+    if "," not in string:
+        return []
     return [int(a) for a in (list(string[1:-1].split(",")))]
 
 

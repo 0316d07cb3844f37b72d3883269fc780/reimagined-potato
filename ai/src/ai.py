@@ -37,20 +37,17 @@ class Ai:
         outcome_pre= self.evaluate_outcome()
         highest_outcome = self.evaluate_outcome_pass()
         emulator = CombatEngine(MockPassWrapper(None))
+        scene_copier = SceneCopier(self.scene, self)
         for move in possible_moves[1:]:
-            with SceneCopier.make_copier(scene) as scene_copier:
-                scene = scene_copier.make_scene()
-                scene_original = self.scene
-                self.scene = scene
-                emulator.fight_scene = scene
+            with scene_copier:
+                emulator.fight_scene = self.scene
                 emulator.networker_wrapper.engine = emulator
-                emulator.networker_wrapper.set_next_messages([move])
+                emulator.networker_wrapper.set_next_messages(ClientEvent(move))
                 emulator.simulate_until_stack_is_clear()
                 outcome = self.evaluate_outcome()-outcome_pre
                 if outcome > highest_outcome:
                     highest_outcome = outcome
                     chosen_move = move
-                self.scene = scene_original
         return chosen_move
 
     def evaluate_outcome_pass(self):
@@ -60,8 +57,8 @@ class Ai:
             [action for action in self.scene.actions if action.performer in self.enemy_team])
         cards_in_own_teams_hands = sum([len(person.hand) for person in self.own_team])
         cards_in_enemy_teams_hands = sum([len(person.hand) for person in self.enemy_team])
-        penalty_moves_on_stack = amount_own_team_moves_on_stack
-        penalty_more_moves_on_stack_than_enemies = (amount_own_team_moves_on_stack-amount_enemy_team_moves_on_stack) * 2
+        penalty_moves_on_stack =  amount_own_team_moves_on_stack
+        penalty_more_moves_on_stack_than_enemies = max((amount_own_team_moves_on_stack-amount_enemy_team_moves_on_stack) * 2, 0)
         if not self.scene.actions:
             penalty_less_cards_than_enemy = 5 * max(0, cards_in_enemy_teams_hands-cards_in_own_teams_hands)
         else:
@@ -85,15 +82,18 @@ class Ai:
 
 
 class SceneCopier:
-    def __init__(self, scene):
+    def __init__(self, scene, ai):
         self.scene = scene
+        self.ai = ai
 
     def __enter__(self):
         self.getter_original = gs_module.getter
         gs_module.getter = GetterScene()
+        self.ai.scene = self.make_scene()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         gs_module.getter = self.getter_original
+        self.ai.scene = self.scene
 
     def make_scene(self):
         return Fight_Scene.create_scene_from_string(str(self.scene))
