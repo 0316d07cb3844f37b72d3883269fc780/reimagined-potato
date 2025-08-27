@@ -22,6 +22,7 @@ class EventType(Enum):
     allies_won = "Allies Won"
     foes_won = "Foes Won"
     set_scene = "Set Scene"
+    engine_done = "Engine Done"
 
 
 class AtomicEvent:

@@ -29,8 +29,9 @@ def main():
                              args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", engine_runs))
     engine_process.start()
     engine_runs.wait()
+    ai_runs = Event()
     ai_process = Process(target=ai_loop,
-                         args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", scene.foes[0].scene_id))
+                         args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", scene.foes[0].scene_id, ai_runs))
     ai_process.start()
     client_networker = Client_Networker()
     index_player = 0

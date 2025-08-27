@@ -46,16 +46,20 @@ class ServerNetworkerWrapper:
     def __get_all_messages_internal(self, subresult: list = None):
         if subresult is None:
             subresult = []
-        while self.networker.check_for_connection() is not None:
-            pass
-
-        string, connection = self.networker.receive(not subresult)
+        string, connection = "", None
+        try_once_flag = True
+        while string == "" and connection is None and (not subresult or try_once_flag):
+            while self.networker.check_for_connection() is not None:
+                pass
+            string, connection = self.networker.receive(not subresult)
+            try_once_flag = False
 
         if connection is not None:
             try:
                 my_event = ClientEvent(string)
             except Exception as exception:
                 raise exception
+
             if my_event.event_type == "Introduction":
                 self.player_to_connection[my_event.person_id] = connection
             subresult.append(my_event)

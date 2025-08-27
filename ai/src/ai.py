@@ -1,3 +1,5 @@
+from multiprocessing import Event
+
 import game_data.src.getterscene as gs_module
 from ai.hardcoded.src.target_finder import TargetFinderSimple
 from game_data.src.fight_scene import Fight_Scene
@@ -34,7 +36,7 @@ class Ai:
     def find_best_move(self):
         possible_moves = self.find_legal_moves()
         chosen_move = possible_moves[0]
-        outcome_pre= self.evaluate_outcome()
+        outcome_pre = self.evaluate_outcome()
         highest_outcome = self.evaluate_outcome_pass()
         emulator = CombatEngine(MockPassWrapper(None))
         scene_copier = SceneCopier(self.scene, self)
@@ -57,7 +59,7 @@ class Ai:
             [action for action in self.scene.actions if action.performer in self.enemy_team])
         cards_in_own_teams_hands = sum([len(person.hand) for person in self.own_team])
         cards_in_enemy_teams_hands = sum([len(person.hand) for person in self.enemy_team])
-        penalty_moves_on_stack =  amount_own_team_moves_on_stack
+        penalty_moves_on_stack = amount_own_team_moves_on_stack
         penalty_more_moves_on_stack_than_enemies = max((amount_own_team_moves_on_stack-amount_enemy_team_moves_on_stack) * 2, 0)
         if not self.scene.actions:
             penalty_less_cards_than_enemy = 5 * max(0, cards_in_enemy_teams_hands-cards_in_own_teams_hands)
@@ -98,20 +100,12 @@ class SceneCopier:
     def make_scene(self):
         return Fight_Scene.create_scene_from_string(str(self.scene))
 
-    @staticmethod
-    def make_copier(scene: Fight_Scene):
-        """
-        Creates a SceneCopier that copies the given scene.
-        :param scene: The scene to copy.
-        :return: A SceneCopier instance.
-        """
-        return SceneCopier(scene)
 
-
-def ai_loop(scene_string: str, scene_id_character: int):
+def ai_loop(scene_string: str, scene_id_character: int, ai_runs: Event):
     scene = Fight_Scene.create_scene_from_string(scene_string)
     networker = Client_Networker(patient=True, log_recieve_seperately=True)
     networker.introduce_self(scene_id_character)
+    ai_runs.set()
     targetfinder = TargetFinderSimple(scene)
     ai = Ai(scene, scene_id_character, targetfinder)
     running = True
