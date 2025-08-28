@@ -45,6 +45,7 @@ class CombatEngine:
             self.check_state_based_actions()
             self.send_out_history()
             self.clear_out_atomic_events()
+            self.networker_wrapper.send_to_all_players(create_tag("event", AtomicEvent(EventType.engine_done)))
 
     def process_atomic_event(self, event):
         transform(event, getter, self.fight_scene)

@@ -17,6 +17,7 @@ from game_logic.src.scene_transformer import transform
 from game_logic.src.serverNetworkerWrapper import ServerNetworkerWrapper
 from game_logic.src.servernetworker import ServerNetworker
 from utility.src.string_utils import create_tag
+from utility.src.logging_util import clear_all_files
 
 
 def main():
@@ -24,6 +25,7 @@ def main():
     pygame.init()
     sprite_manager = SpriteManager()
     scene = Fight_Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
+    clear_all_files()
     engine_runs = Event()
     engine_process = Process(target=engine_loop,
                              args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", engine_runs))
@@ -33,6 +35,7 @@ def main():
     ai_process = Process(target=ai_loop,
                          args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", scene.foes[0].scene_id, ai_runs))
     ai_process.start()
+#    ai_runs.wait()
     client_networker = Client_Networker()
     index_player = 0
     builder.player_id = scene.allies[index_player].scene_id

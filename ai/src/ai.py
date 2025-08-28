@@ -10,6 +10,7 @@ from game_logic.src.combatengine import CombatEngine
 from game_logic.src.scene_transformer import transform
 from game_logic.src.serverNetworkerWrapper import ClientEvent, MockPassWrapper
 from game_logic.src.client_networker import get_engine_events
+from game_data.src.atomic_event import EventType
 
 
 class Ai:
@@ -105,16 +106,55 @@ def ai_loop(scene_string: str, scene_id_character: int, ai_runs: Event):
     scene = Fight_Scene.create_scene_from_string(scene_string)
     networker = Client_Networker(patient=True, log_recieve_seperately=True)
     networker.introduce_self(scene_id_character)
-    ai_runs.set()
     targetfinder = TargetFinderSimple(scene)
     ai = Ai(scene, scene_id_character, targetfinder)
     running = True
     my_guy = getter[scene_id_character]
     while running:
+        engine_done_flag = False
         events = get_engine_events(networker)
         for event in events:
-            if event.event_type == "set_scene":
-                scene = Fight_Scene.create_scene_from_string(event.fight_scene)
+            if event.event_type == EventType.set_scene:
+                scene = Fight_Scene.create_scene_from_string(event.scene_string)
+                ai_runs.set()
+            if event.event_type == EventType.engine_done:
+                engine_done_flag = True
             transform(event, getter, scene)
-        if not my_guy.turn_ended:
+        if not my_guy.turn_ended and engine_done_flag:
             networker.send(ai.find_best_move())
+
+
+def ai_loop_classed(scene_string: str, scene_id_character: int, ai_runs: Event, networker=None):
+    looper = AiLooper(scene_string, scene_id_character, ai_runs, networker)
+    looper.loop()
+
+
+class AiLooper:
+    def __init__(self, scene_string: str, scene_id_character: int, ai_runs: Event, networker=None):
+        self.scene = Fight_Scene.create_scene_from_string(scene_string)
+        self.scene_id_character = scene_id_character
+        self.ai_runs = ai_runs
+        if networker is None:
+            networker = Client_Networker(patient=True, log_recieve_seperately=True)
+            networker.introduce_self(scene_id_character)
+        else:
+            self.networker = networker
+        self.targetfinder = TargetFinderSimple(self.scene)
+        self.ai = Ai(self.scene, scene_id_character, self.targetfinder)
+        self.my_guy = getter[scene_id_character]
+        self.running = True
+
+    def loop(self):
+        while self.running:
+            engine_done_flag = False
+            events = get_engine_events(self.networker)
+            for event in events:
+                if event.event_type == EventType.set_scene:
+                    self.scene = Fight_Scene.create_scene_from_string(event.scene_string)
+                    self.ai_runs.set()
+                if event.event_type == EventType.engine_done:
+                    engine_done_flag = True
+                transform(event, getter, self.scene)
+            if not self.my_guy.turn_ended and engine_done_flag:
+                self.networker.send(self.ai.find_best_move())
+

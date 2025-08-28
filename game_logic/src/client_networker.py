@@ -4,7 +4,7 @@ from select import select
 
 from game_data.src.atomic_event import AtomicEvent
 from game_logic.src.networking_constants import *
-from utility.src.string_utils import create_tag, detag_repeated
+from utility.src.string_utils import create_tag, detag_repeated, root_path
 from utility.src.logging_util import client_networker_logger, client_networker_recieve_only_logger
 
 
@@ -74,7 +74,7 @@ class MockNetworker(Client_Networker):
         elif message_string is not None:
             self.recieved_messages = detag_repeated(message_string, "message")
         elif message_file is not None:
-            with open(message_file, "r") as file:
+            with open(root_path(message_file), "r") as file:
                 self.recieved_messages = detag_repeated(file.read(), "message")
         else:
             self.recieved_messages = []
