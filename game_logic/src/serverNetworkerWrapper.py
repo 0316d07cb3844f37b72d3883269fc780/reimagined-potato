@@ -71,8 +71,12 @@ class MockPassWrapper:
     def __init__(self, engine):
         self.server = engine
         self.result = []
+        self.networker = MockNetworker()
 
     def send_to_all_players(self, string):
+        pass
+
+    def send_to_player(self, string, player_id: int):
         pass
 
     def get_all_messages(self):
@@ -101,8 +105,12 @@ class MockCustomMessagesWrapper:
             with open(root_path(file_path), "r") as file:
                 messages = detag_repeated(file.read(), "message")
         self.ClientEvents = [ClientEvent(message) for message in messages]
+        self.networker = MockNetworker()
 
     def send_to_all_players(self, string):
+        pass
+
+    def send_to_player(self, string, player_id: int):
         pass
 
     def get_all_messages(self):
@@ -113,6 +121,11 @@ class MockCustomMessagesWrapper:
         if self.ClientEvents:
             return [self.ClientEvents.pop(0)]
         return []
+
+
+class MockNetworker:
+    def check_for_connection(self):
+        pass
 
 
 class ClientEvent:

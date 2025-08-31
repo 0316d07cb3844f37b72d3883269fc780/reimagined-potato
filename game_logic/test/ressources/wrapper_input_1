@@ -1,0 +1,8 @@
+<message><type>Introduction<\type><person_id>0<\person_id><\message>                                                        
+<message><type>START_SCENE<\type><\message>                                                                                 
+<message><type>ACCEPT_CONNECTION<\type><\message>                                                                           
+<message><type>Introduction<\type><person_id>30<\person_id><\message>                                                       
+<message><type>PLAY_CARD<\type><player_id>10<\player_id><card_id>12<\card_id><target_id_list>[30]<\target_id_list><\message>
+<message><type>END_TURN<\type><player_id>10<\player_id><\message>                                                           
+<message><type>END_TURN<\type><player_id>10<\player_id><\message>                                                           
+<message><type>END_ENGINE<\type><\message>                                                                                  

@@ -37,13 +37,18 @@ class TestTheChecks(unittest.TestCase):
         event, = todo
         self.assertEqual(EventType.allies_won, event.event_type)
 
+    def test_engine_1(self):
+        mocked_wrapper = MockCustomMessagesWrapper(file_path="game_logic/test/ressources/wrapper_input_1")
+        engine = get_engine(mocked_wrapper)
+        engine.engine_loop()
+
 
 class MockedWrapper:
     pass
 
 
 def get_engine(wrapper: MockedWrapper):
-    my_scene = copy.deepcopy(scene)
+    my_scene = Fight_Scene.create_scene_from_string(str(scene))
     my_engine = CombatEngine(wrapper, my_scene)
     return my_engine
 
