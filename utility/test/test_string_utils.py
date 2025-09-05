@@ -12,6 +12,8 @@ class Test_Utils(unittest.TestCase):
     def test_get_id_list(self):
         my_id_list = [1, 10, 23, 100, 4]
         self.assertEqual(my_id_list, get_id_list(str(my_id_list)))
+        self.assertEqual([], get_id_list("[]"))
+        self.assertEqual([42], get_id_list("[42]"))
 
     def test_detag_given_tags(self):
         string = create_tag("my_tag1", "value1") + create_tag("my_tag2", "value2") + create_tag("my_tag1", "value3")

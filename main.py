@@ -2,7 +2,7 @@ from multiprocessing import Process, Event
 
 import pygame
 
-from ai.src.ai import ai_loop
+from ai.src.ai import ai_loop_classed
 from game_data.src.atomic_event import AtomicEvent
 from game_data.src.fight_scene import Fight_Scene
 from game_data.src.getterscene import getter
@@ -24,7 +24,7 @@ def main():
     # start pygame
     pygame.init()
     sprite_manager = SpriteManager()
-    scene = Fight_Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
+
     clear_all_files()
     engine_runs = Event()
     engine_process = Process(target=engine_loop,
@@ -32,12 +32,14 @@ def main():
     engine_process.start()
     engine_runs.wait()
     ai_runs = Event()
-    ai_process = Process(target=ai_loop,
+    scene = Fight_Scene.create_scene_from_string("<file>resources/Scenes/two_dogs_fighting.scene<\\file>")
+    ai_process = Process(target=ai_loop_classed,
                          args=("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", scene.foes[0].scene_id, ai_runs))
     ai_process.start()
 #    ai_runs.wait()
     client_networker = Client_Networker()
     index_player = 0
+
     builder.player_id = scene.allies[index_player].scene_id
 
     initialize_scene(scene, index_player, sprite_manager.allsprites, sprite_manager.hand_sprites)
@@ -88,6 +90,7 @@ def engine_loop(scene_string, engine_runs):
     server_network_wrapper = ServerNetworkerWrapper(server_networker)
     combat_engine = CombatEngine(server_network_wrapper, Fight_Scene.create_scene_from_string(scene_string))
     engine_runs.set()
+    combat_engine.fight_scene.reregister()
     combat_engine.engine_loop()
 
 

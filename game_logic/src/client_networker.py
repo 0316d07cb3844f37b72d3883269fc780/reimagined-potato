@@ -103,8 +103,6 @@ if __name__ == "__main__":
 def get_engine_events(networker: Client_Networker):
     events = networker.receive()
     result = []
-    while events != "":
-        result += detag_repeated(events, "event")
-        events = networker.receive(impatient_mode=True)
+    result += detag_repeated(events, "event")
     result = [AtomicEvent.create_from_string(event) for event in result]
     return result

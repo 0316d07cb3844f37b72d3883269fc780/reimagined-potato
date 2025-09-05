@@ -82,7 +82,7 @@ class Card(Loadable):
         action_factory = Action_Factory.create_from_string(action_factory)
         speed = Speed[speed]
         target_checker = getattr(TargetChecker, target_checker)
-        if location_string == "":
+        if location_string == "" or (int(location_string) not in getter):
             location = None
         else:
             location = getter[int(location_string)]

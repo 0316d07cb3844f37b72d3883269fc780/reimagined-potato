@@ -4,14 +4,14 @@ Gets all objects of a Scene by ID if possible.
 
 
 class GetterScene:
-    last_id = 0
 
     def __init__(self):
         self.all_objects = {}
+        self.last_id = 0
 
     def register(self, object_to_register):
-        scene_id = GetterScene.last_id
-        GetterScene.last_id += 1
+        scene_id = self.last_id
+        self.last_id += 1
         self.all_objects[scene_id] = object_to_register
         object_to_register.scene_id = scene_id
         return scene_id
@@ -31,4 +31,25 @@ class GetterScene:
             return [self[scene_id] for scene_id in key]
 
 
-getter = GetterScene()
+global_getter = GetterScene()
+
+
+class GetterWrapper:
+    def __init__(self, internal_getter):
+        self.getter = internal_getter
+
+    def __getitem__(self, item):
+        return self.getter[item]
+
+    def register(self, item):
+        return self.getter.register(item)
+
+    def __setitem__(self, key, value):
+        self.getter[key] = value
+
+    def __contains__(self, key):
+        return key in self.getter.all_objects
+
+
+getter = GetterWrapper(global_getter)
+

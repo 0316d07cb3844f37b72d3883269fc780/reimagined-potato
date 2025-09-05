@@ -36,22 +36,22 @@ class Ai:
 
     def find_best_move(self):
         possible_moves = self.find_legal_moves()
-        chosen_move = possible_moves[0]
+        chosen_move_string, chosen_move = possible_moves[0]
         outcome_pre = self.evaluate_outcome()
         highest_outcome = self.evaluate_outcome_pass()
         emulator = CombatEngine(MockPassWrapper(None))
         scene_copier = SceneCopier(self.scene, self)
-        for move in possible_moves[1:]:
+        for move_string, move in possible_moves[1:]:
             with scene_copier:
                 emulator.fight_scene = self.scene
                 emulator.networker_wrapper.engine = emulator
-                emulator.networker_wrapper.set_next_messages(ClientEvent(move))
+                emulator.networker_wrapper.set_next_messages(move)
                 emulator.simulate_until_stack_is_clear()
                 outcome = self.evaluate_outcome()-outcome_pre
                 if outcome > highest_outcome:
                     highest_outcome = outcome
-                    chosen_move = move
-        return chosen_move
+                    chosen_move_string, chosen_move = move_string, move
+        return chosen_move_string, chosen_move
 
     def evaluate_outcome_pass(self):
         amount_own_team_moves_on_stack = len(
@@ -76,7 +76,7 @@ class Ai:
             for targets in possible_lists_of_targets:
                 moves.append(
                     ClientEvent.create_play_card_generating_string(self.scene_id_character, card.scene_id, targets))
-        return moves
+        return [(move_string, ClientEvent(move_string)) for move_string in moves]
 
     def evaluate_outcome(self):
         enemy_team_life_sum = sum([person.base_person.health + person.resist for person in self.enemy_team])
@@ -90,38 +90,16 @@ class SceneCopier:
         self.ai = ai
 
     def __enter__(self):
-        self.getter_original = gs_module.getter
-        gs_module.getter = GetterScene()
+        self.getter_original = gs_module.getter.getter
+        gs_module.getter.getter = GetterScene()
         self.ai.scene = self.make_scene()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        gs_module.getter = self.getter_original
+        gs_module.getter.getter = self.getter_original
         self.ai.scene = self.scene
 
     def make_scene(self):
         return Fight_Scene.create_scene_from_string(str(self.scene))
-
-
-def ai_loop(scene_string: str, scene_id_character: int, ai_runs: Event):
-    scene = Fight_Scene.create_scene_from_string(scene_string)
-    networker = Client_Networker(patient=True, log_recieve_seperately=True)
-    networker.introduce_self(scene_id_character)
-    targetfinder = TargetFinderSimple(scene)
-    ai = Ai(scene, scene_id_character, targetfinder)
-    running = True
-    my_guy = getter[scene_id_character]
-    while running:
-        engine_done_flag = False
-        events = get_engine_events(networker)
-        for event in events:
-            if event.event_type == EventType.set_scene:
-                scene = Fight_Scene.create_scene_from_string(event.scene_string)
-                ai_runs.set()
-            if event.event_type == EventType.engine_done:
-                engine_done_flag = True
-            transform(event, getter, scene)
-        if not my_guy.turn_ended and engine_done_flag:
-            networker.send(ai.find_best_move())
 
 
 def ai_loop_classed(scene_string: str, scene_id_character: int, ai_runs: Event, networker=None):
@@ -135,18 +113,21 @@ class AiLooper:
         self.scene_id_character = scene_id_character
         self.ai_runs = ai_runs
         if networker is None:
-            networker = Client_Networker(patient=True, log_recieve_seperately=True)
-            networker.introduce_self(scene_id_character)
+            self.networker = Client_Networker(patient=True, log_recieve_seperately=True)
+            self.networker.introduce_self(scene_id_character)
         else:
             self.networker = networker
         self.targetfinder = TargetFinderSimple(self.scene)
         self.ai = Ai(self.scene, scene_id_character, self.targetfinder)
-        self.my_guy = getter[scene_id_character]
         self.running = True
 
+    @property
+    def my_guy(self):
+        return getter[self.scene_id_character]
+
     def loop(self):
+        engine_done_flag = False
         while self.running:
-            engine_done_flag = False
             events = get_engine_events(self.networker)
             for event in events:
                 if event.event_type == EventType.set_scene:
@@ -154,7 +135,11 @@ class AiLooper:
                     self.ai_runs.set()
                 if event.event_type == EventType.engine_done:
                     engine_done_flag = True
+                    break
                 transform(event, getter, self.scene)
             if not self.my_guy.turn_ended and engine_done_flag:
-                self.networker.send(self.ai.find_best_move())
+                move_string, move = self.ai.find_best_move()
+                self.networker.send(move_string)
+                if move.event_type == "END_TURN":
+                    engine_done_flag = False
 

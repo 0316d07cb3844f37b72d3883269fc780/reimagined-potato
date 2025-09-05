@@ -1,7 +1,9 @@
 import unittest
+from copy import deepcopy
 
 from game_data.src.fight_scene import Fight_Scene as Scene
 from game_data.src.fight_scene import Side
+from game_data.src.getterscene import getter
 from test_person_fighting import make_person
 
 
@@ -44,6 +46,13 @@ class MyTestCase(unittest.TestCase):
         enemy_dog = my_scene.foes[0]
         self.assertTrue(enemy_dog.turn_ended)
         self.assertTrue(not ally_dog.turn_ended)
+
+    def test_register(self):
+        my_scene = make_game_state()
+        my_scene = deepcopy(my_scene)
+        my_scene.reregister()
+        for person in my_scene.all_people:
+            self.assertTrue(person is getter[person.scene_id])
 
 
 if __name__ == '__main__':

@@ -48,6 +48,7 @@ class CombatEngine:
             self.networker_wrapper.send_to_all_players(create_tag("event", AtomicEvent(EventType.engine_done)))
 
     def process_atomic_event(self, event):
+        self.fight_scene.reregister()
         transform(event, getter, self.fight_scene)
         triggered_events = self.triggered_events([event])
         self.atomic_events_scheduled.extend(triggered_events)

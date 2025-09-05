@@ -3,7 +3,9 @@ Carries all state of a combat encounter.
 """
 
 from enum import Enum
+from itertools import chain
 
+from game_data.src.getterscene import getter
 from game_data.src.loadable import Loadable
 from game_data.src.action import Action
 from game_data.src.stance import Stance
@@ -42,6 +44,13 @@ class Fight_Scene(Loadable):
             self.actions = []
         if stances is None:
             self.stances = []
+
+    def __iter__(self):
+        return chain(self.allies, self.foes, self.actions, self.stances)
+
+    def reregister(self):
+        for item in self:
+            getter[item.scene_id] = item
 
     @property
     def current_side(self):
@@ -104,13 +113,14 @@ class Fight_Scene(Loadable):
             return cls.create_scene_from_string(file_contents)
         allies_string, foes_string = detag_given_tags(string, "allies", "foes")
         actions_string, = detag_given_tags(string, "actions")
+        scene = Fight_Scene(Fight_Scene.create_team_from_string(allies_string),
+                            Fight_Scene.create_team_from_string(foes_string), [], [])
         list_of_action_strings = detag_repeated(actions_string, "action")
-        actions = [Action.create_from_string(string) for string in list_of_action_strings]
+        scene.actions = [Action.create_from_string(string) for string in list_of_action_strings]
         stances_string, = detag_given_tags(string, "stances")
         list_of_stance_strings = detag_repeated(stances_string, "stance")
-        stances = [Stance.create_from_string(string) for string in list_of_stance_strings]
-        scene = Fight_Scene(Fight_Scene.create_team_from_string(allies_string),
-                            Fight_Scene.create_team_from_string(foes_string), actions, stances)
+        scene.stances = [Stance.create_from_string(string) for string in list_of_stance_strings]
+
         scene._turn_side = Side[detag_given_tags(string, "turn_side")[0]]
         for person in scene.other_side:
             person.turn_ended = True
