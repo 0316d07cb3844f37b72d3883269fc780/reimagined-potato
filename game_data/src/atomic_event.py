@@ -63,8 +63,8 @@ class EventSomethingDied(AtomicEvent):
         super().__init__(EventType.destroy, destroyed=who)
 
 
-def damage(what, by_how_much):
-    return AtomicEvent(EventType.damage, damaged=what, damage=by_how_much)
+def damage(what, by_how_much, who):
+    return AtomicEvent(EventType.damage, damaged=what, damage=by_how_much, source=who)
 
 
 def add_resist(who, how_much):

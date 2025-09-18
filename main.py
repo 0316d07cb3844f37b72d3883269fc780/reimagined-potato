@@ -1,3 +1,4 @@
+import time
 from multiprocessing import Process, Event
 
 import pygame
@@ -38,6 +39,7 @@ def main():
     ai_process.start()
 #    ai_runs.wait()
     client_networker = Client_Networker()
+    time.sleep(0.01)
     index_player = 0
 
     builder.player_id = scene.allies[index_player].scene_id

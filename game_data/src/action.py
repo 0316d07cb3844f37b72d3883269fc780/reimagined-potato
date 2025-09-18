@@ -18,10 +18,13 @@ class Speed(Enum):
 
 class Action(Loadable):
     def __init__(self, name: str, performer, target_list: list, method: callable, speed: Speed, stability: int,
-                 action_id: int):
+                 action_id: int, target_id_list: list = None):
         self.name = name
         self.performer = performer
-        self.target_list = target_list
+        if target_id_list is None:
+            self.target_list_ids = [target.scene_id for target in target_list]
+        else:
+            self.target_list_ids = target_id_list
         self.method = method
         self.speed = speed
         self.stability = stability
@@ -29,10 +32,15 @@ class Action(Loadable):
         self.scene_id = getter.register(self)
         performer.append_action(self)
 
+    @property
+    def target_list(self):
+        return [getter[target_id] for target_id in self.target_list_ids]
+
+
     def __str__(self) -> str:
         my_string = create_tag("name", self.name)
         my_string += create_tag("performer_id", self.performer.scene_id)
-        my_string += create_tag("target_id_list", [target.scene_id for target in self.target_list])
+        my_string += create_tag("target_id_list", self.target_list_ids)
         my_string += create_tag("speed", self.speed.name)
         my_string += create_tag("stability", self.stability)
         my_string += create_tag("action_id", self.action_id)
@@ -51,8 +59,7 @@ class Action(Loadable):
         target_id_list = get_id_list(target_id_list)
         performer_id = int(performer_id)
         action_id = int(action_id)
-        target_list = [getter[target_id] for target_id in target_id_list]
-        action = creator_by_id[action_id](getter[performer_id], target_list)
+        action = creator_by_id[action_id](getter[performer_id], target_id_list)
         action.stability = stability
         getter[int(scene_id)] = action
         return action
@@ -76,12 +83,12 @@ def create_stunned(stunned_guy) -> Action:
     return Action("Stunned", stunned_guy, [], lambda: None, Speed.Regular, 3, 0)
 
 
-def tackle_method(_, *tackled):
-    return [damage(tackled, 6)]
+def tackle_method(tackler, *tackled):
+    return [damage(tackled, 6, tackler)]
 
 
 def create_tackle(tackler, tackled_list: list) -> Action:
-    tackle = Action("Tackle", tackler, tackled_list, tackle_method, Speed.Fast, 3, 1)
+    tackle = Action("Tackle", tackler, [], tackle_method, Speed.Fast, 3, 1, target_id_list=tackled_list)
     return tackle
 
 
@@ -98,11 +105,11 @@ def side_step_method(stepper, stepped_action):
 
 
 def create_side_step(stepper, to_be_stepped):
-    return Action("Sidestep", stepper, [to_be_stepped], side_step_method, Speed.Fast, 3, 3)
+    return Action("Sidestep", stepper, [to_be_stepped], side_step_method, Speed.Fast, 3, 3, target_id_list=to_be_stepped)
 
 
-def crushing_blow_method(_, to_be_crushed_person):
-    return [damage(to_be_crushed_person, 10)]
+def crushing_blow_method(crusher, to_be_crushed_person):
+    return [damage(to_be_crushed_person, 10, crusher)]
 
 
 def create_crushing_blow(crusher, crushed):
@@ -118,11 +125,11 @@ def create_tail_swipe(swiper, to_be_swiped_action):
 
 
 def reckless_assault_method(assaulter, assaulted):
-    return [damage(assaulter, 3), damage(assaulted, 12)]
+    return [damage(assaulter, 3, assaulter), damage(assaulted, 12, assaulter)]
 
 
 def create_reckless_assault(assaulter, assaulted):
-    return Action("Reckless Assault", assaulter, [assaulted], reckless_assault_method, Speed.Regular, 5, 6)
+    return Action("Reckless Assault", assaulter, [], reckless_assault_method, Speed.Regular, 5, 6, target_id_list=assaulted)
 
 
 def bark_skin_blessing_method(they_who_blesses, blessed):
@@ -134,11 +141,11 @@ def create_bark_skin_blessing(they_who_blesses, blessed):
 
 
 def engulf_in_flames_method(they_who_engulf, engulfeds):
-    return [damage(engulfed, 3) for _, engulfed in product(range(5), engulfeds)]
+    return [damage(engulfed, 3, they_who_engulf) for _, engulfed in product(range(5), engulfeds)]
 
 
 def create_engulf_in_flames(they_who_engulf, engulfed):
-    return Action("Engulf in Flames", they_who_engulf, [engulfed], engulf_in_flames_method, Speed.Channel, 4, 8)
+    return Action("Engulf in Flames", they_who_engulf, [], engulf_in_flames_method, Speed.Channel, 4, 8, target_id_list=engulfed)
 
 
 def sunshine_blessing_method(they_who_blesses, blessed_action):
@@ -146,12 +153,12 @@ def sunshine_blessing_method(they_who_blesses, blessed_action):
 
 
 def create_sunshine_blessing(they_who_blesses, blessed_action):
-    return Action("Sunshine Blessing", they_who_blesses, [blessed_action], sunshine_blessing_method, Speed.Instant, 2,
-                  9)
+    return Action("Sunshine Blessing", they_who_blesses, [], sunshine_blessing_method, Speed.Instant, 2,
+                  9, target_id_list=blessed_action)
 
 
 def mind_blast_method(blaster, blasted):
-    return damage(blasted, 3),
+    return damage(blasted, 3, blaster),
 
 
 def create_mind_blast(blaster, blasted):

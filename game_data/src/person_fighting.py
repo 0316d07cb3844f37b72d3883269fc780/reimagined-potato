@@ -55,6 +55,9 @@ class Person_Fighting(Loadable, UINotifier):
         base_person_string, = detag_given_tags(string, "base_person")
         base_person = PersonData.create_from_string(base_person_string)
         my_person_fighting = Person_Fighting(base_person)
+        id_string, = detag_given_tags(string, "scene_id")
+        if id_string not in ["", "auto"]:
+            getter[int(id_string)] = my_person_fighting
         actions_string, = detag_given_tags(string, "actions")
         action_strings = detag_repeated(actions_string, "action")
         my_person_fighting.actions += [Action.create_from_string(action_string) for action_string in action_strings]

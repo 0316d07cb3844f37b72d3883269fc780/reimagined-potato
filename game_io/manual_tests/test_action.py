@@ -10,7 +10,7 @@ class MyTestCase(unittest.TestCase):
     def test_something(self):
         tackler = Person_Fighting.create_from_string("<file>resources\\People\\Fighting\\dog.person_fighting<\\file>")
         tacklee = Person_Fighting.create_from_string("<file>resources\\People\\Fighting\\knight.person_fighting<\\file>")
-        tackle = create_tackle(tackler, [tacklee])
+        tackle = create_tackle(tackler, [tacklee.scene_id])
         test_sprite(lambda : ActionIO(tackle))
 
 

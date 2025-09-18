@@ -17,7 +17,7 @@ class Test_tackle(unittest.TestCase):
 class Test_String_Utils(unittest.TestCase):
     def test_to_and_from_str(self):
         tackler, tackled = make_person(), make_person()
-        my_tackle=create_tackle(tackler, [tackled])
+        my_tackle=create_tackle(tackler, [tackled.scene_id])
         my_string=str(my_tackle)
         my_other_tackle=Action.create_from_string(my_string)
         self.assertEqual(my_tackle.name,my_other_tackle.name)

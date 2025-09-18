@@ -12,7 +12,7 @@ def transform(atomic_event, getter, scene):
     """
     event_type, attributes = atomic_event.event_type, atomic_event.attributes
     if event_type == et.play_card:
-        getter[atomic_event.card].resolve(getter[atomic_event.player], getter[atomic_event.target_list], scene)
+        getter[atomic_event.card].resolve(getter[atomic_event.player], atomic_event.target_list, scene)
     elif event_type == et.create_action:
         pass
     elif event_type == et.create_stance:

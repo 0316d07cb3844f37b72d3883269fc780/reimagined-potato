@@ -71,6 +71,7 @@ class Ai:
     def find_legal_moves(self):
         my_guy = getter[self.scene_id_character]
         moves = [ClientEvent.create_end_turn_generating_string(self.scene_id_character)]
+        self.targetfinder.scene = self.scene
         for card in my_guy.hand:
             possible_lists_of_targets = self.targetfinder.find_targets(card)
             for targets in possible_lists_of_targets:
@@ -109,7 +110,7 @@ def ai_loop_classed(scene_string: str, scene_id_character: int, ai_runs: Event, 
 
 class AiLooper:
     def __init__(self, scene_string: str, scene_id_character: int, ai_runs: Event, networker=None):
-        self.scene = Fight_Scene.create_scene_from_string(scene_string)
+        scene = Fight_Scene.create_scene_from_string(scene_string)
         self.scene_id_character = scene_id_character
         self.ai_runs = ai_runs
         if networker is None:
@@ -117,13 +118,21 @@ class AiLooper:
             self.networker.introduce_self(scene_id_character)
         else:
             self.networker = networker
-        self.targetfinder = TargetFinderSimple(self.scene)
-        self.ai = Ai(self.scene, scene_id_character, self.targetfinder)
+        self.targetfinder = TargetFinderSimple(scene)
+        self.ai = Ai(scene, scene_id_character, self.targetfinder)
         self.running = True
 
     @property
     def my_guy(self):
         return getter[self.scene_id_character]
+
+    @property
+    def scene(self):
+        return self.ai.scene
+
+    @scene.setter
+    def scene(self, scene):
+        self.ai.scene = scene
 
     def loop(self):
         engine_done_flag = False
