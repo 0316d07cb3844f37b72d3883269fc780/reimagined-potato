@@ -149,6 +149,5 @@ class AiLooper:
             if not self.my_guy.turn_ended and engine_done_flag:
                 move_string, move = self.ai.find_best_move()
                 self.networker.send(move_string)
-                if move.event_type == "END_TURN":
-                    engine_done_flag = False
+                engine_done_flag = False
 
