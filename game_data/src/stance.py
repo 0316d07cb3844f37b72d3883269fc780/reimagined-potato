@@ -11,14 +11,18 @@ from game_data.src.stance_triggers import trigger_by_stance_id
 class Stance(Loadable):
 
     def __init__(self, name: str, performer, target_list: list, stability: int,
-                 stance_id: int):
+                 stance_id: int, scene_id: int = None):
         self.name = name
         self.performer = performer
         self.target_list = target_list
         self.stability = stability
         self.count = 1
         self.stance_id = stance_id
-        self.scene_id = getter.register(self)
+        if scene_id is not None:
+            self.scene_id = scene_id
+            getter[self.scene_id] = self
+        else:
+            self.scene_id = getter.register(self)
         performer.stances.add(self)
 
     def __str__(self):
@@ -44,7 +48,7 @@ class Stance(Loadable):
         performer_id = int(performer_id)
         stance_id = stance_id
         target_list = [getter[target_id] for target_id in target_id_list]
-        stance = Stance(name, getter[performer_id], target_list, stability, stance_id)
+        stance = Stance(name, getter[performer_id], target_list, stability, stance_id, scene_id=scene_id)
         stance.count = count
         getter[scene_id] = stance
         return stance

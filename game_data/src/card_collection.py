@@ -11,9 +11,13 @@ from utility.src.string_utils import create_tag, detag_given_tags, detag_repeate
 
 
 class Card_Collection(Loadable):
-    def __init__(self, card_list: list):
+    def __init__(self, card_list: list, scene_id: int = None):
         self.cards = {}
-        self.scene_id = getter.register(self)
+        if scene_id is not None:
+            self.scene_id = scene_id
+            getter[self.scene_id] = self
+        else:
+            self.scene_id = getter.register(self)
         for card in card_list:
             self.cards[card.scene_id] = card
             card.location=self
@@ -44,7 +48,7 @@ class Card_Collection(Loadable):
         cards_string, scene_id = detag_given_tags(string, "cards", "scene_id")
         card_strings = detag_repeated(cards_string, "card")
         card_list = [Card.create_from_string(my_string) for my_string in card_strings]
-        result = Card_Collection(card_list)
+        result = Card_Collection(card_list, scene_id)
         if scene_id not in ["", "auto"]:
             scene_id = int(scene_id)
             getter[scene_id] = result

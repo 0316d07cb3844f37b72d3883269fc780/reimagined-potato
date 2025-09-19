@@ -13,7 +13,7 @@ from utility.src.string_utils import create_tag, detag_repeated, detag_given_tag
 
 
 class Person_Fighting(Loadable, UINotifier):
-    def __init__(self, base_person: PersonData):
+    def __init__(self, base_person: PersonData, scene_id: int = None):
         self.base_person = base_person
         self.actions = []
         self.stances = []
@@ -24,7 +24,11 @@ class Person_Fighting(Loadable, UINotifier):
         self.hand = Card_Collection([])
         self.discardpile = Card_Collection([])
         "Register in universal getter."
-        self.scene_id = getter.register(self)
+        if scene_id is not None:
+            self.scene_id = scene_id
+            getter[self.scene_id] = self
+        else:
+            self.scene_id = getter.register(self)
 
     def __str__(self):
         my_string = create_tag("base_person", str(self.base_person))
@@ -54,8 +58,8 @@ class Person_Fighting(Loadable, UINotifier):
             return cls.create_from_string(file_contents)
         base_person_string, = detag_given_tags(string, "base_person")
         base_person = PersonData.create_from_string(base_person_string)
-        my_person_fighting = Person_Fighting(base_person)
         id_string, = detag_given_tags(string, "scene_id")
+        my_person_fighting = Person_Fighting(base_person, scene_id=id_string)
         if id_string not in ["", "auto"]:
             getter[int(id_string)] = my_person_fighting
         actions_string, = detag_given_tags(string, "actions")
@@ -71,7 +75,7 @@ class Person_Fighting(Loadable, UINotifier):
         my_person_fighting.drawpile = Card_Collection.create_from_string(drawpile_string)
         my_person_fighting.hand = Card_Collection.create_from_string(hand_string)
         my_person_fighting.discardpile = Card_Collection.create_from_string(discardpile_string)
-        id_string, = detag_given_tags(string, "scene_id")
+
         if id_string not in ["", "auto"]:
             getter[int(id_string)] = my_person_fighting
         return my_person_fighting

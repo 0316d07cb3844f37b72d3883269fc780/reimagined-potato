@@ -37,10 +37,17 @@ class Ai:
     def find_best_move(self):
         possible_moves = self.find_legal_moves()
         chosen_move_string, chosen_move = possible_moves[0]
-        outcome_pre = self.evaluate_outcome()
-        highest_outcome = self.evaluate_outcome_pass()
-        emulator = CombatEngine(MockPassWrapper(None))
         scene_copier = SceneCopier(self.scene, self)
+        emulator = CombatEngine(MockPassWrapper(None))
+        with scene_copier:
+            emulator.fight_scene = self.scene
+            emulator.networker_wrapper.engine = emulator
+            emulator.simulate_until_stack_is_clear()
+            outcome_pre = self.evaluate_outcome()
+
+        highest_outcome = self.evaluate_outcome_pass()
+
+
         for move_string, move in possible_moves[1:]:
             with scene_copier:
                 emulator.fight_scene = self.scene

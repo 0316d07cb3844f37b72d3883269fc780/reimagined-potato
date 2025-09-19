@@ -18,15 +18,20 @@ class CombatEngine:
         self.atomic_events_scheduled = []
         self.atomic_events_history = []
         self.keep_running = True
+        self.something_happened = False
 
     def engine_loop(self):
         def check_keep_running():
             return self.keep_running
+
         self.abstract_loop(check_keep_running)
 
     def abstract_loop(self, running_checker):
         while running_checker():
             self.clear_out_atomic_events()
+            if self.something_happened:
+                self.networker_wrapper.send_to_all_players(create_tag("event", AtomicEvent(EventType.engine_done)))
+                self.something_happened = False
             if not running_checker():
                 break
             list_of_client_events = self.networker_wrapper.get_all_messages()
@@ -45,7 +50,6 @@ class CombatEngine:
             self.check_state_based_actions()
             self.send_out_history()
             self.clear_out_atomic_events()
-            self.networker_wrapper.send_to_all_players(create_tag("event", AtomicEvent(EventType.engine_done)))
 
     def process_atomic_event(self, event):
         self.fight_scene.reregister()
@@ -100,18 +104,31 @@ class CombatEngine:
         elif event.event_type == "START_SCENE":
             atomic_event = AtomicEvent(EventType.redraw_hands)
         elif event.event_type == "PLAY_CARD":
-            atomic_event = EventPlayCard(event.card.scene_id, event.player.scene_id,
-                                         [target.scene_id for target in event.target_list])
+            if self.check_input(event):
+                atomic_event = EventPlayCard(event.card.scene_id, event.player.scene_id,
+                                             [target.scene_id for target in event.target_list])
         elif event.event_type == "END_TURN":
-            atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player.scene_id)
+            if self.check_input(event):
+                atomic_event = AtomicEvent(EventType.pass_priority, passer=event.player.scene_id)
         elif event.event_type == "ACCEPT_CONNECTION":
             self.networker_wrapper.networker.check_for_connection()
         elif event.event_type == "END_ENGINE":
             self.keep_running = False
         elif event.event_type == "Introduction":
-            self.networker_wrapper.send_to_player(create_tag("event", set_scene(str(self.fight_scene))), event.person_id)
+            self.networker_wrapper.send_to_player(create_tag("event", set_scene(str(self.fight_scene))),
+                                                  event.person_id)
         if atomic_event:
             self.atomic_events_scheduled.append(atomic_event)
+            self.something_happened = True
+
+    def check_input(self, event):
+        player = getter[event.player.scene_id]
+        if player.turn_ended:
+            return False
+        if event.event_type == "PLAY_CARD":
+            return getter[event.card.scene_id] in player.hand
+        elif event.event_type == "END_TURN":
+            return True
 
     def send_out_history(self):
         result = ""
@@ -120,7 +137,7 @@ class CombatEngine:
         self.networker_wrapper.send_to_all_players(result)
         self.atomic_events_history.clear()
 
-    def check_if_turn_over(self, todo):
+    def check_if_turn_over(self, _):
         if all([person.turn_ended for person in self.fight_scene.current_side]):
             self.process_atomic_event(AtomicEvent(EventType.change_sides))
             if not self.fight_scene.actions:
@@ -149,6 +166,7 @@ class CombatEngine:
     def simulate_until_stack_is_clear(self):
         def check_if_stack_is_clear():
             return not self.fight_scene.actions
+
         self.abstract_loop(check_if_stack_is_clear)
 
     def simulate_one_stack_resolution(self):
@@ -159,4 +177,5 @@ class CombatEngine:
 
         def check_if_one_action_got_resolved():
             return self.fight_scene.actions[-1] is not top_action
+
         self.abstract_loop(check_if_one_action_got_resolved())

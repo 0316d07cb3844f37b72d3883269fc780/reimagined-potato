@@ -34,13 +34,17 @@ class TargetChecker(Enum):
 class Card(Loadable):
     def __init__(self, card_type: str, name: str, action_factory: Action_Factory, speed: Speed,
                  target_checker: TargetChecker,
-                 location):
+                 location, scene_id: int = None):
         self.card_type = card_type
         self.name = name
         self.action_factory = action_factory
         self.speed = speed
         self.target_checker = target_checker
-        self.scene_id = getter.register(self)
+        if scene_id is not None:
+            self.scene_id = scene_id
+            getter[self.scene_id] = self
+        else:
+            self.scene_id = getter.register(self)
         self.location = location
         if location is not None:
             location.add_card(self)
@@ -86,8 +90,8 @@ class Card(Loadable):
             location = None
         else:
             location = getter[int(location_string)]
-        result = Card(card_type, name, action_factory, speed, target_checker, location)
         scene_id, = detag_given_tags(string, "scene_id")
+        result = Card(card_type, name, action_factory, speed, target_checker, location, scene_id)
         if scene_id != "" and scene_id != "auto":
             getter[int(scene_id)] = result
         return result
