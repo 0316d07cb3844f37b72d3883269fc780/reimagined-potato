@@ -1,11 +1,13 @@
 """
 Runs all the computations.
 """
+import itertools
 from itertools import chain, product
 from typing import Callable
 
 from game_data.src.atomic_event import *
 from game_data.src.getterscene import getter
+from game_logic.src.replacement_effect import built_in_replacements
 from game_logic.src.scene_transformer import transform
 from game_logic.src.triggers_built_in import builtins as builtin_triggers
 
@@ -80,7 +82,15 @@ class CombatEngine:
 
     @staticmethod
     def apply_replacements(event):
-        return [event]
+        result = [event]
+        replacements = built_in_replacements[:]
+        replacements.sort()
+        while any([replacement.applies(event) for replacement, event in itertools.product(replacements, result)]):
+            next_replacement = next(
+                replacement for replacement in replacements if any([replacement.applies(event) for event in result]))
+            replacements.remove(next_replacement)
+            result = sum(next_replacement.replace(event) for event in result)
+        return result
 
     def triggered_events(self, list_of_events):
         result = []

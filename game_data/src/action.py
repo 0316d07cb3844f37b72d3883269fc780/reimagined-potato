@@ -63,6 +63,7 @@ class Action(Loadable):
         target_id_list = get_id_list(target_id_list)
         performer_id = int(performer_id)
         action_id = int(action_id)
+        scene_id = int(scene_id)
         action = creator_by_id[action_id](getter[performer_id], target_id_list,scene_id=scene_id)
         action.stability = stability
         getter[int(scene_id)] = action

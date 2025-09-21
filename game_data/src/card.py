@@ -40,7 +40,7 @@ class Card(Loadable):
         self.action_factory = action_factory
         self.speed = speed
         self.target_checker = target_checker
-        if scene_id is not None:
+        if scene_id is not None and scene_id != "auto":
             self.scene_id = scene_id
             getter[self.scene_id] = self
         else:
@@ -91,6 +91,8 @@ class Card(Loadable):
         else:
             location = getter[int(location_string)]
         scene_id, = detag_given_tags(string, "scene_id")
+        if scene_id != "" and scene_id != "auto":
+            scene_id = int(scene_id)
         result = Card(card_type, name, action_factory, speed, target_checker, location, scene_id)
         if scene_id != "" and scene_id != "auto":
             getter[int(scene_id)] = result

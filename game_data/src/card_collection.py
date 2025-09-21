@@ -46,11 +46,12 @@ class Card_Collection(Loadable):
                 file_contents = file.read()
             return cls.create_from_string(file_contents)
         cards_string, scene_id = detag_given_tags(string, "cards", "scene_id")
+        if scene_id != "" and scene_id != "auto":
+            scene_id = int(scene_id)
         card_strings = detag_repeated(cards_string, "card")
         card_list = [Card.create_from_string(my_string) for my_string in card_strings]
         result = Card_Collection(card_list, scene_id)
         if scene_id not in ["", "auto"]:
-            scene_id = int(scene_id)
             getter[scene_id] = result
         return result
 

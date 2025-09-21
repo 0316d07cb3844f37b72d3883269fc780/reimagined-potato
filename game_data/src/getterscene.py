@@ -17,12 +17,15 @@ class GetterScene:
         return scene_id
 
     def __setitem__(self, new_id, object_to_set):
-        del (self.all_objects[object_to_set.scene_id])
-        if new_id == "auto":
+        if object_to_set.scene_id in self.all_objects:
+            del (self.all_objects[object_to_set.scene_id])
+        if new_id == "auto" or new_id == "":
             self.register(object_to_set)
             return
         object_to_set.scene_id = new_id
         self.all_objects[new_id] = object_to_set
+        if not self.last_id > new_id:
+            self.last_id = new_id + 1
 
     def __getitem__(self, key):
         if isinstance(key, int):

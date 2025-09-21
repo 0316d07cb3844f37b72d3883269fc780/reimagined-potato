@@ -58,10 +58,12 @@ class Person_Fighting(Loadable, UINotifier):
             return cls.create_from_string(file_contents)
         base_person_string, = detag_given_tags(string, "base_person")
         base_person = PersonData.create_from_string(base_person_string)
-        id_string, = detag_given_tags(string, "scene_id")
-        my_person_fighting = Person_Fighting(base_person, scene_id=id_string)
-        if id_string not in ["", "auto"]:
-            getter[int(id_string)] = my_person_fighting
+        scene_id, = detag_given_tags(string, "scene_id")
+        if scene_id != "" and scene_id != "auto":
+            scene_id = int(scene_id)
+        my_person_fighting = Person_Fighting(base_person, scene_id=scene_id)
+        if scene_id not in ["", "auto"]:
+            getter[int(scene_id)] = my_person_fighting
         actions_string, = detag_given_tags(string, "actions")
         action_strings = detag_repeated(actions_string, "action")
         my_person_fighting.actions += [Action.create_from_string(action_string) for action_string in action_strings]
@@ -76,8 +78,8 @@ class Person_Fighting(Loadable, UINotifier):
         my_person_fighting.hand = Card_Collection.create_from_string(hand_string)
         my_person_fighting.discardpile = Card_Collection.create_from_string(discardpile_string)
 
-        if id_string not in ["", "auto"]:
-            getter[int(id_string)] = my_person_fighting
+        if scene_id not in ["", "auto"]:
+            getter[int(scene_id)] = my_person_fighting
         return my_person_fighting
 
     @classmethod

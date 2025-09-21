@@ -45,6 +45,8 @@ class PersonData(Loadable):
         deck = detag_repeated(deck_string, "card")
         my_person = PersonData(int(max_health), person_type, deck)
         my_person.health = int(health)
+        if scene_id != "" and scene_id != "auto":
+            scene_id = int(scene_id)
         getter[scene_id] = my_person
         return my_person
 
