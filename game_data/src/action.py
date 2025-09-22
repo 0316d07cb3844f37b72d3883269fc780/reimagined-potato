@@ -74,8 +74,10 @@ class Action(Loadable):
         return self.action_id
 
     def resolve(self) -> None:
-        self.method(self.performer.scene_id, *self.target_list)
-        self.performer.actions.remove(self)
+        result = self.method(self.performer.scene_id, self.target_list)
+        if self in self.performer.actions:
+            self.performer.actions.remove(self)
+        return result
 
     def damage(self, damage_amount):
         self.stability -= max(damage_amount, 0)
@@ -88,8 +90,8 @@ def create_stunned(stunned_guy) -> Action:
     return Action("Stunned", stunned_guy, [], lambda: None, Speed.Regular, 3, 0)
 
 
-def tackle_method(tackler, *tackled):
-    return [damage(tackled, 6, tackler)]
+def tackle_method(tackler, tackled):
+    return [damage(tackled[0], 6, tackler)]
 
 
 def create_tackle(tackler, tackled_list: list, scene_id=None) -> Action:

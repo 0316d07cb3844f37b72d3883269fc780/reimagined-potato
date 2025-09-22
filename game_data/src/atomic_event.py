@@ -64,19 +64,19 @@ class EventSomethingDied(AtomicEvent):
 
 
 def damage(what, by_how_much, who):
-    return AtomicEvent(EventType.damage, damaged=what, damage=by_how_much, source=who)
+    return AtomicEvent(EventType.damage, damaged=what.scene_id, damage=by_how_much, source=who)
 
 
 def add_resist(who, how_much):
-    return AtomicEvent(EventType.add_resist, beneficiary=who, resist=how_much)
+    return AtomicEvent(EventType.add_resist, beneficiary=who.scene_id, resist=how_much)
 
 
 def add_stability(who, how_much):
-    return AtomicEvent(EventType.add_stability, beneficiary=who, resist=how_much)
+    return AtomicEvent(EventType.add_stability, beneficiary=who.scene_id, resist=how_much)
 
 
 def destroy(who):
-    return AtomicEvent(EventType.destroy, destroyed=who)
+    return AtomicEvent(EventType.destroy, destroyed=who.scene_id)
 
 
 def set_scene(scene):

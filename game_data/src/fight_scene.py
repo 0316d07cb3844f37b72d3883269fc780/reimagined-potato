@@ -64,6 +64,20 @@ class Fight_Scene(Loadable):
     def all_people(self):
         return self.allies+self.foes
 
+    @property
+    def all_objects(self):
+        return self.allies + self.foes + self.actions + self.stances
+
+    def remove_object(self, to_be_removed):
+        if to_be_removed in self.actions:
+            self.actions.remove(to_be_removed)
+        elif to_be_removed in self.stances:
+            self.stances.remove(to_be_removed)
+        elif to_be_removed in self.allies:
+            self.allies.remove(to_be_removed)
+        elif to_be_removed in self.foes:
+            self.foes.remove(to_be_removed)
+
     def change_turn(self) -> None:
         if self._turn_side == Side.allies:
             self._turn_side = Side.foes

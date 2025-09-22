@@ -1,8 +1,14 @@
-<message><type>Introduction<\type><person_id>0<\person_id><\message>                                                        
-<message><type>START_SCENE<\type><\message>                                                                                 
-<message><type>ACCEPT_CONNECTION<\type><\message>                                                                           
-<message><type>Introduction<\type><person_id>30<\person_id><\message>                                                       
-<message><type>PLAY_CARD<\type><player_id>10<\player_id><card_id>12<\card_id><target_id_list>[30]<\target_id_list><\message>
-<message><type>END_TURN<\type><player_id>10<\player_id><\message>                                                           
-<message><type>END_TURN<\type><player_id>10<\player_id><\message>                                                           
-<message><type>END_ENGINE<\type><\message>                                                                                  
+2025-09-21 23:21:14,526 - server_recieve_only_logger - INFO - <message><type>Introduction<\type><person_id>0<\person_id><\message>
+2025-09-21 23:21:14,530 - server_recieve_only_logger - INFO - <message><type>START_SCENE<\type><\message>
+2025-09-21 23:21:14,545 - server_recieve_only_logger - INFO - <message><type>ACCEPT_CONNECTION<\type><\message>
+2025-09-21 23:21:14,685 - server_recieve_only_logger - INFO - <message><type>Introduction<\type><person_id>32<\person_id><\message>
+2025-09-21 23:21:16,164 - server_recieve_only_logger - INFO - <message><type>PLAY_CARD<\type><player_id>11<\player_id><card_id>13<\card_id><target_id_list>[32]<\target_id_list><\message>
+2025-09-21 23:21:16,593 - server_recieve_only_logger - INFO - <message><type>END_TURN<\type><player_id>11<\player_id><\message>
+2025-09-21 23:21:16,619 - server_recieve_only_logger - INFO - <message><type>PLAY_CARD<\type><player_id>32<\player_id><card_id>38<\card_id><target_id_list>[11]<\target_id_list><\message>
+2025-09-21 23:21:16,647 - server_recieve_only_logger - INFO - <message><type>PLAY_CARD<\type><player_id>32<\player_id><card_id>38<\card_id><target_id_list>[11]<\target_id_list><\message>
+2025-09-21 23:21:16,662 - server_recieve_only_logger - INFO - <message><type>PLAY_CARD<\type><player_id>32<\player_id><card_id>37<\card_id><target_id_list>[11]<\target_id_list><\message>
+2025-09-21 23:21:16,695 - server_recieve_only_logger - INFO - <message><type>PLAY_CARD<\type><player_id>32<\player_id><card_id>36<\card_id><target_id_list>[11]<\target_id_list><\message>
+2025-09-21 23:21:16,724 - server_recieve_only_logger - INFO - <message><type>PLAY_CARD<\type><player_id>32<\player_id><card_id>35<\card_id><target_id_list>[]<\target_id_list><\message>
+2025-09-21 23:21:16,755 - server_recieve_only_logger - INFO - <message><type>PLAY_CARD<\type><player_id>32<\player_id><card_id>34<\card_id><target_id_list>[11]<\target_id_list><\message>
+2025-09-21 23:21:16,786 - server_recieve_only_logger - INFO - <message><type>END_TURN<\type><player_id>32<\player_id><\message>
+2025-09-21 23:21:17,286 - server_recieve_only_logger - INFO - <message><type>END_TURN<\type><player_id>11<\player_id><\message>

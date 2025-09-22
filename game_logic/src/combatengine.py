@@ -73,7 +73,7 @@ class CombatEngine:
             state_based_to_do = chain(*[self.apply_replacements(atomic_event) for atomic_event in state_based_to_do])
             for event in state_based_to_do:
                 self.process_atomic_event(event)
-                self.atomic_events_scheduled.append(self.triggered_events([state_based_to_do]))
+                self.atomic_events_scheduled.extend(self.triggered_events(state_based_to_do))
                 work_was_done_flag = True
             state_based_to_do = []
 
@@ -89,7 +89,7 @@ class CombatEngine:
             next_replacement = next(
                 replacement for replacement in replacements if any([replacement.applies(event) for event in result]))
             replacements.remove(next_replacement)
-            result = sum(next_replacement.replace(event) for event in result)
+            result = sum([next_replacement.replace(event) for event in result], start=[])
         return result
 
     def triggered_events(self, list_of_events):

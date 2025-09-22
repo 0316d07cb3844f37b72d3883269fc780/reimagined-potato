@@ -24,8 +24,8 @@ def is_action_resolving(event):
 def replace_action_resolving(event: AtomicEvent):
     action = getter[event.action]
     events = action.resolve()
-    return events.append(event)
-
+    events.append(event)
+    return events
 
 action_resolve_replacement = ReplacementEffect(is_action_resolving, replace_action_resolving, 10)
 
