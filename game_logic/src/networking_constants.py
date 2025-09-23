@@ -1,5 +1,5 @@
 """
-Common constants for networking between GUI clients and the engine server.
+Common constants for networking between GUI clients and the engine engine.
 """
 
 HEADER=6

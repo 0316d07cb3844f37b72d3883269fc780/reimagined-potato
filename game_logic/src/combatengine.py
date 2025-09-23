@@ -174,10 +174,10 @@ class CombatEngine:
             todo.append(AtomicEvent(EventType.allies_won))
 
     def simulate_until_stack_is_clear(self):
-        def check_if_stack_is_clear():
-            return not self.fight_scene.actions
+        def check_if_stack_is_unclear():
+            return self.fight_scene.actions
 
-        self.abstract_loop(check_if_stack_is_clear)
+        self.abstract_loop(check_if_stack_is_unclear)
 
     def simulate_one_stack_resolution(self):
         stack_size = len(self.fight_scene.actions)

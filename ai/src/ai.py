@@ -142,8 +142,8 @@ class AiLooper:
         self.ai.scene = scene
 
     def loop(self):
-        engine_done_flag = False
         while self.running:
+            engine_done_flag = False
             events = get_engine_events(self.networker)
             for event in events:
                 if event.event_type == EventType.set_scene:
@@ -156,5 +156,5 @@ class AiLooper:
             if not self.my_guy.turn_ended and engine_done_flag:
                 move_string, move = self.ai.find_best_move()
                 self.networker.send(move_string)
-                engine_done_flag = False
+
 

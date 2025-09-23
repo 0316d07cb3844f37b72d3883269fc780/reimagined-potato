@@ -12,7 +12,7 @@ from game_data.src.getterscene import GetterScene, getter
 class MyTestCase(unittest.TestCase):
     def test_loop(self):
         mock_networker = MockNetworker(message_file="ai/test/ressources/ai_test_messages")
-        ailooper = AiLooper("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", 30, Event(), mock_networker)
+        ailooper = AiLooper("<file>resources/Scenes/two_dogs_fighting.scene<\\file>", 32, Event(), mock_networker)
         ailooper.loop()
 
 

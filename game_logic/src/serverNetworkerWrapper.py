@@ -69,7 +69,7 @@ class ServerNetworkerWrapper:
 
 class MockPassWrapper:
     def __init__(self, engine):
-        self.server = engine
+        self.engine = engine
         self.result = []
         self.networker = MockNetworker()
 
@@ -88,8 +88,8 @@ class MockPassWrapper:
             result = [self.result]
         else:
             result = []
-            for person in self.server.scene.current_side:
-                result.append(ClientEvent.create_end_turn_generating_string(person.scene_id))
+            for person in self.engine.fight_scene.current_side:
+                result.append(ClientEvent(ClientEvent.create_end_turn_generating_string(person.scene_id)))
         self.result = []
         return result
 
