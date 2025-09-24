@@ -65,7 +65,7 @@ class Action(Loadable):
         action_id = int(action_id)
         scene_id = int(scene_id)
         action = creator_by_id[action_id](getter[performer_id], target_id_list,scene_id=scene_id)
-        action.stability = stability
+        action.stability = int(stability)
         getter[int(scene_id)] = action
         return action
 
@@ -83,6 +83,7 @@ class Action(Loadable):
         self.stability -= max(damage_amount, 0)
 
     def get_destroyed(self):
+        self.performer.actions.remove(self)
         del self
 
 
@@ -91,7 +92,7 @@ def create_stunned(stunned_guy) -> Action:
 
 
 def tackle_method(tackler, tackled):
-    return [damage(tackled[0], 6, tackler)]
+    return [damage(tackled[0].scene_id, 6, tackler)]
 
 
 def create_tackle(tackler, tackled_list: list, scene_id=None) -> Action:
@@ -99,7 +100,7 @@ def create_tackle(tackler, tackled_list: list, scene_id=None) -> Action:
     return tackle
 
 
-def brace_method(bracer):
+def brace_method(bracer, _):
     return [add_resist(bracer, 5)]
 
 

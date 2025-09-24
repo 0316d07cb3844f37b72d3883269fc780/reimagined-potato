@@ -170,12 +170,14 @@ class CombatEngine:
                 todo.append(EventSomethingDied(damagable.scene_id))
 
     def check_if_fight_over(self, todo):
+        if any (EventType.allies_won == event.event_type for event in self.atomic_events_history):
+            return
         if not self.fight_scene.foes:
             todo.append(AtomicEvent(EventType.allies_won))
 
     def simulate_until_stack_is_clear(self):
         def check_if_stack_is_unclear():
-            return self.fight_scene.actions
+            return self.fight_scene.actions and self.fight_scene.allies and self.fight_scene.foes
 
         self.abstract_loop(check_if_stack_is_unclear)
 

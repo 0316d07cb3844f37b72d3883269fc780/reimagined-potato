@@ -51,7 +51,7 @@ class Person_Fighting(Loadable, UINotifier):
         return self.base_person.person_type
 
     @classmethod
-    def create_from_string(cls, string: str):
+    def create_from_string(cls, string: str, no_actions_or_stances: bool = False):
         possible_filename, = detag_given_tags(string, "file")
         if possible_filename != "":
             file_contents = read_and_clean_file(possible_filename)
@@ -64,12 +64,13 @@ class Person_Fighting(Loadable, UINotifier):
         my_person_fighting = Person_Fighting(base_person, scene_id=scene_id)
         if scene_id not in ["", "auto"]:
             getter[int(scene_id)] = my_person_fighting
-        actions_string, = detag_given_tags(string, "actions")
-        action_strings = detag_repeated(actions_string, "action")
-        my_person_fighting.actions += [Action.create_from_string(action_string) for action_string in action_strings]
-        stances_string, = detag_given_tags(string, "stances")
-        stance_strings = detag_repeated(stances_string, "stance")
-        my_person_fighting.stances += [Stance.create_from_string(stance_string) for stance_string in stance_strings]
+        if not no_actions_or_stances:
+            actions_string, = detag_given_tags(string, "actions")
+            action_strings = detag_repeated(actions_string, "action")
+            [Action.create_from_string(action_string) for action_string in action_strings]
+            stances_string, = detag_given_tags(string, "stances")
+            stance_strings = detag_repeated(stances_string, "stance")
+            [Stance.create_from_string(stance_string) for stance_string in stance_strings]
         resist, turn_ended = detag_given_tags(string, "resist", "turn_ended")
         if (resist, turn_ended) != ("", ""):
             my_person_fighting.resist, my_person_fighting.turn_ended = int(resist), turn_ended == "True"

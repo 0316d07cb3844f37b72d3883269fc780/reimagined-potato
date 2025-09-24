@@ -67,6 +67,7 @@ class Stance(Loadable):
             self.get_destroyed()
 
     def get_destroyed(self):
+        self.performer.stances.remove(self)
         del self
 
     @property

@@ -100,7 +100,7 @@ class Fight_Scene(Loadable):
             return cls.create_team_from_string(file_contents)
         string_of_fighters, = detag_given_tags(string, "team")
         fighter_strings = detag_repeated(string_of_fighters, "fighter")
-        return [Person_Fighting.create_from_string(fighter) for fighter in fighter_strings]
+        return [Person_Fighting.create_from_string(fighter, no_actions_or_stances=True) for fighter in fighter_strings]
 
     def __str__(self):
         result = create_tag("allies", self.side_to_string(Side.allies)) \
