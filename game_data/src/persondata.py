@@ -10,13 +10,17 @@ from utility.src.string_utils import create_tag, detag_given_tags, detag_repeate
 class PersonData(Loadable):
     legal_types = ["Testtype", "Knight", "Dog"]
 
-    def __init__(self, max_health: int, person_type: str, deck: list = None):
+    def __init__(self, max_health: int, person_type: str, deck: list = None, scene_id: int = None):
         self.max_health = self.health = max_health
         if deck is None:
             self.deck = []
         else:
             self.deck = deck
-        self.scene_id = getter.register(self)
+        if scene_id is not None:
+            self.scene_id = scene_id
+            getter[self.scene_id] = self
+        else:
+            self.scene_id = getter.register(self)
 
         if person_type in PersonData.legal_types:
             self.person_type = person_type
@@ -43,11 +47,12 @@ class PersonData(Loadable):
                                                                      "person_type")
         deck_string, = detag_given_tags(string, "deck")
         deck = detag_repeated(deck_string, "card")
-        my_person = PersonData(int(max_health), person_type, deck)
-        my_person.health = int(health)
         if scene_id != "" and scene_id != "auto":
             scene_id = int(scene_id)
-        getter[scene_id] = my_person
+        my_person = PersonData(int(max_health), person_type, deck, scene_id=scene_id)
+        my_person.health = int(health)
+        if scene_id != "" and scene_id != "auto":
+            getter[scene_id] = my_person
         return my_person
 
     def damage(self, damage: int):

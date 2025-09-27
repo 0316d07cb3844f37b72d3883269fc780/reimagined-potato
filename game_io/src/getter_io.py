@@ -28,5 +28,8 @@ class GetterIO:
     def __contains__(self, item):
         return item in self.all_objects
 
+    def __delitem__(self, scene_id):
+        del (self.all_objects[scene_id])
+
 
 getter = GetterIO()

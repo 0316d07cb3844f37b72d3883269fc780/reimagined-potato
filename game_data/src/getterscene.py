@@ -25,7 +25,7 @@ class GetterScene:
         object_to_set.scene_id = new_id
         self.all_objects[new_id] = object_to_set
         if not self.last_id > new_id:
-            self.last_id = new_id + 1
+            self.last_id = new_id+1
 
     def __getitem__(self, key):
         if isinstance(key, int):

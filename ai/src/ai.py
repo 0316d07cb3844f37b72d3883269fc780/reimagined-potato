@@ -25,14 +25,18 @@ class Ai:
         self.scene_id_character = scene_id_character
         if any([scene_id_character == character.scene_id for character in scene.allies]):
             self.side = Side.allies
-            self.own_team = scene.allies
-            self.enemy_team = scene.foes
         else:
             self.side = Side.foes
-            self.own_team = scene.foes
-            self.enemy_team = scene.allies
         self.targetfinder = target_finder
         self.fake_wrapper = MockPassWrapper(None)
+
+    @property
+    def own_team(self):
+        return getattr(self.scene, self.side.name)
+
+    @property
+    def enemy_team(self):
+        return getattr(self.scene, self.side.name)
 
     def find_best_move(self):
         possible_moves = self.find_legal_moves()

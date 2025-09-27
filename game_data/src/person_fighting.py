@@ -13,16 +13,17 @@ from utility.src.string_utils import create_tag, detag_repeated, detag_given_tag
 
 
 class Person_Fighting(Loadable, UINotifier):
-    def __init__(self, base_person: PersonData, scene_id: int = None):
+    def __init__(self, base_person: PersonData, initialize_collections=True, scene_id: int = None):
         self.base_person = base_person
         self.actions = []
         self.stances = []
         self.resist = 0
         self.turn_ended = False
         "Create Cardcontainers."
-        self.drawpile = create_drawpile(base_person.deck)
-        self.hand = Card_Collection([])
-        self.discardpile = Card_Collection([])
+        if initialize_collections:
+            self.drawpile = create_drawpile(base_person.deck)
+            self.hand = Card_Collection([])
+            self.discardpile = Card_Collection([])
         "Register in universal getter."
         if scene_id is not None:
             self.scene_id = scene_id
@@ -61,7 +62,7 @@ class Person_Fighting(Loadable, UINotifier):
         scene_id, = detag_given_tags(string, "scene_id")
         if scene_id != "" and scene_id != "auto":
             scene_id = int(scene_id)
-        my_person_fighting = Person_Fighting(base_person, scene_id=scene_id)
+        my_person_fighting = Person_Fighting(base_person, initialize_collections=False, scene_id=scene_id)
         if scene_id not in ["", "auto"]:
             getter[int(scene_id)] = my_person_fighting
         if not no_actions_or_stances:

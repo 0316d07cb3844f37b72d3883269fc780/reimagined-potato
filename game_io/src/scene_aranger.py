@@ -127,7 +127,7 @@ def render_event_pre(scene: Fight_Scene, event: AtomicEvent, index_player: int, 
     elif event_type == et.add_resist:
         event.beneficiary.redraw_self()
     elif event_type == et.destroy:
-        destroyed = getter_scene(event.destroyed)
+        destroyed = getter_scene[event.destroyed]
         if isinstance(destroyed, Person_Fighting):
             for dependend in destroyed.actions + destroyed.stances:
                 dependend_io = getter[dependend.scene_id]
@@ -145,15 +145,27 @@ def render_event_pre(scene: Fight_Scene, event: AtomicEvent, index_player: int, 
 
 def render_event_post(scene: Fight_Scene, event, index_player: int, scene_group: RenderPlain, hand_group: RenderPlain):
     event_type, attributes = event.event_type, event.attributes
-    player_id = scene.allies[index_player].scene_id
+    try:
+       player_id = scene.allies[index_player].scene_id
+    except IndexError:
+        if event_type in et.foes_won:
+            return
+        return
+    if event_type == et.foes_won:
+        pass
+    elif event_type == et.allies_won:
+        pass
     if event_type == et.play_card:
         card = make_or_fetch_card_io(event.card)
         if event.player == player_id:
             hand_group.remove(card)
         initialize_actions(scene.actions, scene_group)
     elif event_type == et.damage:
-        for target in getter[event.damaged]:
-            target.redraw_self()
+        try:
+            for target in getter[event.damaged]:
+                target.redraw_self()
+        except TypeError:
+            getter[event.damaged].redraw_self()
     elif event_type == et.draw_card:
         if event.drawer == player_id:
             initialize_hand(scene.allies[index_player].hand, hand_group)
