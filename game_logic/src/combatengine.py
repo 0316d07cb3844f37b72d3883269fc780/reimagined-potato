@@ -80,14 +80,14 @@ class CombatEngine:
         if work_was_done_flag:
             self.check_state_based_actions()
 
-    @staticmethod
-    def apply_replacements(event):
+
+    def apply_replacements(self, event):
         result = [event]
         replacements = built_in_replacements[:]
         replacements.sort()
-        while any([replacement.applies(event) for replacement, event in itertools.product(replacements, result)]):
+        while any([replacement.applies(event, self.fight_scene) for replacement, event in itertools.product(replacements, result)]):
             next_replacement = next(
-                replacement for replacement in replacements if any([replacement.applies(event) for event in result]))
+                replacement for replacement in replacements if any([replacement.applies(event, self.fight_scene) for event in result]))
             replacements.remove(next_replacement)
             result = sum([next_replacement.replace(event) for event in result], start=[])
         return result

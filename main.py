@@ -70,8 +70,11 @@ def client_loop(sprite_manager: SpriteManager, networker, engine_process, scene,
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 builder.pass_priority()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                for action in scene.actions:
-                    print(action)
+                pass
+            if event.type in [pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEWHEEL]:
+                pass
+
+
 
         for event in ClientEvent.get_and_flush_events():
             networker.send(event)

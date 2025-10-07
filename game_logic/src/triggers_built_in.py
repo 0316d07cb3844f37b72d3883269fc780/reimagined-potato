@@ -1,5 +1,5 @@
-from game_data.src.atomic_event import EventType as ET
 from game_data.src.atomic_event import AtomicEvent as AE
+from game_data.src.atomic_event import EventType as ET
 
 
 def redraw(event, _, fight_scene):
@@ -13,16 +13,8 @@ def redraw(event, _, fight_scene):
     return result
 
 
-def allies_lost(event, _, fight_scene):
-    result=[]
-    if event.event_type == ET.destroy and event.destroyed in fight_scene.allies:
-        result.append(AE(ET.foes_won))
-    return result
-
-
 builtins = [
 
     redraw,
-    allies_lost,
 
 ]
